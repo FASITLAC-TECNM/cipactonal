@@ -41,8 +41,7 @@ export const CreationIncidentScreen = ({ visible, onClose, onSuccess, userData, 
         { value: 'retardo', label: 'Retardo', icon: 'time', color: '#f59e0b' },
         { value: 'justificante', label: 'Justificante', icon: 'document-text', color: '#3b82f6' },
         { value: 'permiso', label: 'Permiso', icon: 'calendar', color: '#8b5cf6' },
-        { value: 'vacaciones', label: 'Vacaciones', icon: 'airplane', color: '#10b981' },
-        { value: 'falta_justificada', label: 'Falta Justificada', icon: 'medkit', color: '#ec4899' }
+        { value: 'vacaciones', label: 'Vacaciones', icon: 'airplane', color: '#10b981' }
     ];
 
     const getTipoIcon = (tipo) => {

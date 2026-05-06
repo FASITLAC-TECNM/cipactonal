@@ -311,7 +311,7 @@ export const MetodoAutenticacionModal = ({
         return;
       }
 
-      (function () { })(' Validación facial exitosa, generando template...');
+(function () { })(' Validación facial exitosa, generando template...');
 
 
       const resultado = await generateFacialTemplate(

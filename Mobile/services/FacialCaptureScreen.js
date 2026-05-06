@@ -74,6 +74,7 @@ export const FacialCaptureScreen = ({
   const [facesDetected, setFacesDetected] = useState([]);
   const [faceDetected, setFaceDetected] = useState(false);
   const [lastFaceData, setLastFaceData] = useState(null);
+  const [flashEnabled, setFlashEnabled] = useState(false);
   const pulseAnim = useRef(new Animated.Value(1)).current;
   const faceDetectionTimeout = useRef(null);
   useEffect(() => {
@@ -163,6 +164,10 @@ export const FacialCaptureScreen = ({
     updateFaceDetection(faces);
   }, [updateFaceDetection]);
 
+  const toggleFlash = () => {
+    setFlashEnabled(!flashEnabled);
+  };
+
   const startCountdown = () => {
     setCountdown(3);
     setInstruction('Mantén la posición');
@@ -185,7 +190,7 @@ export const FacialCaptureScreen = ({
       setInstruction(' Capturando foto...');
       const photo = await camera.current.takePhoto({
         qualityPrioritization: 'quality',
-        flash: 'off',
+        flash: flashEnabled ? 'on' : 'off',
         skipMetadata: true
       });
       const fileUri = Platform.OS === 'ios' ? photo.path : `file://${photo.path}`;
@@ -372,6 +377,21 @@ export const FacialCaptureScreen = ({
           <Ionicons name="close" size={24} color={closeIconClr} />
         </TouchableOpacity>
         { }
+        <TouchableOpacity
+          style={[styles.flashButton, {
+            top: closeTop,
+            backgroundColor: flashEnabled ? '#f59e0b' : closeBtnBg
+          }]}
+          onPress={toggleFlash}
+          disabled={isProcessing || isValidating}
+          activeOpacity={0.7}>
+          <Ionicons 
+            name={flashEnabled ? 'flash' : 'flash-outline'} 
+            size={22} 
+            color={flashEnabled ? '#000' : closeIconClr} 
+          />
+        </TouchableOpacity>
+        { }
         <View style={[styles.instructionContainer, { top: closeTop + 56 }]} pointerEvents="none">
           <View style={[
             styles.instructionBadge,
@@ -487,6 +507,16 @@ const styles = StyleSheet.create({
   closeButton: {
     position: 'absolute',
     right: 20,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20
+  },
+  flashButton: {
+    position: 'absolute',
+    left: 20,
     zIndex: 10,
     width: 40,
     height: 40,

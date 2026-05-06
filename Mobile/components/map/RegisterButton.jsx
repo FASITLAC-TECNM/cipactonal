@@ -1342,11 +1342,10 @@ export const RegisterButton = ({ userData, darkMode, onRegistroExitoso }) => {
         return;
       }
 
-      (function () { })(' Validación facial detectó rostro de calidad, enviando imagen al servidor para verificar identidad...');
+(function () { })(' Validación facial detectó rostro de calidad, enviando imagen al servidor para verificar identidad...');
 
       const empleadoId = userData?.empleado?.id || userData?.empleado_id || userData?.id;
 
-      let verifyOffline = false;
       try {
         const response = await fetch(`${API_URL}/credenciales/facial/verify-image`, {
           method: 'POST',
@@ -1370,7 +1369,6 @@ export const RegisterButton = ({ userData, darkMode, onRegistroExitoso }) => {
             [
               { text: 'Cancelar', style: 'cancel', onPress: () => setRegistrando(false) },
               { text: 'Reintentar', onPress: () => setMostrarCapturaFacial(true) }]
-
           );
           setRegistrando(false);
           return;
@@ -1378,13 +1376,7 @@ export const RegisterButton = ({ userData, darkMode, onRegistroExitoso }) => {
 
         (function () { })(` Identidad verificada (${verification.data?.matchScore || 100}% similitud), procediendo con el registro`);
       } catch (networkError) {
-        const esErrorDeRed = networkError.message.includes('Network') || networkError.message.includes('fetch');
-        if (esErrorDeRed || !isOnline) {
-          verifyOffline = true;
-          (function () { })(' Error de red en verificación facial. Procedimiento offline.');
-        } else {
-          throw networkError;
-        }
+        (function () { })(' Error de red en verificación facial. El servidor validará cuando esté disponible.');
       }
 
       datosRegistroRef.current.payloadBiometrico = captureData.photoBase64;

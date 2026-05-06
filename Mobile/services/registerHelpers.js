@@ -46,13 +46,15 @@ export const obtenerHorarioSimplificado = async (empleadoId, token) => {
 const DEFAULT_TOLERANCIA = {
   permite_registro_anticipado: true,
   minutos_anticipado_max: 60,
+  minutos_anticipo_salida: 0,
+  minutos_posterior_salida: 60,
+  minutos_falta: 30,
   aplica_tolerancia_entrada: true,
   aplica_tolerancia_salida: false,
   reglas: [
     { id: 'retardo_a', limite_minutos: 20, penalizacion_tipo: 'acumulacion', penalizacion_valor: 3 },
     { id: 'retardo_b', limite_minutos: 29, penalizacion_tipo: 'acumulacion', penalizacion_valor: 2 },
     { id: 'falta_por_retardo', limite_minutos: 60, penalizacion_tipo: 'directa', penalizacion_valor: 1 }]
-
 };
 
 export const obtenerTolerancia = async (token) => {
@@ -185,12 +187,23 @@ export const validarRegistroCliente = (horario, ultimoRegistro, tolerancia) => {
     };
   }
   if (!esEntrada && ultimoRegistro && horario.salida) {
-    const horaUltimoRegistro = new Date(ultimoRegistro.fecha_registro);
-    const diferenciaMinutos = (ahora - horaUltimoRegistro) / 1000 / 60;
-    if (diferenciaMinutos < 30) {
+    const [hS, mS] = horario.salida.split(':').map(Number);
+    const minSalida = hS * 60 + mS;
+    const anticipoSalida = tol.minutos_anticipo_salida || 0;
+    const posteriorSalida = tol.minutos_posterior_salida || 60;
+    const ventanaInicioSalida = minSalida - anticipoSalida;
+    const ventanaFinSalida = minSalida + posteriorSalida;
+    if (minutosActuales < ventanaInicioSalida) {
       return {
         puedeRegistrar: false,
-        mensaje: 'Espera al menos 30 minutos desde tu entrada',
+        mensaje: 'Aún no es hora de salida',
+        tipoSiguiente
+      };
+    }
+    if (minutosActuales > ventanaFinSalida) {
+      return {
+        puedeRegistrar: false,
+        mensaje: 'Tiempo límite para registrar salida excedido',
         tipoSiguiente
       };
     }

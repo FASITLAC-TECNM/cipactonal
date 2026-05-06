@@ -59,22 +59,17 @@ export const HistoryScreen = ({ darkMode, userData }) => {
       };
 
       let cargoOnline = false;
+      let baseAsistencias = [];
 
       try {
         const isOnline = await syncManager.isOnline() && !syncManager.getIsBackendDown();
         if (isOnline) {
           const response = await getAsistenciasEmpleado(userData.empleado_id, userData.token, filtros);
           if (response?.data && Array.isArray(response.data)) {
-            const ordenadas = response.data.sort(
-              (a, b) => new Date(b.fecha_registro) - new Date(a.fecha_registro)
-            );
-            setAsistencias(ordenadas);
-            calcularEstadisticas(ordenadas);
+            baseAsistencias = response.data;
             cargoOnline = true;
             await sqliteManager.upsertAsistenciasMes(userData.empleado_id, mesKey, response.data).catch(() => {});
           } else {
-            setAsistencias([]);
-            setEstadisticas({ puntuales: 0, retardos: 0, faltas: 0, total: 0 });
             cargoOnline = true;
           }
         }
@@ -86,16 +81,33 @@ export const HistoryScreen = ({ darkMode, userData }) => {
         try {
           const datosLocal = await sqliteManager.getAsistenciasMesLocal(userData.empleado_id, mesKey);
           if (datosLocal && datosLocal.length > 0) {
-            setAsistencias(datosLocal);
-            calcularEstadisticas(datosLocal);
-          } else {
-            setAsistencias([]);
-            setEstadisticas({ puntuales: 0, retardos: 0, faltas: 0, total: 0 });
+            baseAsistencias = datosLocal;
           }
         } catch (_) {
-          setAsistencias([]);
         }
       }
+
+      let offlinePendientes = [];
+      try {
+        const startOfMonthStr = filtros.fecha_inicio.substring(0, 10);
+        const endOfMonthStr = filtros.fecha_fin.substring(0, 10);
+        const offlineData = await sqliteManager.getRegistrosByRange(userData.empleado_id, startOfMonthStr, endOfMonthStr);
+        if (offlineData && offlineData.length > 0) {
+          offlinePendientes = offlineData.filter(r => r.is_synced === 0 || r.is_synced === -1).map(r => ({
+            ...r,
+            id: r.local_id ? `offline_${r.local_id}` : `offline_${r.idempotency_key}`,
+            estado: 'pendiente_revision',
+            is_offline: true
+          }));
+        }
+      } catch (_) {}
+
+      const allAsistencias = [...baseAsistencias, ...offlinePendientes].sort(
+        (a, b) => new Date(b.fecha_registro) - new Date(a.fecha_registro)
+      );
+
+      setAsistencias(allAsistencias);
+      calcularEstadisticas(allAsistencias);
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -289,6 +301,7 @@ export const HistoryScreen = ({ darkMode, userData }) => {
       case 'puntual':return '#10b981';
       case 'salida_puntual':return '#2563eb';
       case 'salida_temprano':return '#7c3aed';
+      case 'pendiente_revision': return '#8b5cf6';
     }
     if (estado?.startsWith('retardo')) return '#f59e0b';
     if (estado?.startsWith('falta')) return '#ef4444';
@@ -297,6 +310,7 @@ export const HistoryScreen = ({ darkMode, userData }) => {
 
   const obtenerLabelEstado = useCallback((estado) => {
     if (!estado) return '';
+    if (estado === 'pendiente_revision') return 'Pendiente a revisar';
     
     // Casos especiales donde queramos mantener una letra en mayúscula sola (ej. "Retardo A")
     if (estado.startsWith('retardo')) {

@@ -656,8 +656,6 @@ export async function getTolerancia(empleadoId) {
     try {
       row = await db.getFirstAsync('SELECT * FROM cache_tolerancias WHERE empleado_id = ?', [empleadoId]);
     } catch (selectErr) {
-      // Columnas nuevas no existen aún — migrar y reintentar
-      console.log('[SQLITE] getTolerancia migración automática:', selectErr?.message);
       try { await db.execAsync('ALTER TABLE cache_tolerancias ADD COLUMN minutos_anticipo_salida INTEGER DEFAULT 0'); } catch (e) { }
       try { await db.execAsync('ALTER TABLE cache_tolerancias ADD COLUMN minutos_posterior_salida INTEGER DEFAULT 0'); } catch (e) { }
       try { await db.execAsync('ALTER TABLE cache_tolerancias ADD COLUMN reglas TEXT'); } catch (e) { }
@@ -667,7 +665,6 @@ export async function getTolerancia(empleadoId) {
       try {
         row = await db.getFirstAsync('SELECT * FROM cache_tolerancias WHERE empleado_id = ?', [empleadoId]);
       } catch (e2) {
-        console.log('[SQLITE] getTolerancia reintento falló:', e2?.message);
         return null;
       }
     }
@@ -689,7 +686,6 @@ export async function getTolerancia(empleadoId) {
 
     return row;
   } catch (outerErr) {
-    console.log('[SQLITE] getTolerancia ERROR:', outerErr?.message);
     return null;
   }
 }
