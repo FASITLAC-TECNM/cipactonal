@@ -454,10 +454,10 @@ export const RegisterButton = ({ userData, darkMode, onRegistroExitoso }) => {
     return () => clearInterval(intervalo);
   }, [obtenerHorario, obtenerUltimoRegistro, actualizarEstadoPreflight]);
 
-  // Limpiar el estado optimista silenciosamente cuando la sincronización rechaza un registro,
+  // Limpiar el estado optimista silenciosamente cuando la sincronización rechaza o completa un registro,
   // sin forzar cambios de modo (usandoEstadoBackend) que causen parpadeo en la UI.
   useEffect(() => {
-    const sub = DeviceEventEmitter.addListener('sync_rechazado', async () => {
+    const handleSyncUpdate = async () => {
       try {
         const resultado = await obtenerUltimoRegistro();
         if (resultado) {
@@ -468,8 +468,13 @@ export const RegisterButton = ({ userData, darkMode, onRegistroExitoso }) => {
           registrosHoyTodosRef.current = todos;
         }
       } catch (_) { }
-    });
-    return () => sub.remove();
+    };
+    const subRechazado = DeviceEventEmitter.addListener('sync_rechazado', handleSyncUpdate);
+    const subCompletado = DeviceEventEmitter.addListener('sync_completado', handleSyncUpdate);
+    return () => {
+      subRechazado.remove();
+      subCompletado.remove();
+    };
   }, [obtenerUltimoRegistro]);
 
   useEffect(() => {
@@ -1654,7 +1659,7 @@ export const RegisterButton = ({ userData, darkMode, onRegistroExitoso }) => {
           estadoTexto = estadoRegistrado?.replace(/_/g, ' ') || 'registrado';
         }
         Alert.alert(
-          '✅ Registro Exitoso',
+          'Registro Exitoso',
           `${tipoMayuscula}: ${estadoTexto}\n\nDepartamento: ${departamento.nombre}\nHora: ${horaStr}`,
           [{ text: 'OK' }]
         );

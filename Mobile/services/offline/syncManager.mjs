@@ -241,6 +241,9 @@ export async function performSync(reason = 'manual') {
       if (pushResult && pushResult.errors > 0) {
         DeviceEventEmitter.emit('sync_rechazado', { errors: pushResult.errors });
       }
+      if (pushResult && pushResult.synced > 0) {
+        DeviceEventEmitter.emit('sync_completado', { synced: pushResult.synced });
+      }
     }
     if (authToken) {
       await pushIncidencias().catch(() => { });
