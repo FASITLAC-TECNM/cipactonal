@@ -283,7 +283,7 @@ export async function toggleMantenimiento(req, res) {
  */
 export async function getMantenimientoStatus(req, res) {
     try {
-        const resultado = await pool.query('SELECT es_mantenimiento FROM configuraciones LIMIT 1');
+        const resultado = await pool.query('SELECT es_mantenimiento FROM configuraciones ORDER BY id DESC LIMIT 1');
 
         if (resultado.rows.length === 0) {
             return res.json({

@@ -6,13 +6,10 @@ import logger from './utils/logger.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3002;
 
 app.listen(PORT, () => {
     const line = '─'.repeat(45);
-    logger.info(`\n${line}`);
-    logger.info('🖥️  SERVIDOR CHECADOR');
-    logger.info(`${line}`);
     logger.info(`📦 ${process.env.NODE_ENV}`);
     logger.info(`🛠️  http://localhost:${PORT}`);
     logger.info(`🕓 ${new Date().toLocaleString()}`);

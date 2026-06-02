@@ -135,6 +135,25 @@ export async function login(req, res) {
                     [nuevosIntentos, bloqueoHasta, usuarioData.id]
                 );
                 
+                // Si es el primer intento que sobrepasa el límite, enviar correo
+                if (nuevosIntentos === maxIntentos && usuarioData.correo) {
+                    try {
+                        const secret = process.env.JWT_SECRET || 'default_secret';
+                        const passwordHash = usuarioData.contraseña ? usuarioData.contraseña.substring(0, 10) : '';
+                        const token = jwt.sign(
+                            { sub: usuarioData.id, pHash: passwordHash },
+                            secret,
+                            { expiresIn: '15m' }
+                        );
+                        const { enviarCorreoCuentaBloqueada } = await import('../utils/mailer.js');
+                        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+                        const link = `${frontendUrl}/reset-password?token=${token}`;
+                        await enviarCorreoCuentaBloqueada(usuarioData.correo, link);
+                    } catch (errorCorreo) {
+                        console.error('Error enviando correo de bloqueo:', errorCorreo);
+                    }
+                }
+
                 let cooldownStr = cooldownSegundos >= 60 
                     ? `${Math.ceil(cooldownSegundos / 60)} minutos` 
                     : `${cooldownSegundos} segundos`;

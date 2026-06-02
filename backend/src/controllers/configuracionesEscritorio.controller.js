@@ -15,12 +15,13 @@ export async function getConfiguracionEscritorio(req, res) {
         const empresaIdReal = escRes.rows[0].empresa_id;
 
         let cfgRes = await pool.query('SELECT * FROM configuraciones_escritorio WHERE escritorio_id = $1', [escritorio_id]);
+        
+        let configId = null;
+        const empRes = await pool.query('SELECT configuracion_id FROM empresas WHERE id = $1', [empresaIdReal]);
+        configId = empRes.rows[0]?.configuracion_id || null;
 
         if (cfgRes.rows.length === 0) {
             // Crear una por defecto
-            const empRes = await pool.query('SELECT configuracion_id FROM empresas WHERE id = $1', [empresaIdReal]);
-            const configId = empRes.rows[0]?.configuracion_id || null;
-
             const newId = crypto.randomUUID();
             cfgRes = await pool.query(`
                 INSERT INTO configuraciones_escritorio (
@@ -35,7 +36,21 @@ export async function getConfiguracionEscritorio(req, res) {
             `, [newId, configId, escritorio_id]);
         }
 
-        res.json({ success: true, data: cfgRes.rows[0] });
+        // Obtener el estado de mantenimiento global para combinarlo
+        let mantenimientoGlobal = false;
+        if (configId) {
+            const mRes = await pool.query('SELECT es_mantenimiento FROM configuraciones WHERE id = $1', [configId]);
+            mantenimientoGlobal = mRes.rows[0]?.es_mantenimiento || false;
+        } else {
+            const mRes = await pool.query('SELECT es_mantenimiento FROM configuraciones ORDER BY id DESC LIMIT 1');
+            mantenimientoGlobal = mRes.rows[0]?.es_mantenimiento || false;
+        }
+
+        const data = cfgRes.rows[0];
+        // El escritorio estará en mantenimiento si el nodo en sí lo está, O si el sistema global lo está
+        data.es_mantenimiento = data.es_mantenimiento || mantenimientoGlobal;
+
+        res.json({ success: true, data });
     } catch (error) {
         console.error('Error en getConfiguracionEscritorio:', error);
         res.status(500).json({ success: false, message: 'Error al obtener la configuración' });

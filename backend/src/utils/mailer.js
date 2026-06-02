@@ -2,12 +2,14 @@ import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 dotenv.config();
 
-// Configuramos Nodemailer para Gmail
+// Configuramos Nodemailer para PrivateEmail (Namecheap)
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'mail.privateemail.com',
+    port: 465,
+    secure: true,
     auth: {
-        user: process.env.EMAIL_USER, // Tu correo de Gmail, ej: tu_correo@gmail.com
-        pass: process.env.EMAIL_PASS  // Tu App Password de Gmail (contraseña de aplicación)
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
     }
 });
 
@@ -232,5 +234,90 @@ export async function enviarCorreoRecuperacionPassword(correo, link) {
         return info;
     } catch (error) {
         console.error('Error al enviar correo de recuperación:', error);
+    }
+}
+
+/**
+ * Envía un correo notificando al usuario que su cuenta fue bloqueada por intentos fallidos.
+ * 
+ * @param {string} correo - Correo electrónico del usuario
+ * @param {string} link - Enlace para recuperar la contraseña y desbloquear la cuenta
+ * @returns {Promise<any>}
+ */
+export async function enviarCorreoCuentaBloqueada(correo, link) {
+    if (!correo) return;
+
+    try {
+        const mailOptions = {
+            from: `"FASITLAC Seguridad" <${process.env.EMAIL_USER}>`,
+            to: correo,
+            subject: `Alerta de Seguridad: Cuenta Bloqueada - FASITLAC`,
+            html: `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:#ffffff;font-family:'Outfit','Segoe UI',Tahoma,Geneva,Verdana,sans-serif;-webkit-font-smoothing:antialiased;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff;padding:60px 20px;">
+        <tr>
+            <td align="center">
+                <table width="100%" maxWidth="600" style="max-width:600px;background-color:#ffffff;border:1px solid #ef4444;border-collapse:collapse;">
+                    
+                    <tr>
+                        <td style="height:4px;background-color:#000000;"></td>
+                    </tr>
+                    <tr>
+                        <td style="height:12px;background-color:#ef4444;"></td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="padding:40px 40px 20px;text-align:left;border-bottom:1px solid #fef2f2;">
+                            <h1 style="margin:0;font-size:18px;font-weight:800;color:#000000;letter-spacing:1px;text-transform:uppercase;">FASITLAC</h1>
+                            <p style="margin:4px 0 0;font-size:11px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:2px;">Alerta de Seguridad</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:40px 40px 30px;">
+                            <p style="margin:0 0 16px;font-size:12px;font-weight:700;color:#ef4444;text-transform:uppercase;letter-spacing:1px;">Acceso Bloqueado</p>
+                            <h2 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#000000;letter-spacing:-0.5px;line-height:1.1;">Cuenta Temporalmente Bloqueada</h2>
+                            <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#334155;">
+                                Hemos detectado múltiples intentos de inicio de sesión fallidos en tu cuenta de FASITLAC. Por tu seguridad, hemos bloqueado temporalmente el acceso.
+                            </p>
+                            <p style="margin:0 0 30px;font-size:15px;line-height:1.6;color:#334155;">
+                                Para desbloquear tu cuenta inmediatamente y recuperar el acceso de forma segura, por favor haz clic en el siguiente enlace y establece una nueva contraseña:
+                            </p>
+                            <a href="${link}" style="display:inline-block;padding:12px 24px;background-color:#ef4444;color:#ffffff;text-decoration:none;font-weight:600;border-radius:6px;font-size:14px;">Desbloquear y Restablecer Contraseña</a>
+                            <p style="margin:20px 0 0;font-size:13px;line-height:1.6;color:#64748b;">
+                                Este enlace es válido por los próximos 15 minutos. Si no fuiste tú quien intentó iniciar sesión, te sugerimos contactar al administrador del sistema.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:40px;background-color:#000000;text-align:left;">
+                            <p style="margin:0;font-size:11px;color:#ffffff;font-weight:400;letter-spacing:0.5px;line-height:1.8;">
+                                <strong style="color:#ef4444;font-weight:800;">FASITLAC CORE SYSTEM</strong><br>
+                                Este es un mensaje automático del sistema de seguridad. Por favor no respondas a este correo.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+`
+        };
+        const info = await transporter.sendMail(mailOptions);
+        return info;
+    } catch (error) {
+        console.error('Error al enviar correo de cuenta bloqueada:', error);
     }
 }
