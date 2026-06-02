@@ -9,8 +9,11 @@ import {
     FiAlertCircle,
     FiArrowRight,
     FiChevronLeft,
-    FiBriefcase
+    FiBriefcase,
+    FiMail,
+    FiCheckCircle
 } from 'react-icons/fi';
+import axios from 'axios';
 
 
 /**
@@ -28,6 +31,12 @@ const Login = () => {
     const [empresas, setEmpresas] = useState(null); // lista de empresas si multi-tenant
     const [empresaSeleccionada, setEmpresaSeleccionada] = useState(null);
 
+    // Estado para recuperación de contraseña
+    const [isRecovering, setIsRecovering] = useState(false);
+    const [recoveryEmail, setRecoveryEmail] = useState('');
+    const [recoveryMessage, setRecoveryMessage] = useState('');
+    const [recoverySuccess, setRecoverySuccess] = useState(false);
+
     // Manejar cambios en los inputs
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,7 +49,7 @@ const Login = () => {
     };
 
     const [isSuccess, setIsSuccess] = useState(false);
-    
+
     // Re-enviar login con empresa_id seleccionado (multi-tenant)
     const handleSubmitWithEmpresa = async (empresaId) => {
         setIsSubmitting(true);
@@ -109,6 +118,31 @@ const Login = () => {
             }
         } catch (err) {
             setError('Error al conectar con el servidor');
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleRecoverySubmit = async (e) => {
+        e.preventDefault();
+        if (!recoveryEmail.trim()) {
+            setError('El correo es requerido');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setError('');
+        setRecoveryMessage('');
+        setRecoverySuccess(false);
+
+        try {
+            const baseURL = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+            const response = await axios.post(`${baseURL}/api/auth/recuperar-password`, { correo: recoveryEmail });
+
+            setRecoverySuccess(true);
+            setRecoveryMessage(response.data.message || 'Instrucciones enviadas al correo.');
+        } catch (err) {
+            setError(err.response?.data?.message || 'Error al solicitar recuperación');
+        } finally {
             setIsSubmitting(false);
         }
     };
@@ -185,6 +219,75 @@ const Login = () => {
                                     ))}
                                 </div>
                             </div>
+                        ) : isRecovering ? (
+                            /* ─── FORMULARIO DE RECUPERACIÓN DE CONTRASEÑA ─── */
+                            <div className="space-y-6">
+                                <button
+                                    type="button"
+                                    onClick={() => { setIsRecovering(false); setError(''); setRecoveryMessage(''); }}
+                                    className="flex items-center gap-1 text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                                >
+                                    <FiChevronLeft className="w-4 h-4" /> Volver al inicio de sesión
+                                </button>
+
+                                <div className="mb-6">
+                                    <h2 className="text-2xl font-bold text-white">Recuperar Acceso</h2>
+                                    <p className="text-sm text-gray-500 mt-2">Ingresa tu correo para recibir las instrucciones</p>
+                                </div>
+
+                                {(error) && (
+                                    <div className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3">
+                                        <FiAlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                                        <p className="text-sm text-red-600 font-medium">{error}</p>
+                                    </div>
+                                )}
+
+                                {recoverySuccess ? (
+                                    <div className="mb-6 p-4 bg-green-50 border border-green-100 rounded-xl flex items-start gap-3 text-left">
+                                        <FiCheckCircle className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <p className="text-sm text-green-800 font-bold mb-1">Solicitud Recibida</p>
+                                            <p className="text-sm text-green-700">{recoveryMessage}</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleRecoverySubmit} className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="text-sm font-semibold text-gray-600 ml-1">
+                                                Correo Electrónico
+                                            </label>
+                                            <div className="relative">
+                                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                                    <FiMail className="w-5 h-5 text-slate-400 focus-within:text-primary-600" />
+                                                </div>
+                                                <input
+                                                    type="email"
+                                                    value={recoveryEmail}
+                                                    onChange={(e) => { setRecoveryEmail(e.target.value); setError(''); }}
+                                                    className="input pl-12"
+                                                    placeholder="ejemplo@correo.com"
+                                                    required
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            disabled={isSubmitting}
+                                            className="btn-primary w-full py-4 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                                        >
+                                            {isSubmitting ? (
+                                                <DynamicLoader text="Enviando..." size="tiny" />
+                                            ) : (
+                                                <>
+                                                    <span>Enviar Instrucciones</span>
+                                                    <FiArrowRight className="w-5 h-5" />
+                                                </>
+                                            )}
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
                         ) : (
                             /* ─── FORMULARIO DE LOGIN NORMAL ─── */
                             <>
@@ -254,9 +357,13 @@ const Login = () => {
 
                                     {/* Olvidaste contraseña */}
                                     <div className="flex justify-end pt-1">
-                                        <a href="#" className="text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors">
+                                        <button
+                                            type="button"
+                                            onClick={() => { setIsRecovering(true); setError(''); }}
+                                            className="text-sm font-semibold text-primary-600 hover:text-primary-700 transition-colors"
+                                        >
                                             ¿Olvidaste tu contraseña?
-                                        </a>
+                                        </button>
                                     </div>
 
                                     {/* Botón Submit */}

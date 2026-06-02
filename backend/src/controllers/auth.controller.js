@@ -746,6 +746,133 @@ export async function loginBiometrico(req, res) {
 }
 
 /**
+ * POST /api/auth/recuperar-password
+ * Solicita un correo electrónico con un enlace para recuperar la contraseña
+ */
+export async function solicitarRecuperacionPassword(req, res) {
+    try {
+        const { correo } = req.body;
+
+        if (!correo) {
+            return res.status(400).json({ success: false, message: 'El correo electrónico es requerido' });
+        }
+
+        // Buscar al usuario por correo
+        const resultado = await pool.query('SELECT id, correo, contraseña, estado_cuenta FROM usuarios WHERE correo = $1', [correo]);
+
+        if (resultado.rows.length === 0) {
+            // Retornamos éxito aunque no exista para no revelar qué correos están registrados
+            return res.json({ success: true, message: 'Si el correo existe, se enviarán las instrucciones de recuperación.' });
+        }
+
+        const usuarioData = resultado.rows[0];
+
+        if (usuarioData.estado_cuenta !== 'activo') {
+            return res.status(403).json({ success: false, message: 'La cuenta no está activa. Contacte al administrador.' });
+        }
+
+        // Incluimos parte del hash de la contraseña actual en el payload para que si la cambia, el token se invalide
+        const secret = process.env.JWT_SECRET || 'default_secret';
+        const passwordHash = usuarioData.contraseña ? usuarioData.contraseña.substring(0, 10) : '';
+
+        // Generar JWT con duración de 15 minutos
+        const token = jwt.sign(
+            { sub: usuarioData.id, pHash: passwordHash },
+            secret,
+            { expiresIn: '15m' }
+        );
+
+        // Importar la función del mailer si no está importada (se importa localmente para evitar error de importación)
+        const { enviarCorreoRecuperacionPassword } = await import('../utils/mailer.js');
+
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const link = `${frontendUrl}/reset-password?token=${token}`;
+
+        await enviarCorreoRecuperacionPassword(usuarioData.correo, link);
+
+        await registrarEvento({
+            titulo: 'Solicitud de recuperación de contraseña',
+            descripcion: `Se solicitó recuperar la contraseña para ${usuarioData.correo}`,
+            tipo_evento: TIPOS_EVENTO.AUTENTICACION,
+            prioridad: PRIORIDADES.BAJA,
+            detalles: { usuario_id: usuarioData.id, correo: usuarioData.correo }
+        });
+
+        res.json({ success: true, message: 'Si el correo existe, se enviarán las instrucciones de recuperación.' });
+    } catch (error) {
+        console.error('Error en solicitarRecuperacionPassword:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor al procesar la solicitud' });
+    }
+}
+
+/**
+ * POST /api/auth/reset-password
+ * Restablece la contraseña usando el token JWT enviado al correo
+ */
+export async function resetearPasswordConToken(req, res) {
+    try {
+        const { token, nueva_contraseña } = req.body;
+
+        if (!token || !nueva_contraseña) {
+            return res.status(400).json({ success: false, message: 'Token y nueva contraseña son requeridos' });
+        }
+
+        if (nueva_contraseña.length < 6) {
+            return res.status(400).json({ success: false, message: 'La contraseña debe tener al menos 6 caracteres' });
+        }
+
+        const secret = process.env.JWT_SECRET || 'default_secret';
+        let payload;
+
+        try {
+            payload = jwt.verify(token, secret);
+        } catch (error) {
+            return res.status(401).json({ success: false, message: 'Enlace inválido o expirado. Solicite uno nuevo.' });
+        }
+
+        const usuarioId = payload.sub;
+
+        // Verificar el estado de la cuenta y obtener el hash de la contraseña actual
+        const resultado = await pool.query('SELECT contraseña FROM usuarios WHERE id = $1 AND estado_cuenta = $2', [usuarioId, 'activo']);
+
+        if (resultado.rows.length === 0) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado o inactivo' });
+        }
+
+        const currentHash = resultado.rows[0].contraseña ? resultado.rows[0].contraseña.substring(0, 10) : '';
+
+        // Verificar si el hash de la contraseña coincide con el del payload (por si ya la cambió usando este token u otro medio)
+        if (payload.pHash !== currentHash) {
+            return res.status(401).json({ success: false, message: 'Este enlace de recuperación ya fue utilizado o es inválido.' });
+        }
+
+        // Generar hash de la nueva contraseña
+        const nuevoHash = await bcrypt.hash(nueva_contraseña, 10);
+
+        // Actualizar la contraseña en la base de datos (resetear intentos fallidos y bloqueos si los hubiera)
+        await pool.query(
+            'UPDATE usuarios SET contraseña = $1, intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id = $2',
+            [nuevoHash, usuarioId]
+        );
+
+        await registrarEvento({
+            titulo: 'Contraseña restablecida',
+            descripcion: `Usuario restableció su contraseña exitosamente`,
+            tipo_evento: TIPOS_EVENTO.AUTENTICACION,
+            prioridad: PRIORIDADES.MEDIA,
+            detalles: { usuario_id: usuarioId }
+        });
+
+        res.json({ success: true, message: 'Tu contraseña ha sido restablecida correctamente. Ya puedes iniciar sesión.' });
+
+    } catch (error) {
+        console.error('Error en resetearPasswordConToken:', error);
+        res.status(500).json({ success: false, message: 'Error interno del servidor al restablecer contraseña' });
+    }
+}
+
+
+/**
  * POST /api/auth/token-kiosco
  * Obtiene un token de acceso para un kiosco basado en el identificador único de la empresa
  */

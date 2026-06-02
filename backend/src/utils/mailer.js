@@ -153,3 +153,84 @@ export async function enviarCorreoNuevoAdmin(nombre, correo, empresa_nombre, emp
     }
 }
 
+/**
+ * Envía un correo con el enlace para recuperar la contraseña.
+ * 
+ * @param {string} correo - Correo electrónico del usuario
+ * @param {string} link - Enlace de recuperación
+ * @returns {Promise<any>}
+ */
+export async function enviarCorreoRecuperacionPassword(correo, link) {
+    if (!correo) return;
+
+    try {
+        const mailOptions = {
+            from: `"FASITLAC Soporte" <${process.env.EMAIL_USER}>`,
+            to: correo,
+            subject: `Recuperación de Contraseña - FASITLAC`,
+            html: `
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
+    </style>
+</head>
+<body style="margin:0;padding:0;background-color:#ffffff;font-family:'Outfit','Segoe UI',Tahoma,Geneva,Verdana,sans-serif;-webkit-font-smoothing:antialiased;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff;padding:60px 20px;">
+        <tr>
+            <td align="center">
+                <table width="100%" maxWidth="600" style="max-width:600px;background-color:#ffffff;border:1px solid #000000;border-collapse:collapse;">
+                    
+                    <tr>
+                        <td style="height:4px;background-color:#000000;"></td>
+                    </tr>
+                    <tr>
+                        <td style="height:12px;background-color:#2563eb;"></td>
+                    </tr>
+                    
+                    <tr>
+                        <td style="padding:40px 40px 20px;text-align:left;border-bottom:1px solid #f1f5f9;">
+                            <h1 style="margin:0;font-size:18px;font-weight:800;color:#000000;letter-spacing:1px;text-transform:uppercase;">FASITLAC</h1>
+                            <p style="margin:4px 0 0;font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:2px;">Soporte Técnico</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:40px 40px 30px;">
+                            <p style="margin:0 0 16px;font-size:12px;font-weight:700;color:#2563eb;text-transform:uppercase;letter-spacing:1px;">Recuperación de Acceso</p>
+                            <h2 style="margin:0 0 20px;font-size:24px;font-weight:700;color:#000000;letter-spacing:-0.5px;line-height:1.1;">Restablecer Contraseña</h2>
+                            <p style="margin:0 0 20px;font-size:15px;line-height:1.6;color:#334155;">
+                                Hemos recibido una solicitud para restablecer la contraseña de tu cuenta en FASITLAC. Si no fuiste tú, puedes ignorar este correo de forma segura.
+                            </p>
+                            <a href="${link}" style="display:inline-block;padding:12px 24px;background-color:#2563eb;color:#ffffff;text-decoration:none;font-weight:600;border-radius:6px;font-size:14px;">Restablecer mi contraseña</a>
+                            <p style="margin:20px 0 0;font-size:13px;line-height:1.6;color:#64748b;">
+                                Este enlace es válido por los próximos 15 minutos. Si expira, deberás solicitar uno nuevo.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding:40px;background-color:#000000;text-align:left;">
+                            <p style="margin:0;font-size:11px;color:#ffffff;font-weight:400;letter-spacing:0.5px;line-height:1.8;">
+                                <strong style="color:#2563eb;font-weight:800;">FASITLAC CORE SYSTEM</strong><br>
+                                Este es un mensaje automático, por favor no respondas a este correo.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
+`
+        };
+        const info = await transporter.sendMail(mailOptions);
+        return info;
+    } catch (error) {
+        console.error('Error al enviar correo de recuperación:', error);
+    }
+}

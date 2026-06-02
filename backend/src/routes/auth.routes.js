@@ -9,7 +9,9 @@ import {
     impersonarEmpresa,
     tokenKiosco,
     tokenMovil,
-    tokenEscritorio
+    tokenEscritorio,
+    solicitarRecuperacionPassword,
+    resetearPasswordConToken
 } from '../controllers/auth.controller.js';
 import { verificarAutenticacion } from '../middleware/auth.middleware.js';
 
@@ -22,6 +24,8 @@ router.post('/biometric', loginBiometrico);
 router.post('/token-kiosco', tokenKiosco);
 router.post('/token-movil', tokenMovil);
 router.post('/token-escritorio', tokenEscritorio);
+router.post('/recuperar-password', solicitarRecuperacionPassword);
+router.post('/reset-password', resetearPasswordConToken);
 
 // Rutas protegidas (requieren autenticación)
 router.post('/logout', verificarAutenticacion, logout);
@@ -30,4 +34,3 @@ router.post('/cambiar-password', verificarAutenticacion, cambiarPassword);
 router.post('/impersonate', verificarAutenticacion, impersonarEmpresa);
 
 export default router;
-

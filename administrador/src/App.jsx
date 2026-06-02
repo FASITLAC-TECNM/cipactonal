@@ -12,6 +12,7 @@ import { protectedRoutes, specialRoutes } from './config/routes';
 
 // Páginas que no usan lazy loading (críticas para UX)
 import Login from './pages/InicioSesion';
+import ResetPassword from './pages/ResetPassword';
 import Error404 from './pages/Error404';
 import Maintenance from './pages/Maintenance';
 import DynamicLoader from './components/common/DynamicLoader';
@@ -66,6 +67,14 @@ function AppRoutes() {
                     path="/login"
                     element={
                         isAuthenticated ? <Navigate to="/" replace /> : <Login />
+                    }
+                />
+
+                {/* Ruta de Restablecer Contraseña */}
+                <Route
+                    path="/reset-password"
+                    element={
+                        isAuthenticated ? <Navigate to="/" replace /> : <ResetPassword />
                     }
                 />
 
