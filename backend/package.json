@@ -6,6 +6,13 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "bcrypt",
+      "canvas",
+      "core-js"
+    ]
+  },
   "dependencies": {
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-backend-cpu": "^4.22.0",
