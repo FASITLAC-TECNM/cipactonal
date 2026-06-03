@@ -152,13 +152,19 @@ const EscritorioProfile = ({ dispositivo }) => {
             setSavingConfig(true);
             setMensaje({ text: '', type: '' });
             const token = localStorage.getItem('auth_token');
+            
+            const payload = { ...configuracion };
+            if (payload.es_mantenimiento_local !== undefined) {
+                payload.es_mantenimiento = payload.es_mantenimiento_local;
+            }
+
             const response = await fetch(`${API_URL}/api/configuraciones-escritorio/${dispositivo.id}`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(configuracion)
+                body: JSON.stringify(payload)
             });
             const result = await response.json();
             if (result.success) {
@@ -326,9 +332,12 @@ const EscritorioProfile = ({ dispositivo }) => {
                                         <div>
                                             <p className="font-medium text-sm text-gray-800 dark:text-gray-200">Modo Mantenimiento Parcial</p>
                                             <p className="text-xs text-gray-500 dark:text-gray-400">Suspende el registro de asistencias al público externo.</p>
+                                            {configuracion.es_mantenimiento_global && (
+                                                <p className="text-xs text-orange-600 dark:text-orange-400 font-bold mt-1">Actualmente forzado por Mantenimiento Global.</p>
+                                            )}
                                         </div>
                                         <label className="relative inline-flex items-center cursor-pointer">
-                                            <input type="checkbox" className="sr-only peer" checked={configuracion.es_mantenimiento || false} onChange={(e) => handleConfigChange('es_mantenimiento', e.target.checked)} />
+                                            <input type="checkbox" className="sr-only peer" checked={configuracion.es_mantenimiento_local ?? configuracion.es_mantenimiento ?? false} onChange={(e) => handleConfigChange('es_mantenimiento_local', e.target.checked)} />
                                             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-2 peer-focus:ring-orange-300 dark:peer-focus:ring-orange-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
                                         </label>
                                     </div>

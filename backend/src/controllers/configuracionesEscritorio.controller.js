@@ -47,6 +47,10 @@ export async function getConfiguracionEscritorio(req, res) {
         }
 
         const data = cfgRes.rows[0];
+        
+        data.es_mantenimiento_local = data.es_mantenimiento;
+        data.es_mantenimiento_global = mantenimientoGlobal;
+        
         // El escritorio estará en mantenimiento si el nodo en sí lo está, O si el sistema global lo está
         data.es_mantenimiento = data.es_mantenimiento || mantenimientoGlobal;
 
