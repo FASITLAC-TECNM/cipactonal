@@ -14,7 +14,7 @@ const METODOS_AUTH_INFO = {
 
 export default function PreferenciasModal({ onClose, onBack, inline = false }) {
   const { isDarkMode, setDarkMode } = useTheme();
-  const { soundEnabled, setSoundEnabled } = useSound();
+  const { soundEnabled, setSoundEnabled, setSoundVolume } = useSound();
   const [showSaveMessage, setShowSaveMessage] = useState(false);
   const [showMinMethodWarning, setShowMinMethodWarning] = useState(false);
 
@@ -28,6 +28,7 @@ export default function PreferenciasModal({ onClose, onBack, inline = false }) {
   const defaultPreferences = {
     darkMode: false,
     soundEnabled: true,
+    soundVolume: 1,
   };
 
   const [preferences, setPreferences] = useState(() => {
@@ -38,6 +39,7 @@ export default function PreferenciasModal({ onClose, onBack, inline = false }) {
         return {
           darkMode: isDarkMode,
           soundEnabled: parsed.soundEnabled ?? defaultPreferences.soundEnabled,
+          soundVolume: parsed.soundVolume ?? defaultPreferences.soundVolume,
         };
       } catch (error) {
         // Error al cargar, se usa el retorno por defecto
@@ -293,34 +295,65 @@ export default function PreferenciasModal({ onClose, onBack, inline = false }) {
               </div>
             </div>
 
-            {/* Sonido */}
+            {/* Sonido y Volumen */}
             <div className="bg-bg-secondary border border-border-subtle rounded-xl p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Volume2 className="w-4 h-4 text-[#1976D2]" />
-                  <div>
-                    <h4 className="font-semibold text-text-primary text-sm">Sonidos del Sistema</h4>
-                    <p className="text-xs text-text-secondary">
-                      Activar alertas sonoras y notificaciones
-                    </p>
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Volume2 className="w-4 h-4 text-[#1976D2]" />
+                    <div>
+                      <h4 className="font-semibold text-text-primary text-sm">Sonidos del Sistema</h4>
+                      <p className="text-xs text-text-secondary">
+                        Activar alertas sonoras y guías auditivas
+                      </p>
+                    </div>
                   </div>
+                  <label className="relative inline-flex items-center cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={preferences.soundEnabled}
+                      onChange={(e) => {
+                        const enabled = e.target.checked;
+                        setPreferences({
+                          ...preferences,
+                          soundEnabled: enabled,
+                        });
+                        if (setSoundEnabled) setSoundEnabled(enabled);
+                      }}
+                      className="sr-only peer"
+                    />
+                    <div className="w-11 h-6 bg-bg-tertiary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-bg-primary after:border-border-subtle after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1976D2]"></div>
+                  </label>
                 </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={preferences.soundEnabled}
-                    onChange={(e) => {
-                      const enabled = e.target.checked;
-                      setPreferences({
-                        ...preferences,
-                        soundEnabled: enabled,
-                      });
-                      setSoundEnabled(enabled);
-                    }}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-bg-tertiary peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-bg-primary after:border-border-subtle after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1976D2]"></div>
-                </label>
+
+                {/* Slider de Volumen */}
+                {preferences.soundEnabled && (
+                  <div className="pt-2 border-t border-border-subtle">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm text-text-primary font-medium">Volumen de Voz</span>
+                      <span className="text-xs text-text-secondary">{Math.round(preferences.soundVolume * 100)}%</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      value={preferences.soundVolume}
+                      onChange={(e) => {
+                        const volume = parseFloat(e.target.value);
+                        setPreferences({
+                          ...preferences,
+                          soundVolume: volume,
+                        });
+                        if (setSoundVolume) setSoundVolume(volume);
+                      }}
+                      className="w-full h-2 bg-bg-tertiary rounded-lg appearance-none cursor-pointer accent-[#1976D2]"
+                      style={{
+                        backgroundImage: `linear-gradient(to right, #1976D2 ${preferences.soundVolume * 100}%, transparent ${preferences.soundVolume * 100}%)`
+                      }}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
