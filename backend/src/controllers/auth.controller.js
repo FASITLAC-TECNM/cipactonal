@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { pool } from '../config/db.js';
 import { registrarEvento, TIPOS_EVENTO, PRIORIDADES } from '../utils/eventos.js';
 import jwt from 'jsonwebtoken'; // para generar token con empresa_id
+import { enviarCorreoCuentaBloqueada, enviarCorreoRecuperacionPassword } from '../utils/mailer.js';
 
 /**
  * POST /api/auth/login
@@ -145,7 +146,6 @@ export async function login(req, res) {
                             secret,
                             { expiresIn: '15m' }
                         );
-                        const { enviarCorreoCuentaBloqueada } = await import('../utils/mailer.js');
                         const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
                         const link = `${frontendUrl}/reset-password?token=${token}`;
                         await enviarCorreoCuentaBloqueada(usuarioData.correo, link);
@@ -801,13 +801,14 @@ export async function solicitarRecuperacionPassword(req, res) {
             { expiresIn: '15m' }
         );
 
-        // Importar la función del mailer si no está importada (se importa localmente para evitar error de importación)
-        const { enviarCorreoRecuperacionPassword } = await import('../utils/mailer.js');
-
         const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
         const link = `${frontendUrl}/reset-password?token=${token}`;
 
-        await enviarCorreoRecuperacionPassword(usuarioData.correo, link);
+        const info = await enviarCorreoRecuperacionPassword(usuarioData.correo, link);
+        
+        if (!info) {
+            return res.status(500).json({ success: false, message: 'No se pudo enviar el correo. Por favor, verifica la configuración del servidor de correo.' });
+        }
 
         await registrarEvento({
             titulo: 'Solicitud de recuperación de contraseña',
