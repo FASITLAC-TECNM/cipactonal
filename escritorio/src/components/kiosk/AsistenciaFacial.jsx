@@ -89,6 +89,23 @@ export default function AsistenciaFacial({
     }
   }, [proximityMessage, speak]);
 
+  // Leer instrucciones del reto de movimiento (liveness)
+  useEffect(() => {
+    if (challengePoint && !challengeDone) {
+      // cancel: false para que espere a terminar de decir "¡Posición perfecta!"
+      speak('Apunta con la nariz hacia el punto', { cancel: false });
+    } else if (challengeDone) {
+      speak('¡Excelente!', { cancel: true });
+    }
+  }, [challengePoint, challengeDone, speak]);
+
+  // Leer instrucciones de captura
+  useEffect(() => {
+    if (step === "capturing") {
+      speak('Mantén la posición', { cancel: false });
+    }
+  }, [step, speak]);
+
   // Refs
   const countdownIntervalRef = useRef(null);
   const onCloseRef = useRef(onClose);
