@@ -35,8 +35,7 @@ export async function getPreflightEstadoAsistencia(req, res) {
 
         const { tolerancia, horario } = await srvBuscarConfiguracion(empleadoId, empresaId);
 
-        const dateMxStr = new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
-        const fechaLocal = new Date(dateMxStr);
+        const fechaLocal = new Date();
         const fechaHoyStr = fechaLocal.getFullYear() + '-' +
             String(fechaLocal.getMonth() + 1).padStart(2, '0') + '-' +
             String(fechaLocal.getDate()).padStart(2, '0');
@@ -883,8 +882,7 @@ export async function getEstadoBotonMovil(req, res) {
             return res.json({ success: true, habilitado: false, tipo: null, mensaje: 'Sin horario asignado' });
         }
 
-        const dateMxStr = new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
-        const ahora = new Date(dateMxStr);
+        const ahora = new Date();
         const minsAhora = ahora.getHours() * 60 + ahora.getMinutes();
         const fechaHoyStr = ahora.getFullYear() + '-' +
             String(ahora.getMonth() + 1).padStart(2, '0') + '-' +

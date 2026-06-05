@@ -1,3 +1,4 @@
+process.env.TZ = 'America/Mexico_City';
 import dotenv from 'dotenv';
 import app from './app.js';
 import { iniciarCronFaltas } from './jobs/faltasCron.js';

@@ -29,8 +29,7 @@ export function iniciarCronFaltas() {
 
 async function registrarFaltasDelDia() {
     // 0. Obtener Fecha Local (America/Mexico_City) para evitar que UTC nos cambie el día
-    const dateMxStr = new Date().toLocaleString("en-US", { timeZone: "America/Mexico_City" });
-    const hoy = new Date(dateMxStr);
+    const hoy = new Date();
 
     const diasSemana = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
     const diaHoy = diasSemana[hoy.getDay()];

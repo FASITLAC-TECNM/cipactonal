@@ -23,8 +23,7 @@ export function iniciarCronSalidasNoCumplidas() {
 
 async function revisarSalidasNoCumplidas() {
     const ahora = new Date();
-    const dateMxStr = ahora.toLocaleString("en-US", { timeZone: "America/Mexico_City" });
-    const hoy = new Date(dateMxStr);
+    const hoy = new Date();
     const minsHoraActual = hoy.getHours() * 60 + hoy.getMinutes();
     const diasSemana = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
     const diaHoy = diasSemana[hoy.getDay()];
