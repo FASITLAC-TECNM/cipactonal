@@ -329,10 +329,13 @@ export async function impersonarEmpresa(req, res) {
 
         let permisosCombinadosBigInt = BigInt(0);
         let esAdmin = false;
+        let mejorPosicion = 999;
 
         for (const rol of rolesResult.rows) {
             if (rol.permisos_bitwise) permisosCombinadosBigInt |= BigInt(rol.permisos_bitwise);
             if (rol.es_admin) esAdmin = true;
+            const pos = parseInt(rol.posicion);
+            if (!isNaN(pos) && pos < mejorPosicion) mejorPosicion = pos;
         }
 
         // NO registramos evento de login normal, registramos evento SaaS
