@@ -79,8 +79,32 @@ const Dashboard = () => {
             const empleadosData = await empleadosRes.json();
             const asistenciasData = await asistenciasRes.json();
 
-            // Contar estadísticas
-            const totalEmpleados = empleadosData.success ? empleadosData.data.length : 0;
+            // Contar estadísticas filtrando solo los empleados con horario hoy
+            let empleadosEsperadosHoy = 0;
+            if (empleadosData.success) {
+                const dias = ['domingo', 'lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
+                const diaHoyStr = dias[hoy.getDay()];
+                
+                empleadosEsperadosHoy = empleadosData.data.filter(emp => {
+                    if (!emp.horario_config) return false;
+                    let horario = emp.horario_config;
+                    if (typeof horario === 'string') {
+                        try { horario = JSON.parse(horario); } catch(e) { return false; }
+                    }
+                    let turnos = [];
+                    if (horario.configuracion_semanal) {
+                        const key = Object.keys(horario.configuracion_semanal).find(k => k.toLowerCase() === diaHoyStr);
+                        if (key) turnos = horario.configuracion_semanal[key] || [];
+                    }
+                    if (turnos.length === 0 && horario.dias) {
+                        const hasDay = horario.dias.some(d => d.toLowerCase() === diaHoyStr);
+                        if (hasDay) turnos = horario.turnos || [];
+                    }
+                    return turnos.length > 0;
+                }).length;
+            }
+            
+            const totalEmpleados = empleadosEsperadosHoy;
             const asistenciasHoy = asistenciasData.success ? asistenciasData.data : [];
 
             // Contar empleados únicos que registraron asistencia (no registros duplicados)
@@ -117,10 +141,10 @@ const Dashboard = () => {
     };
 
 
-    // Calcular porcentaje de asistencia
+    // Calcular porcentaje de asistencia (topado a 100% en caso de asistencias extras)
     const porcentajeAsistencia =
         stats.totalEmpleados > 0 && stats.asistenciasHoy > 0
-            ? Math.round((stats.asistenciasHoy / stats.totalEmpleados) * 100)
+            ? Math.min(100, Math.round((stats.asistenciasHoy / stats.totalEmpleados) * 100))
             : 0;
 
     // Calcular porcentaje de puntualidad
