@@ -79,7 +79,17 @@ export async function generateId(prefix) {
         throw new Error(`Prefijo desconocido: ${prefixClean}`);
     }
 
-    const result = await pool.query(`SELECT nextval('${sequenceName}') as num`);
+    let result;
+    try {
+        result = await pool.query(`SELECT nextval('${sequenceName}') as num`);
+    } catch (err) {
+        if (err.code === '42P01') {
+            await pool.query(`CREATE SEQUENCE IF NOT EXISTS ${sequenceName}`);
+            result = await pool.query(`SELECT nextval('${sequenceName}') as num`);
+        } else {
+            throw err;
+        }
+    }
     const num = parseInt(result.rows[0].num);
 
     // Convertir a hexadecimal y rellenar con ceros (32 dígitos)
@@ -111,7 +121,17 @@ export async function generateIds(prefix, count) {
 
     const ids = [];
     for (let i = 0; i < count; i++) {
-        const result = await pool.query(`SELECT nextval('${sequenceName}') as num`);
+        let result;
+        try {
+            result = await pool.query(`SELECT nextval('${sequenceName}') as num`);
+        } catch (err) {
+            if (err.code === '42P01') {
+                await pool.query(`CREATE SEQUENCE IF NOT EXISTS ${sequenceName}`);
+                result = await pool.query(`SELECT nextval('${sequenceName}') as num`);
+            } else {
+                throw err;
+            }
+        }
         const num = parseInt(result.rows[0].num);
         const hexPart = num.toString(16).toUpperCase().padStart(32, '0');
         ids.push(`${prefixEmpresa}-${prefixClean}-${hexPart}`);
