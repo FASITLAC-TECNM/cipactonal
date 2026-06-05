@@ -1,0 +1,102 @@
+[
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/modulos",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/usuarios",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/empleados",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/roles",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/asistencias",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/incidencias",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/horarios",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/tolerancias",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/empresas",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/departamentos",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/credenciales",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/configuracion",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/auth",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/escritorio",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/movil",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/biometrico",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/solicitudes",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/config/Apiconfig.js",
+    "endpoint": "/api/eventos",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/context/AuthContext.jsx",
+    "endpoint": "/api/auth/login-saas",
+    "type": "literal"
+  },
+  {
+    "file": "/administrador/src/context/AuthContext.jsx",
+    "endpoint": "/api/auth/login",
+    "type": "literal"
+  }
+]

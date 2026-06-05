@@ -28,6 +28,7 @@ export const ID_PREFIXES = {
     AUDITORIA: 'AUD',
     DIA_FESTIVO: 'FES',
     AVISO: 'AVI',
+    AVISO_EMP: 'AVE',
     LOG: 'LOG'
 };
 
@@ -58,6 +59,7 @@ const SEQUENCE_NAMES = {
     AUD: 'seq_auditoria',
     FES: 'seq_dias_festivos',
     AVI: 'seq_avisos',
+    AVE: 'seq_avisos_empleados',
     LOG: 'seq_system_logs'
 };
 
