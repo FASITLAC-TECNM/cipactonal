@@ -1,5 +1,5 @@
 import { pool } from '../config/db.js';
-import { generateId, generateIds, ID_PREFIXES } from '../utils/idGenerator.js';
+import { generateId, ID_PREFIXES } from '../utils/idGenerator.js';
 
 /**
  * GET /api/avisos
@@ -163,12 +163,12 @@ export async function createAviso(req, res) {
             // Insertar solo IDs únicos
             const uniqueIds = [...new Set(empleadosIds)];
 
-            const aveIds = await generateIds(ID_PREFIXES.AVISO_EMP, uniqueIds.length);
-            for (let i = 0; i < uniqueIds.length; i++) {
+            for (const empleadoId of uniqueIds) {
+                const aveId = await generateId(ID_PREFIXES.AVISO_EMP);
                 await client.query(`
                     INSERT INTO avisos_empleados (id, aviso_id, empleado_id)
                     VALUES ($1, $2, $3)
-                `, [aveIds[i], aviso.id, uniqueIds[i]]);
+                `, [aveId, aviso.id, empleadoId]);
             }
         }
 
@@ -260,12 +260,12 @@ export async function updateAviso(req, res) {
             // Insertar solo IDs únicos
             const uniqueIds = [...new Set(empleadosIds)];
 
-            const aveIds = await generateIds(ID_PREFIXES.AVISO_EMP, uniqueIds.length);
-            for (let i = 0; i < uniqueIds.length; i++) {
+            for (const empleadoId of uniqueIds) {
+                const aveId = await generateId(ID_PREFIXES.AVISO_EMP);
                 await client.query(`
                     INSERT INTO avisos_empleados (id, aviso_id, empleado_id)
                     VALUES ($1, $2, $3)
-                `, [aveIds[i], id, uniqueIds[i]]);
+                `, [aveId, id, empleadoId]);
             }
         }
 
