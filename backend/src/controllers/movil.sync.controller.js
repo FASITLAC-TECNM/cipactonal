@@ -300,8 +300,7 @@ export const sincronizarAsistencias = async (req, res) => {
                         const { tolerancia, horario } = await srvBuscarConfiguracion(reg.empleado_id, empresaId);
                         toleranciaCalc = tolerancia; // Guardar en scope del for-loop
 
-                        const mxStr = new Date(fecha).toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
-                        const fechaSync = new Date(mxStr);
+                        const fechaSync = new Date(fecha);
                         const minsHora = fechaSync.getHours() * 60 + fechaSync.getMinutes();
                         const turnosDiaSync = srvObtenerTurnosDeHoy(horario, fechaSync);
                         const bloqueSync = srvBuscarBloqueActual(

@@ -114,11 +114,10 @@ async function registrarAsistenciaMovil(req, res) {
         // 1. Buscar reglas de tolerancia
         const { empleado, tolerancia, horario } = await srvBuscarConfiguracion(empleado_id, req.empresa_id);
 
-        const dateMxStr = new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
-        let fechaLocal = new Date(dateMxStr);
+        let fechaLocal = new Date();
         if (fecha_captura) {
-            const fCaptura = new Date(new Date(fecha_captura).toLocaleString('en-US', { timeZone: 'America/Mexico_City' }));
-            const ahora = new Date(dateMxStr);
+            const fCaptura = new Date(fecha_captura);
+            const ahora = new Date();
             if (fCaptura <= new Date(ahora.getTime() + 5 * 60000)) {
                 fechaLocal = fCaptura;
             }
@@ -271,11 +270,10 @@ async function registrarAsistenciaEscritorio(req, res) {
         // 1. Buscar reglas de tolerancia
         const { empleado, tolerancia, horario } = await srvBuscarConfiguracion(empleado_id, req.empresa_id);
 
-        const dateMxStr = new Date().toLocaleString('en-US', { timeZone: 'America/Mexico_City' });
-        let fechaLocal = new Date(dateMxStr);
+        let fechaLocal = new Date();
         if (fecha_captura) {
-            const fCaptura = new Date(new Date(fecha_captura).toLocaleString('en-US', { timeZone: 'America/Mexico_City' }));
-            const ahora = new Date(dateMxStr);
+            const fCaptura = new Date(fecha_captura);
+            const ahora = new Date();
             if (fCaptura <= new Date(ahora.getTime() + 5 * 60000)) {
                 fechaLocal = fCaptura;
             }
