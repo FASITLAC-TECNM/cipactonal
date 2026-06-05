@@ -14,6 +14,7 @@ import {
 import { useFaceDetection } from "../../hooks/useFaceDetection";
 import { identificarPorFacial, guardarSesion } from "../../services/biometricAuthService";
 import { useCamera } from "../../context/CameraContext";
+import { useSound } from "../../context/SoundContext";
 import { API_CONFIG } from "../../config/apiEndPoint";
 
 import { agregarEvento } from "../../services/bitacoraService";
@@ -78,6 +79,32 @@ export default function AsistenciaFacial({
 
   const { isDatabaseConnected } = useConnectivity();
   const isDatabaseConnectedRef = useRef(isDatabaseConnected);
+  const { speak } = useSound();
+
+  const prevProximityMessageRef = useRef("");
+  useEffect(() => {
+    if (proximityMessage && proximityMessage !== prevProximityMessageRef.current) {
+      speak(proximityMessage, { cancel: true });
+      prevProximityMessageRef.current = proximityMessage;
+    }
+  }, [proximityMessage, speak]);
+
+  // Leer instrucciones del reto de movimiento (liveness)
+  useEffect(() => {
+    if (challengePoint && !challengeDone) {
+      // cancel: false para que espere a terminar de decir "¡Posición perfecta!"
+      speak('Apunta con la nariz hacia el punto', { cancel: false });
+    } else if (challengeDone) {
+      speak('¡Excelente!', { cancel: true });
+    }
+  }, [challengePoint, challengeDone, speak]);
+
+  // Leer instrucciones de captura
+  useEffect(() => {
+    if (step === "capturing") {
+      speak('Mantén la posición', { cancel: false });
+    }
+  }, [step, speak]);
 
   // Refs
   const countdownIntervalRef = useRef(null);
@@ -738,10 +765,7 @@ export default function AsistenciaFacial({
         const { estadoTexto, tipoEvento } = obtenerInfoClasificacion(syncResult.estado, syncResult.tipo);
 
         const voiceMsg = syncResult.tipo === "salida" ? "Salida registrada" : "Entrada registrada";
-        const utterance = new SpeechSynthesisUtterance(voiceMsg);
-        utterance.lang = "es-MX";
-        utterance.rate = 0.9;
-        window.speechSynthesis.speak(utterance);
+        speak(voiceMsg, { cancel: true });
 
         agregarEvento({
           user: empleadoData?.nombre || "Usuario",
@@ -764,10 +788,7 @@ export default function AsistenciaFacial({
 
       } else {
         // ── Pendiente: sin red o push falló temporalmente ──
-        const utterance = new SpeechSynthesisUtterance("Registro pendiente");
-        utterance.lang = "es-MX";
-        utterance.rate = 0.9;
-        window.speechSynthesis.speak(utterance);
+        speak("Registro pendiente", { cancel: true });
 
         agregarEvento({
           user: empleadoData?.nombre || "Usuario",

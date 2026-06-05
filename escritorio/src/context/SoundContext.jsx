@@ -23,6 +23,19 @@ export const SoundProvider = ({ children }) => {
         return true;
     });
 
+    const [soundVolume, setSoundVolumeState] = useState(() => {
+        try {
+            const saved = localStorage.getItem('userPreferences');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                return parsed.soundVolume ?? 1;
+            }
+        } catch {
+            // Ignorar
+        }
+        return 1;
+    });
+
     const audioContextRef = useRef(null);
 
     // Inicializar AudioContext de forma lazy (requiere interacción del usuario)
@@ -50,6 +63,18 @@ export const SoundProvider = ({ children }) => {
         }
     }, []);
 
+    const setSoundVolume = useCallback((volume) => {
+        setSoundVolumeState(volume);
+        try {
+            const saved = localStorage.getItem('userPreferences');
+            const prefs = saved ? JSON.parse(saved) : {};
+            prefs.soundVolume = volume;
+            localStorage.setItem('userPreferences', JSON.stringify(prefs));
+        } catch {
+            // Ignorar
+        }
+    }, []);
+
     // Escuchar cambios externos en localStorage (otras pestañas)
     useEffect(() => {
         const handleStorage = (e) => {
@@ -58,6 +83,9 @@ export const SoundProvider = ({ children }) => {
                     const parsed = JSON.parse(e.newValue);
                     if (typeof parsed.soundEnabled === 'boolean') {
                         setSoundEnabledState(parsed.soundEnabled);
+                    }
+                    if (typeof parsed.soundVolume === 'number') {
+                        setSoundVolumeState(parsed.soundVolume);
                     }
                 } catch {
                     // Ignorar
@@ -110,9 +138,39 @@ export const SoundProvider = ({ children }) => {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = options.lang || 'es-MX';
         utterance.rate = options.rate || 0.9;
-        utterance.volume = options.volume || 1;
+        utterance.volume = options.volume !== undefined ? options.volume : soundVolume;
+
+        if (options.cancel) {
+            window.speechSynthesis.cancel();
+        }
+
+        // Intentar buscar una voz femenina en español
+        const voices = window.speechSynthesis.getVoices();
+        if (voices.length > 0) {
+            // Preferir Sabina, Paulina, Mia, u otras voces femeninas latinas
+            const femaleNames = ['sabina', 'paulina', 'mia', 'monica', 'google español', 'zira', 'helena', 'laura'];
+            let bestVoice = voices.find(v => 
+                v.lang.startsWith('es') && 
+                femaleNames.some(name => v.name.toLowerCase().includes(name))
+            );
+            
+            // Si no hay voz femenina específica, buscar cualquier voz en español de México o Latino
+            if (!bestVoice) {
+                bestVoice = voices.find(v => v.lang === 'es-MX' || v.lang === 'es-419' || v.lang === 'es-US');
+            }
+            
+            // Si no, cualquier voz en español
+            if (!bestVoice) {
+                bestVoice = voices.find(v => v.lang.startsWith('es'));
+            }
+
+            if (bestVoice) {
+                utterance.voice = bestVoice;
+            }
+        }
+
         window.speechSynthesis.speak(utterance);
-    }, [soundEnabled]);
+    }, [soundEnabled, soundVolume]);
 
     // Limpiar AudioContext al desmontar
     useEffect(() => {
@@ -125,7 +183,7 @@ export const SoundProvider = ({ children }) => {
     }, []);
 
     return (
-        <SoundContext.Provider value={{ soundEnabled, setSoundEnabled, playSound, speak }}>
+        <SoundContext.Provider value={{ soundEnabled, setSoundEnabled, soundVolume, setSoundVolume, playSound, speak }}>
             {children}
         </SoundContext.Provider>
     );

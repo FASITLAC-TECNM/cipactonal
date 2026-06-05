@@ -5,8 +5,10 @@ import {
     obtenerInfoClasificacion,
 } from "../services/asistenciaLogicService";
 import { useConnectivity } from "./useConnectivity";
+import { useSound } from "../context/SoundContext";
 
 export const useAttendanceRegistration = (onClose, onSuccess, onLoginRequest) => {
+    const { speak } = useSound();
     const [showPassword, setShowPassword] = useState(false);
     const [usuarioOCorreo, setUsuarioOCorreo] = useState("");
     const [pin, setPin] = useState("");
@@ -247,10 +249,7 @@ export const useAttendanceRegistration = (onClose, onSuccess, onLoginRequest) =>
                 const voiceMsg = syncResult.tipo === "salida"
                     ? "Salida registrada"
                     : "Entrada registrada";
-                const utterance = new SpeechSynthesisUtterance(voiceMsg);
-                utterance.lang = "es-MX";
-                utterance.rate = 0.9;
-                window.speechSynthesis.speak(utterance);
+                speak(voiceMsg, { cancel: true });
 
                 agregarEvento({
                     user: empleadoData?.nombre || usuarioOCorreo,
@@ -272,10 +271,7 @@ export const useAttendanceRegistration = (onClose, onSuccess, onLoginRequest) =>
                 };
 
             } else { // ── Pendiente: sin red o push falló temporalmente ──
-                const utterance = new SpeechSynthesisUtterance("Registro pendiente");
-                utterance.lang = "es-MX";
-                utterance.rate = 0.9;
-                window.speechSynthesis.speak(utterance);
+                speak("Registro pendiente", { cancel: true });
 
                 agregarEvento({
                     user: empleadoData?.nombre || usuarioOCorreo,
