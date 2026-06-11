@@ -35,7 +35,7 @@ export function requirePermiso(...permisosRequeridos) {
         const permisosBitwise = req.usuario.permisosBigInt || BigInt(0);
 
         // Si es dueño del sistema o administrador maestro, tiene acceso a todo
-        if (esMaestro(req.usuario) || req.usuario.esAdmin) {
+        if (esMaestro(req.usuario)) {
             return next();
         }
 
@@ -90,7 +90,7 @@ export function requireAllPermisos(...permisosRequeridos) {
         const permisosBitwise = req.usuario.permisosBigInt || BigInt(0);
 
         // Si es dueño del sistema o administrador maestro, tiene acceso a todo
-        if (esMaestro(req.usuario) || req.usuario.esAdmin) {
+        if (esMaestro(req.usuario)) {
             return next();
         }
 
@@ -144,7 +144,7 @@ export function requirePermisoOrSelf(paramIdName = 'id', ...permisosRequeridos) 
         // Si no es su recurso, verificar permisos
         const permisosBitwise = req.usuario.permisosBigInt || BigInt(0);
 
-        if (esMaestro(req.usuario) || req.usuario.esAdmin) {
+        if (esMaestro(req.usuario)) {
             return next();
         }
 

@@ -3,6 +3,7 @@ import { useConfig } from '../context/ConfigContext';
 import DynamicLoader from '../components/common/DynamicLoader';
 import ConfirmBox from '../components/ConfirmBox';
 import Pagination from '../components/Pagination';
+import HeaderActions from '../components/HeaderActions';
 import {
     BarChart3, Settings, Filter, PieChart as PieIcon, X,
     CheckCircle, AlertTriangle, AlertCircle, Users, TrendingUp,
@@ -22,7 +23,7 @@ import {
     Header, Footer, ImageRun
 } from 'docx';
 import { saveAs } from 'file-saver';
-import html2canvas from 'html2canvas';
+
 
 import { API_CONFIG } from '../config/Apiconfig';
 const API_BASE_URL = `${API_CONFIG.BASE_URL}/api`;
@@ -144,7 +145,7 @@ const Reportes = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [exporting, setExporting] = useState(false);
     const [alertMsg, setAlertMsg] = useState(null);
-    const [exportCategoria, setExportCategoria] = useState('general');
+
 
     const chartContainerRef = useRef(null);
 
@@ -165,10 +166,12 @@ const Reportes = () => {
     // Carga inicial y cambios en filtros
     useEffect(() => {
         cargarCatalogos();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         actualizarEstadisticas();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [alcance, idSeleccionado, modoFecha, fechaInicio, fechaFin, filtroDepartamento]);
 
     const cargarCatalogos = async () => {
@@ -570,12 +573,12 @@ const Reportes = () => {
                         try {
                             // El banner cubre todo el ancho y se ajusta la altura por ratio
                             doc.addImage(encab.imagen, 'JPEG', 0, 0, pageWidth, headerHeight);
-                        } catch (e) { }
+                        } catch { /* ignore */ }
                     } else {
                         if (encab.mostrar_logo !== false && logoEmpresa) {
                             try {
                                 doc.addImage(logoEmpresa, 'JPEG', 40, 20, 60, 60);
-                            } catch (e) { }
+                            } catch { /* ignore */ }
                         }
                         doc.setFontSize(10);
                         doc.setTextColor(encab.color_texto || '#000000');
@@ -593,7 +596,7 @@ const Reportes = () => {
                         try {
                             // El banner footer usando ratio se posiciona al fondo absolucto
                             doc.addImage(pie.imagen, 'JPEG', 0, pageHeight - footerHeight, pageWidth, footerHeight);
-                        } catch (e) { }
+                        } catch { /* ignore */ }
                     } else {
                         doc.setFontSize(8);
                         doc.setTextColor(pie.color_texto || '#666666');
@@ -654,6 +657,7 @@ const Reportes = () => {
             });
             const dataEmpresa = await resEmpresa.json();
             const configReportes = dataEmpresa.data?.configuracion_reportes || {};
+            // eslint-disable-next-line no-unused-vars
             const logoEmpresa = dataEmpresa.data?.logo;
             const nombreEmpresa = dataEmpresa.data?.nombre || "REPORTE INCIDENCIAS";
             const marcaAgua = configReportes.marca_agua || { activo: true, tipo: 'texto', texto: nombreEmpresa, opacity: 10, imagen: '' };
@@ -745,10 +749,10 @@ const Reportes = () => {
 
                     // --- DRAW HEADER ---
                     if (encab.usar_imagen && encab.imagen) {
-                        try { doc.addImage(encab.imagen, 'JPEG', 0, 0, pageWidth, headerHeight); } catch (e) { }
+                        try { doc.addImage(encab.imagen, 'JPEG', 0, 0, pageWidth, headerHeight); } catch { /* ignore */ }
                     } else {
                         if (encab.mostrar_logo !== false && logoEmpresa) {
-                            try { doc.addImage(logoEmpresa, 'JPEG', 40, 20, 60, 60); } catch (e) { }
+                            try { doc.addImage(logoEmpresa, 'JPEG', 40, 20, 60, 60); } catch { /* ignore */ }
                         }
                         doc.setFontSize(10);
                         doc.setTextColor(encab.color_texto || '#000000');
@@ -759,7 +763,7 @@ const Reportes = () => {
                     // --- DRAW FOOTER ---
                     const pbY = pageHeight - Math.max(25, footerHeight / 2);
                     if (pie.usar_imagen && pie.imagen) {
-                        try { doc.addImage(pie.imagen, 'JPEG', 0, pageHeight - footerHeight, pageWidth, footerHeight); } catch (e) { }
+                        try { doc.addImage(pie.imagen, 'JPEG', 0, pageHeight - footerHeight, pageWidth, footerHeight); } catch { /* ignore */ }
                     } else {
                         doc.setFontSize(8);
                         doc.setTextColor(pie.color_texto || '#666666');
@@ -1287,6 +1291,7 @@ const Reportes = () => {
             const marcaAgua = configReportes.marca_agua || { activo: true, tipo: 'texto', texto: nombreEmpresa, opacity: 10, imagen: '' };
 
             const doc = new jsPDF('p', 'pt', 'a4');
+            // eslint-disable-next-line no-unused-vars
             const pageWidth = doc.internal.pageSize.getWidth();
             autoTable(doc, {
                 head: [['EMPLEADO', 'DEPARTAMENTO', 'FECHA', 'HORA', 'TIPO', 'ESTADO']],
@@ -1352,10 +1357,10 @@ const Reportes = () => {
 
                     // --- DRAW HEADER ---
                     if (encab.usar_imagen && encab.imagen) {
-                        try { doc.addImage(encab.imagen, 'JPEG', 0, 0, pageWidth, headerHeight); } catch (e) { }
+                        try { doc.addImage(encab.imagen, 'JPEG', 0, 0, pageWidth, headerHeight); } catch { /* ignore */ }
                     } else if (encab.texto_izquierdo || encab.texto_derecho) {
                         if (encab.mostrar_logo !== false && logoEmpresa) {
-                            try { doc.addImage(logoEmpresa, 'JPEG', 40, 20, 60, 60); } catch (e) { }
+                            try { doc.addImage(logoEmpresa, 'JPEG', 40, 20, 60, 60); } catch { /* ignore */ }
                         }
                         doc.setFontSize(10);
                         doc.setTextColor(encab.color_texto || '#000000');
@@ -1366,7 +1371,7 @@ const Reportes = () => {
                     // --- DRAW FOOTER ---
                     const pbY = pageHeight - Math.max(25, footerHeight / 2);
                     if (pie.usar_imagen && pie.imagen) {
-                        try { doc.addImage(pie.imagen, 'JPEG', 0, pageHeight - footerHeight, pageWidth, footerHeight); } catch (e) { }
+                        try { doc.addImage(pie.imagen, 'JPEG', 0, pageHeight - footerHeight, pageWidth, footerHeight); } catch { /* ignore */ }
                     } else if (pie.texto_central) {
                         doc.setFontSize(8);
                         doc.setTextColor(pie.color_texto || '#666666');
@@ -1394,26 +1399,50 @@ const Reportes = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-6">
-            <div className="max-w-7xl mx-auto space-y-6">
-                {/* --- BARRA DE FILTROS --- */}
-                <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4">
-
-                    {/* Selectores de Modalidad General vs Empleado */}
-                    <div className="flex bg-gray-100 dark:bg-gray-900/50 p-1 rounded-xl w-fit">
+        <div className="flex flex-col h-[calc(100vh-6rem)] bg-gray-50 dark:bg-gray-900 p-6 overflow-hidden">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4">
+            {/* Toolbar in Header */}
+            <HeaderActions>
+                <div className="flex items-center gap-3 w-full justify-end">
+                    <div className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60 w-fit">
                         <button
                             onClick={() => { setAlcance('global'); setIdSeleccionado(''); }}
-                            className={`px-5 py-2 text-sm font-bold rounded-lg transition-all ${alcance === 'global' ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${alcance === 'global' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
                         >
-                            Vista General
+                            General
                         </button>
                         <button
                             onClick={() => setAlcance('empleado')}
-                            className={`px-5 py-2 text-sm font-bold rounded-lg transition-all ${alcance === 'empleado' ? 'bg-white dark:bg-gray-700 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+                            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${alcance === 'empleado' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
                         >
                             Por Empleado
                         </button>
                     </div>
+
+                    <button
+                        onClick={actualizarEstadisticas}
+                        disabled={dashboardLoading}
+                        className="p-1.5 text-slate-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-md transition-colors disabled:opacity-50"
+                        title="Actualizar"
+                    >
+                        {dashboardLoading ? <DynamicLoader size="tiny" layout="row" /> : <RefreshCw className="w-4 h-4" />}
+                    </button>
+
+                    {alcance === 'empleado' && dashboardStats && (
+                        <button
+                            onClick={() => setIsModalOpen(true)}
+                            className="btn-primary flex items-center gap-2 py-1.5 px-4 text-sm shadow-sm transition-all"
+                        >
+                            <FileText className="w-4 h-4" />
+                            <span className="hidden sm:inline">Exportar</span>
+                        </button>
+                    )}
+                </div>
+            </HeaderActions>
+
+            <div className="max-w-7xl mx-auto space-y-6">
+                {/* --- BARRA DE FILTROS --- */}
+                <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4">
 
                     <div className="flex flex-col xl:flex-row gap-4 items-end xl:items-center">
                         <div className={`w-full xl:w-auto grid gap-4 flex-1 ${alcance === 'empleado' ? 'grid-cols-1 md:grid-cols-2' : alcance === 'global' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
@@ -1492,37 +1521,6 @@ const Reportes = () => {
                             </div>
                         )}
 
-                        {/* Botones de Acción */}
-                        <div className="w-full xl:w-auto flex gap-3">
-                            <div className="flex-1">
-                                <label className="block text-xs font-bold text-transparent uppercase mb-1.5 ml-1 select-none hidden xl:block">.</label>
-                                <button
-                                    onClick={actualizarEstadisticas}
-                                    disabled={dashboardLoading}
-                                    className="w-full px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-                                >
-                                    {dashboardLoading ? (
-                                        <DynamicLoader size="tiny" layout="row" />
-                                    ) : (
-                                        <RefreshCw className="w-5 h-5" />
-                                    )}
-                                    <span className="hidden sm:inline">Actualizar</span>
-                                </button>
-                            </div>
-
-                            {alcance === 'empleado' && dashboardStats && (
-                                <div className="flex-1 animate-in fade-in zoom-in">
-                                    <label className="block text-xs font-bold text-transparent uppercase mb-1.5 ml-1 select-none hidden xl:block">.</label>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        className="w-full px-6 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-bold rounded-xl shadow-sm hover:bg-gray-50 dark:hover:bg-gray-600 transition-all flex items-center justify-center gap-2"
-                                    >
-                                        <FileText className="w-5 h-5" />
-                                        <span className="hidden sm:inline">Exportar</span>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
                     </div>
                 </div>
 
@@ -1933,11 +1931,13 @@ const Reportes = () => {
                     </div>
                 </div>
             )}
+            </div>
         </div>
     );
 };
 
 // Componente KPI Card
+// eslint-disable-next-line no-unused-vars
 const KpiCard = ({ title, value, total, sub, icon: Icon, color, bg }) => (
     <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex items-start justify-between hover:shadow-md transition-shadow">
         <div>

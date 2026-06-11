@@ -1,5 +1,7 @@
-import { useState, useEffect, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { useParams, useLocation } from 'react-router-dom';
+import { useViewTransitionNavigate } from '../hooks/useViewTransitionNavigate';
 import {
     FiArrowLeft,
     FiMail,
@@ -27,13 +29,18 @@ import {
     FiLock,
     FiUnlock,
     FiChevronLeft,
-    FiChevronRight
+    FiChevronRight,
+    FiCamera,
+    FiTrash,
+    FiX
 } from 'react-icons/fi';
 import { AiFillAndroid } from 'react-icons/ai';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as RechartsTooltip, Legend } from 'recharts';
 
 import { API_CONFIG } from '../config/Apiconfig';
 import { useConfig } from '../context/ConfigContext';
+import { useAuth } from '../context/AuthContext';
+import { useProfileHeader } from '../context/ProfileHeaderContext';
 import DynamicLoader from '../components/common/DynamicLoader';
 import ConfirmBox from '../components/ConfirmBox';
 const API_URL = API_CONFIG.BASE_URL;
@@ -57,11 +64,39 @@ const COLORS = {
 
 const PerfilUsuario = () => {
     const { username } = useParams();
-    const navigate = useNavigate();
+    const location = useLocation();
+    const preloadedUser = location.state?.preloadedUser;
+    const navigate = useViewTransitionNavigate();
     const { formatTime } = useConfig();
+    const { hasPermission } = useAuth();
+    const canEdit = hasPermission('USUARIO_EDITAR');
+    const { startProfileLoad, profileDataReady } = useProfileHeader();
+
+    const fileInputRef = useRef(null);
+    const [zoomOpen, setZoomOpen] = useState(false);
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validar tamaño (máximo 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            setAlertMsg("La imagen es demasiado grande. El tamaño máximo permitido es 2MB.");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setFormData(prev => ({
+                ...prev,
+                foto: reader.result // Cadena base64 Data URL
+            }));
+        };
+        reader.readAsDataURL(file);
+    };
 
     // Estados de datos
-    const [usuario, setUsuario] = useState(null);
+    const [usuario, setUsuario] = useState(preloadedUser || null);
     const [empleadoId, setEmpleadoId] = useState(null);
     const [dispositivo, setDispositivo] = useState(null);
     const [estadisticas, setEstadisticas] = useState(null);
@@ -76,12 +111,13 @@ const PerfilUsuario = () => {
     const [showDateMenu, setShowDateMenu] = useState(false);
 
     // Estados de carga y error
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(!preloadedUser);
     const [loadingStats, setLoadingStats] = useState(false);
     const [error, setError] = useState(null);
 
     // Estado de edición
     const [isEditing, setIsEditing] = useState(false);
+    const [portalMounted, setPortalMounted] = useState(false);
     const [formData, setFormData] = useState({});
     const [credenciales, setCredenciales] = useState({
         tiene_pin: false,
@@ -154,7 +190,8 @@ const PerfilUsuario = () => {
                 correo: usuario.correo || '',
                 telefono: usuario.telefono || '',
                 rfc: usuario.rfc || '',
-                nss: usuario.nss || ''
+                nss: usuario.nss || '',
+                foto: usuario.foto || ''
             });
         }
     }, [usuario]);
@@ -169,11 +206,19 @@ const PerfilUsuario = () => {
         fetchUsuario();
     }, [username]);
 
+    useEffect(() => {
+        if (document.getElementById('header-profile-portal')) {
+            setPortalMounted(true);
+        }
+    }, []);
+
     const fetchUsuario = async () => {
         try {
             setLoading(true);
             setError(null);
-            setEmpleadoId(null); // Resetear para evitar datos basura
+            setEmpleadoId(null);
+            // Notifica al header que empiece a mostrarse en estado compacto
+            startProfileLoad();
             const token = localStorage.getItem('auth_token');
 
             const response = await fetch(`${API_URL}/api/usuarios/username/${username}`, {
@@ -215,12 +260,18 @@ const PerfilUsuario = () => {
                         ]);
                     }
                 }
+
+                // Datos cargados → notifica al header para expandirse
+                profileDataReady();
             } else {
                 setError(result.message || 'Usuario no encontrado');
+                // Aún así expandimos para mostrar el error en el header
+                profileDataReady();
             }
         } catch (err) {
             console.error('Error al cargar datos:', err);
             setError('Error al cargar los datos del usuario');
+            profileDataReady();
         } finally {
             setLoading(false);
         }
@@ -228,12 +279,16 @@ const PerfilUsuario = () => {
 
     const fetchDispositivo = async (idEmpleado, token) => {
         try {
-            const response = await fetch(`${API_URL}/api/movil?empleado_id=${idEmpleado}&es_activo=true`, {
+            const response = await fetch(`${API_URL}/api/movil/empleado/${idEmpleado}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
+            if (response.status === 404) {
+                setDispositivo(null);
+                return;
+            }
             const result = await response.json();
-            if (result.success && result.data && result.data.length > 0) {
-                setDispositivo(result.data[0]);
+            if (result.success && result.data) {
+                setDispositivo(result.data);
             }
         } catch (err) {
             console.error('Error al cargar dispositivo:', err);
@@ -319,6 +374,7 @@ const PerfilUsuario = () => {
                 telefono: formData.telefono,
                 rfc: formData.rfc, // Si es empleado, el backend lo maneja
                 nss: formData.nss,
+                foto: formData.foto, // Actualizar la foto
                 es_empleado: usuario.es_empleado // Mantener estado
             };
 
@@ -555,7 +611,7 @@ const PerfilUsuario = () => {
     // ... (rest of render)
 
     return (
-        <div className="max-w-7xl mx-auto space-y-6">
+        <div className="w-full space-y-6">
             {/* Modal de Asistencia Manual */}
             {showManualModal && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -649,145 +705,208 @@ const PerfilUsuario = () => {
                 </div>
             )}
 
-            <div className="flex justify-between items-center">
-                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors font-medium">
-                    <FiArrowLeft className="w-5 h-5" /> Volver
-                </button>
-
-                <div className="flex gap-2">
-
-
-                    {!isEditing ? (
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="btn-secondary flex items-center gap-2"
-                        >
-                            <FiEdit2 className="w-4 h-4" /> Editar Perfil
+            {portalMounted && createPortal(
+                <div className="w-full flex flex-col gap-3">
+                    {/* Action Row — entra primero */}
+                    <div className="profile-row-actions flex justify-between items-center w-full pb-2 border-b border-slate-200/50 dark:border-slate-800/50">
+                        <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors font-medium text-sm">
+                            <FiArrowLeft className="w-4 h-4" /> Volver
                         </button>
-                    ) : (
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => {
-                                    setIsEditing(false);
-                                    setNewPin('');
-                                    setFormData({
-                                        nombre: usuario.nombre || '',
-                                        usuario: usuario.usuario || '',
-                                        correo: usuario.correo || '',
-                                        telefono: usuario.telefono || '',
-                                        rfc: usuario.rfc || '',
-                                        nss: usuario.nss || ''
-                                    });
-                                }}
-                                className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-sm font-medium"
-                                disabled={saving}
-                            >
-                                Cancelar
-                            </button>
-                            <button
-                                onClick={handleSave}
-                                disabled={saving}
-                                className="btn-primary flex items-center gap-2 shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                {saving ? (
-                                    <>
-                                        <FiRefreshCw className="w-4 h-4 animate-spin" /> Guardando...
-                                    </>
-                                ) : (
-                                    <>
-                                        <FiSave className="w-4 h-4" /> Guardar Cambios
-                                    </>
-                                )}
-                            </button>
+
+                        <div className="flex gap-2">
+                            {!isEditing && canEdit && (
+                                <button
+                                    onClick={() => setIsEditing(true)}
+                                    className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-medium transition-all"
+                                >
+                                    <FiEdit2 className="w-3.5 h-3.5" /> Editar Perfil
+                                </button>
+                            )}
+                            {isEditing && (
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                            setNewPin('');
+                                            setFormData({
+                                                nombre: usuario.nombre || '',
+                                                usuario: usuario.usuario || '',
+                                                correo: usuario.correo || '',
+                                                telefono: usuario.telefono || '',
+                                                rfc: usuario.rfc || '',
+                                                nss: usuario.nss || '',
+                                                foto: usuario.foto || ''
+                                            });
+                                        }}
+                                        className="px-3 py-1.5 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white text-xs font-medium"
+                                        disabled={saving}
+                                    >
+                                        Cancelar
+                                    </button>
+                                    <button
+                                        onClick={handleSave}
+                                        disabled={saving}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-medium shadow-sm transition-all"
+                                    >
+                                        {saving ? (
+                                            <>
+                                                <FiRefreshCw className="w-3.5 h-3.5 animate-spin" /> Guardando...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FiSave className="w-3.5 h-3.5" /> Guardar
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
-            </div>
+                    </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-                {/* COLUMNA IZQUIERDA */}
-                <div className="lg:col-span-4 space-y-6 w-full lg:sticky lg:top-6 lg:h-[calc(100vh-100px)] overflow-y-auto pr-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                    <div className="card p-0 overflow-hidden">
-                        <div className="p-6">
-                            <div className="flex items-start gap-5">
-                                <div className="flex-shrink-0">
+                    {/* Profile Info Row — entra después de las acciones */}
+                    <div className="profile-row-info flex flex-col md:flex-row items-center md:items-start gap-4 w-full">
+                        {/* Avatar / Foto */}
+                        <div className="profile-avatar flex-shrink-0 relative group">
+                            {isEditing ? (
+                                <>
+                                    <div 
+                                        onClick={() => fileInputRef.current.click()}
+                                        className="w-20 h-20 rounded-full cursor-pointer relative overflow-hidden border border-gray-200 dark:border-gray-600 shadow-sm group"
+                                    >
+                                        {formData.foto ? (
+                                            <img src={formData.foto} alt="Vista previa" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-2xl border border-blue-100 dark:border-blue-800">
+                                                {getInitials(formData.nombre || usuario?.nombre)}
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-0 bg-black/45 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <FiCamera className="w-5 h-5 text-white" />
+                                        </div>
+                                    </div>
+                                    <input 
+                                        type="file" 
+                                        ref={fileInputRef} 
+                                        onChange={handleFileChange} 
+                                        accept="image/*" 
+                                        className="hidden" 
+                                    />
+                                    {formData.foto && (
+                                        <button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setFormData({ ...formData, foto: '' });
+                                            }}
+                                            className="absolute -top-1 -right-1 bg-red-600 hover:bg-red-700 text-white rounded-full p-1 shadow-md transition-colors"
+                                            title="Eliminar foto"
+                                        >
+                                            <FiTrash className="w-3.5 h-3.5" />
+                                        </button>
+                                    )}
+                                </>
+                            ) : (
+                                <div 
+                                    onClick={() => usuario?.foto && setZoomOpen(true)}
+                                    className={usuario?.foto ? "cursor-zoom-in" : ""}
+                                >
                                     {usuario?.foto ? (
-                                        <img src={usuario.foto} alt={usuario.nombre} className="w-20 h-20 rounded-full object-cover border border-gray-200 dark:border-gray-600 shadow-sm" />
+                                        <img src={usuario.foto} alt={usuario.nombre} className="w-20 h-20 rounded-full object-cover border border-gray-200 dark:border-gray-600 shadow-sm hover:scale-105 transition-transform" />
                                     ) : (
                                         <div className="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold text-2xl border border-blue-100 dark:border-blue-800 shadow-sm">
                                             {getInitials(usuario?.nombre)}
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex-1 min-w-0 pt-1">
-                                    <div className="flex items-center gap-2 mb-1 flex-wrap w-full">
-                                        {isEditing ? (
-                                            <div className="w-full mb-2">
-                                                <input
-                                                    type="text"
-                                                    value={formData.nombre}
-                                                    onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
-                                                    className="w-full px-3 py-1.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-lg font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
-                                                    placeholder="Nombre completo"
-                                                />
-                                            </div>
-                                        ) : (
-                                            <h1 className="text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{usuario?.nombre}</h1>
-                                        )}
-                                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${estadoBadge.bg} ${estadoBadge.text} border-transparent`}>
-                                            {estadoBadge.label}
-                                        </span>
-                                    </div>
-                                    {isEditing ? (
+                            )}
+                        </div>
+
+                        {/* Detalles */}
+                        <div className="flex-1 min-w-0 text-center md:text-left pt-0.5 w-full">
+                            <div className="profile-name flex flex-col md:flex-row md:items-center gap-3 mb-1.5 flex-wrap justify-center md:justify-start">
+                                {isEditing ? (
+                                    <div className="w-full md:w-auto md:max-w-md">
                                         <input
                                             type="text"
-                                            value={formData.usuario}
-                                            onChange={(e) => setFormData({ ...formData, usuario: e.target.value })}
-                                            className="w-full px-3 py-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-sm text-gray-600 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 outline-none"
-                                            placeholder="Usuario"
+                                            value={formData.nombre}
+                                            onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+                                            className="w-full px-3 py-1 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-base font-bold text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 outline-none"
+                                            placeholder="Nombre completo"
                                         />
-                                    ) : (
-                                        <p className="text-gray-500 dark:text-gray-400 text-sm mb-3">@{usuario?.usuario}</p>
-                                    )}
-                                </div>
+                                    </div>
+                                ) : (
+                                    <h1 className="text-xl font-bold text-gray-900 dark:text-white leading-tight truncate">{usuario?.nombre}</h1>
+                                )}
+                                
+                                <span className={`self-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${estadoBadge.bg} ${estadoBadge.text} border-transparent`}>
+                                    {estadoBadge.label}
+                                </span>
                             </div>
-                            <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700 space-y-3">
-                                <div className="flex items-center gap-3 text-sm group">
-                                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-400"><FiMail className="w-4 h-4" /></div>
+
+                            {isEditing ? (
+                                <div className="w-full md:max-w-xs mb-3">
+                                    <input
+                                        type="text"
+                                        value={formData.usuario}
+                                        onChange={(e) => setFormData({ ...formData, usuario: e.target.value })}
+                                        className="w-full px-3 py-0.5 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md text-xs text-gray-600 dark:text-gray-300 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                                        placeholder="Usuario"
+                                    />
+                                </div>
+                            ) : (
+                                <p className="text-gray-500 dark:text-gray-400 text-xs font-medium mb-3">@{usuario?.usuario}</p>
+                            )}
+
+                            {/* Fila de datos — cada elemento tiene clase profile-meta-item para el stagger */}
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap items-center gap-3 md:gap-5 text-xs text-gray-600 dark:text-gray-300">
+                                {/* Correo */}
+                                <div className="profile-meta-item flex items-center gap-2 group w-full sm:w-auto">
+                                    <div className="w-7 h-7 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400 shrink-0"><FiMail className="w-3.5 h-3.5" /></div>
                                     {isEditing ? (
                                         <input
                                             type="email"
                                             value={formData.correo}
                                             onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
-                                            className="w-full px-2 py-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full sm:w-56 px-2 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none"
                                             placeholder="Correo electrónico"
                                         />
                                     ) : (
-                                        <span className="text-gray-600 dark:text-gray-300 truncate">{usuario?.correo || 'Sin correo'}</span>
+                                        <span className="truncate" title={usuario?.correo}>{usuario?.correo || 'Sin correo'}</span>
                                     )}
                                 </div>
-                                <div className="flex items-center gap-3 text-sm group">
-                                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-400"><FiPhone className="w-4 h-4" /></div>
+
+                                {/* Teléfono */}
+                                <div className="profile-meta-item flex items-center gap-2 group w-full sm:w-auto">
+                                    <div className="w-7 h-7 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400 shrink-0"><FiPhone className="w-3.5 h-3.5" /></div>
                                     {isEditing ? (
                                         <input
                                             type="tel"
                                             value={formData.telefono}
                                             onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
-                                            className="w-full px-2 py-1 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                            className="w-full sm:w-36 px-2 py-0.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded text-gray-700 dark:text-gray-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none"
                                             placeholder="Teléfono"
                                         />
                                     ) : (
-                                        <span className="text-gray-600 dark:text-gray-300">{usuario?.telefono || 'Sin teléfono'}</span>
+                                        <span>{usuario?.telefono || 'Sin teléfono'}</span>
                                     )}
                                 </div>
-                                <div className="flex items-center gap-3 text-sm group">
-                                    <div className="w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center text-gray-400"><FiCalendar className="w-4 h-4" /></div>
-                                    <span className="text-gray-600 dark:text-gray-300">Registrado: {formatFecha(usuario?.fecha_registro)}</span>
+
+                                {/* Registro */}
+                                <div className="profile-meta-item flex items-center gap-2 w-full sm:w-auto">
+                                    <div className="w-7 h-7 rounded-lg bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400 shrink-0"><FiCalendar className="w-3.5 h-3.5" /></div>
+                                    <span>Registrado: {formatFecha(usuario?.fecha_registro)}</span>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>,
+                document.getElementById('header-profile-portal')
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+                {/* COLUMNA IZQUIERDA */}
+                <div className="lg:col-span-4 space-y-6 w-full lg:sticky lg:top-6 lg:h-[calc(100vh-300px)] overflow-y-auto pr-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] animate-fade-in-up" style={{ animationDelay: '100ms' }}>
 
                     {usuario?.es_empleado && (
                         <div className="card p-5">
@@ -898,7 +1017,7 @@ const PerfilUsuario = () => {
                 </div>
 
                 {/* COLUMNA DERECHA */}
-                <div className="lg:col-span-8 space-y-6 w-full lg:h-[calc(100vh-100px)] overflow-y-auto pr-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <div className="lg:col-span-8 space-y-6 w-full lg:h-[calc(100vh-300px)] overflow-y-auto pr-2 pb-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] animate-fade-in-up" style={{ animationDelay: '200ms' }}>
 
                     {/* APARTADO ESTADÍSTICAS */}
                     {usuario?.es_empleado && (
@@ -1265,6 +1384,37 @@ const PerfilUsuario = () => {
                     message={alertMsg}
                     onConfirm={() => setAlertMsg(null)}
                 />
+            )}
+
+            {/* Lightbox de Zoom para Foto */}
+            {zoomOpen && createPortal(
+                <div
+                    onClick={() => setZoomOpen(false)}
+                    className="fixed inset-0 z-50 bg-slate-900/85 backdrop-blur-md flex items-center justify-center cursor-zoom-out p-4 animate-fade-in"
+                >
+                    <div 
+                        onClick={(e) => e.stopPropagation()}
+                        className="relative max-w-lg w-full bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden border border-slate-100 dark:border-gray-700 p-3 flex flex-col items-center animate-zoom-in"
+                    >
+                        <button
+                            onClick={() => setZoomOpen(false)}
+                            className="absolute top-4 right-4 bg-slate-100 dark:bg-gray-700 hover:bg-slate-200 dark:hover:bg-gray-600 text-slate-800 dark:text-white p-2 rounded-full transition-colors z-10 shadow-sm"
+                            title="Cerrar"
+                        >
+                            <FiX className="w-5 h-5" />
+                        </button>
+                        <img
+                            src={usuario?.foto}
+                            alt={usuario?.nombre}
+                            className="max-h-[70vh] max-w-full rounded-xl object-contain shadow-md"
+                        />
+                        <div className="mt-4 text-center pb-2">
+                            <h4 className="text-base font-bold text-slate-800 dark:text-white">{usuario?.nombre}</h4>
+                            <p className="text-sm text-slate-500 dark:text-slate-400">@{usuario?.usuario}</p>
+                        </div>
+                    </div>
+                </div>,
+                document.body
             )}
         </div>
     );

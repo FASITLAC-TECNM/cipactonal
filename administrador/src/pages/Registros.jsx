@@ -10,6 +10,7 @@ import { API_CONFIG } from '../config/Apiconfig';
 const API_URL = API_CONFIG.BASE_URL;
 import { useConfig } from '../context/ConfigContext';
 import DynamicLoader from '../components/common/DynamicLoader';
+import HeaderActions from '../components/HeaderActions';
 
 // --- CONFIGURACIÓN DE CONSTANTES (Igual que antes) ---
 const CATEGORIAS = {
@@ -40,7 +41,7 @@ const Registros = () => {
     const { formatDate, formatTime } = useConfig();
     const [eventos, setEventos] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [stats, setStats] = useState({ por_tipo: [], por_prioridad: [] });
+    const [, setStats] = useState({ por_tipo: [], por_prioridad: [] });
 
     // Paginación
     const [pagina, setPagina] = useState(1);
@@ -140,34 +141,36 @@ const Registros = () => {
     // --- RENDERIZADO ---
 
     return (
-        <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6">
+        <div className="flex flex-col h-[calc(100vh-6rem)] max-w-7xl mx-auto p-4 md:p-6 gap-6">
 
             {/* Barra de Filtros */}
-            <div className="card flex flex-col gap-4">
+            <div className="card flex flex-col gap-4 flex-shrink-0">
 
-                {/* Selectores de Vista y Refresh */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="flex bg-slate-100 dark:bg-gray-800 rounded-lg p-1 border border-slate-200 dark:border-gray-700 w-fit">
+            {/* Toolbar in Header */}
+            <HeaderActions>
+                <div className="flex items-center justify-between gap-4 w-full">
+                    <div className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60 w-fit flex-shrink-0">
                         <button
                             onClick={() => setVistaAgrupada(false)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${!vistaAgrupada ? 'bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
+                            className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-colors ${!vistaAgrupada ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
                         >
-                            <FiList className="w-4 h-4" /> Tabla
+                            <FiList className="w-4 h-4" /> <span className="hidden sm:inline">Tabla</span>
                         </button>
                         <button
                             onClick={() => setVistaAgrupada(true)}
-                            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${vistaAgrupada ? 'bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
+                            className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-colors ${vistaAgrupada ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
                         >
-                            <FiGrid className="w-4 h-4" /> Agrupada
+                            <FiGrid className="w-4 h-4" /> <span className="hidden sm:inline">Agrupada</span>
                         </button>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                        <button onClick={fetchEventos} className="p-2 text-slate-400 hover:text-primary-600 hover:bg-slate-50 rounded-md transition-colors" title="Actualizar">
-                            <FiRefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+                    <div className="flex items-center gap-3 ml-auto">
+                        <button onClick={fetchEventos} className="p-1.5 text-slate-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-md transition-colors" title="Actualizar">
+                            <FiRefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                         </button>
                     </div>
                 </div>
+            </HeaderActions>
 
                 <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium text-sm">
                     <FiSearch className="w-4 h-4" /> Búsqueda Avanzada
@@ -227,7 +230,8 @@ const Registros = () => {
                     <p className="text-gray-500 dark:text-gray-400">No se encontraron eventos con los filtros actuales.</p>
                 </div>
             ) : (
-                <>
+                <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 space-y-4">
                     {vistaAgrupada ? (
                         /* VISTA AGRUPADA (Acordeón mejorado) */
                         <div className="space-y-4">
@@ -335,8 +339,9 @@ const Registros = () => {
                         </div >
                     )}
 
+                    </div>
                     {/* Paginación Simple */}
-                    <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <div className="flex-shrink-0 flex items-center justify-between pt-4 mt-2 border-t border-gray-200 dark:border-gray-700">
                         <span className="text-sm text-gray-500 dark:text-gray-400">
                             Mostrando página <span className="font-medium text-gray-900 dark:text-white">{pagina}</span>
                         </span>
@@ -357,7 +362,7 @@ const Registros = () => {
                             </button>
                         </div>
                     </div>
-                </>
+                </div>
             )}
         </div >
     );

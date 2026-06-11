@@ -4,12 +4,12 @@ import { useNotifications } from '../context/NotificationContext';
 import { useNavigate } from 'react-router-dom';
 import { useConfig } from '../context/ConfigContext';
 
-const NotificationBell = () => {
+const NotificationBell = ({ isSidebar = false }) => {
     const { notifications, unreadCount } = useNotifications();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
     const navigate = useNavigate();
-    const { formatDate, formatTime } = useConfig();
+    const { formatDate } = useConfig();
 
     // Cerrar dropdown al hacer click fuera
     useEffect(() => {
@@ -35,21 +35,21 @@ const NotificationBell = () => {
         <div className="relative" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors focus:outline-none"
+                className="relative p-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-[#2a2a27] rounded-lg transition-colors focus:outline-none"
                 title="Notificaciones"
             >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-800 animate-pulse"></span>
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#171715] animate-pulse"></span>
                 )}
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-80 md:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 overflow-hidden transform origin-top-right transition-all">
-                    <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between bg-gray-50/50 dark:bg-gray-900/50">
-                        <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Notificaciones</h3>
+                <div className={`absolute ${isSidebar ? 'left-full ml-2 bottom-0 mb-0 origin-bottom-left' : 'right-0 mt-2 origin-top-right'} w-80 md:w-96 bg-white dark:bg-[#1e1e1c] rounded-xl shadow-lg border border-gray-200 dark:border-[#2a2a27] z-50 overflow-hidden transform transition-all`}>
+                    <div className="px-4 py-3 border-b border-gray-100 dark:border-[#2a2a27] flex items-center justify-between bg-gray-50/50 dark:bg-[#171715]/50">
+                        <h3 className="font-semibold text-gray-900 dark:text-[#e8e8e4] text-sm">Notificaciones</h3>
                         {unreadCount > 0 && (
-                            <span className="text-xs bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-medium">
+                            <span className="text-xs bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full font-medium">
                                 {unreadCount} nuevas
                             </span>
                         )}
@@ -57,20 +57,20 @@ const NotificationBell = () => {
 
                     <div className="max-h-[400px] overflow-y-auto">
                         {notifications.length === 0 ? (
-                            <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+                            <div className="p-8 text-center text-gray-500 dark:text-[#a0a09a]">
                                 <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300 dark:text-gray-600" />
                                 <p className="text-sm">No tienes notificaciones pendientes</p>
                             </div>
                         ) : (
-                            <div className="divide-y divide-gray-100 dark:divide-gray-700">
+                            <div className="divide-y divide-gray-100 dark:divide-[#2a2a27]">
                                 {notifications.map((notification) => (
                                     <div
                                         key={notification.id}
                                         onClick={() => handleNotificationClick(notification)}
-                                        className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors group relative"
+                                        className="p-4 hover:bg-gray-50 dark:hover:bg-[#2a2a27]/50 cursor-pointer transition-colors group relative"
                                     >
                                         <div className="flex items-start gap-3">
-                                            <div className={`p-2 rounded-lg flex-shrink-0 ${notification.tipo === 'movil' ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'}`}>
+                                            <div className={`p-2 rounded-lg flex-shrink-0 ${notification.tipo === 'movil' ? 'bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' : 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'}`}>
                                                 {notification.tipo === 'movil' ? (
                                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
@@ -82,10 +82,10 @@ const NotificationBell = () => {
                                                 )}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                                                <p className="text-sm font-medium text-gray-900 dark:text-[#e8e8e4] truncate">
                                                     Solicitud de acceso
                                                 </p>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                                                <p className="text-xs text-gray-500 dark:text-[#a0a09a] mt-0.5 truncate">
                                                     {notification.nombre} ({notification.correo})
                                                 </p>
                                                 <div className="flex items-center gap-2 mt-2 text-[10px] text-gray-400">

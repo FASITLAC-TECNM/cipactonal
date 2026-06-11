@@ -15,6 +15,7 @@ import {
     FiLock,
     FiArrowLeft,
     FiUserPlus,
+    FiUserMinus,
     FiMail,
     FiCalendar,
     FiSettings,
@@ -24,9 +25,10 @@ import {
     FiBarChart2,
     FiRefreshCw
 } from 'react-icons/fi';
-import { useConfig } from '../context/ConfigContext';
 import DynamicLoader from '../components/common/DynamicLoader';
 import ConfirmBox from '../components/ConfirmBox';
+import HeaderActions from '../components/HeaderActions';
+import { useAuth } from '../context/AuthContext';
 
 import { API_CONFIG } from '../config/Apiconfig';
 const API_URL = API_CONFIG.BASE_URL;
@@ -45,7 +47,36 @@ const CATEGORIA_ICONS = {
     'CONFIGURACION': FiSettings
 };
 
+const sortRoles = (rolesList) => {
+    if (!rolesList || rolesList.length === 0) return [];
+    
+    // Identificar roles especiales
+    const adminRole = rolesList.find(r => r.nombre?.toLowerCase() === 'administrador');
+    const empleadoRole = rolesList.find(r => r.nombre?.toLowerCase() === 'empleado');
+    
+    const otherRoles = rolesList.filter(r => r.id !== adminRole?.id && r.id !== empleadoRole?.id);
+    
+    // Ordenar los otros roles por su posición actual
+    otherRoles.sort((a, b) => {
+        const posA = a.posicion || 0;
+        const posB = b.posicion || 0;
+        return posA - posB;
+    });
+    
+    const result = [];
+    if (adminRole) result.push(adminRole);
+    result.push(...otherRoles);
+    if (empleadoRole) result.push(empleadoRole);
+    return result;
+};
+
 const Roles = () => {
+    const { hasPermission } = useAuth();
+    const canCreate = hasPermission('ROL_CREAR');
+    const canEdit = hasPermission('ROL_EDITAR');
+    const canDelete = hasPermission('ROL_ELIMINAR');
+    const canAssign = hasPermission('ROL_ASIGNAR');
+
     const [roles, setRoles] = useState([]);
     const [permisosCatalogo, setPermisosCatalogo] = useState({ lista: [], por_categoria: {} });
     const [loading, setLoading] = useState(true);
@@ -108,8 +139,8 @@ const Roles = () => {
             const permisosData = await permisosRes.json();
 
             if (rolesData.success) {
-                // Ordenar por posición para que la lista visual sea correcta
-                const rolesOrdenados = rolesData.data.sort((a, b) => a.posicion - b.posicion);
+                // Ordenar por posición respetando Administrador arriba y Empleado abajo
+                const rolesOrdenados = sortRoles(rolesData.data);
                 setRoles(rolesOrdenados);
             }
             if (permisosData.success) setPermisosCatalogo(permisosData.data);
@@ -196,7 +227,7 @@ const Roles = () => {
             } else {
                 setMensaje({ tipo: 'error', texto: result.message || 'Error al guardar' });
             }
-        } catch (error) { setMensaje({ tipo: 'error', texto: 'Error al guardar rol' }); } finally { setSaving(false); }
+        } catch { setMensaje({ tipo: 'error', texto: 'Error al guardar rol' }); } finally { setSaving(false); }
     };
 
     const handleDelete = (rol, e) => {
@@ -290,14 +321,16 @@ const Roles = () => {
     // Función auxiliar para saber si un rol es inamovible
     const isRoleFixed = (rol) => {
         const nombre = rol.nombre?.toLowerCase();
-        return nombre === 'administrador' || nombre === 'empleado' || rol.es_admin; // Agrega es_admin por seguridad
+        // Solo el Administrador principal y el Empleado general son inamovibles.
+        // Los roles de administrador personalizados sí se pueden mover.
+        return nombre === 'administrador' || nombre === 'empleado';
     };
 
     const handleStartReordering = () => {
         setIsReordering(true);
         // CARGAMOS TODOS LOS ROLES, no filtramos nada.
         // Esto asegura que si Admin es el #1, siga siendo el #1 en la lista visual.
-        setReorderedRoles([...filteredRoles]);
+        setReorderedRoles([...roles]);
     };
 
     const handleCancelReordering = () => {
@@ -431,6 +464,37 @@ const Roles = () => {
         } catch (error) { console.error('Error:', error); } finally { setSaving(false); }
     };
 
+    const handleRemoveUsuario = (usuario) => {
+        setConfirmAction({
+            message: `¿Remover al usuario "${usuario.nombre}" de este rol?`,
+            onConfirm: async () => {
+                setConfirmAction(null);
+                try {
+                    setLoadingUsuarios(true);
+                    const token = localStorage.getItem('auth_token');
+                    const response = await fetch(`${API_URL}/api/usuarios/${usuario.id}/roles/${viewingRole.id}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        const usuariosRes = await fetch(`${API_URL}/api/roles/${viewingRole.id}/usuarios`, { headers: { 'Authorization': `Bearer ${token}` } });
+                        const usuariosData = await usuariosRes.json();
+                        if (usuariosData.success) setRoleUsuarios(usuariosData.data);
+                        fetchData();
+                    } else {
+                        setAlertMsg(result.message || 'Error al remover usuario');
+                    }
+                } catch (error) {
+                    console.error('Error al remover usuario:', error);
+                    setAlertMsg('Error al remover usuario del rol');
+                } finally {
+                    setLoadingUsuarios(false);
+                }
+            }
+        });
+    };
+
     const permisoEstaActivo = (permisoCatalogo, permisosLista) => {
         if (!permisosLista || !Array.isArray(permisosLista)) return false;
         const codigoNormalizado = normalizePermiso(permisoCatalogo.codigo);
@@ -446,9 +510,11 @@ const Roles = () => {
                         <FiArrowLeft className="w-5 h-5" /> Volver a Roles
                     </button>
                     <div className="flex-1"></div>
-                    <button onClick={() => openEditModal(viewingRole)} className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm">
-                        <FiEdit2 className="w-4 h-4" /> Editar Rol
-                    </button>
+                    {canEdit && (
+                        <button onClick={() => openEditModal(viewingRole)} className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm">
+                            <FiEdit2 className="w-4 h-4" /> Editar Rol
+                        </button>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -489,7 +555,9 @@ const Roles = () => {
                     <div className="lg:col-span-2 card flex flex-col h-full transition-colors duration-200">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2"><FiUsers className="w-5 h-5 text-gray-400" /> Usuarios Asignados ({roleUsuarios.length})</h2>
-                            <button onClick={openAssignModal} className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm transition-colors text-sm font-medium"><FiUserPlus className="w-4 h-4" /> Asignar Usuarios</button>
+                            {canAssign && (
+                                <button onClick={openAssignModal} className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm transition-colors text-sm font-medium"><FiUserPlus className="w-4 h-4" /> Asignar Usuarios</button>
+                            )}
                         </div>
                         {loadingUsuarios ? <div className="flex justify-center py-12 flex-1"><DynamicLoader size="small" /></div> : roleUsuarios.length === 0 ? (
                             <div className="flex flex-col items-center justify-center py-12 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 rounded-xl border border-dashed border-gray-200 dark:border-gray-700 flex-1"><div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4"><FiUsers className="w-8 h-8 text-gray-300 dark:text-gray-600" /></div><p className="font-medium">No hay usuarios con este rol</p></div>
@@ -501,7 +569,18 @@ const Roles = () => {
                                             {usuario.foto ? <img src={usuario.foto} alt={usuario.nombre} className="w-12 h-12 rounded-full object-cover border border-gray-200" /> : <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-sm" style={{ backgroundColor: viewingRole.color }}>{getInitials(usuario.nombre)}</div>}
                                         </div>
                                         <div className="flex-1 min-w-0"><p className="font-semibold text-gray-900 dark:text-white truncate">{usuario.nombre}</p><p className="text-sm text-gray-500 dark:text-gray-400 truncate flex items-center gap-1"><FiMail className="w-3 h-3" /> {usuario.correo}</p></div>
-                                        <div className="flex items-center gap-3"><span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide border ${usuario.estado_cuenta === 'activo' ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-100 dark:border-green-800' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600'}`}>{usuario.estado_cuenta}</span></div>
+                                        <div className="flex items-center gap-3">
+                                            <span className={`text-xs font-bold px-2.5 py-1 rounded-full uppercase tracking-wide border ${usuario.estado_cuenta === 'activo' ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-100 dark:border-green-800' : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600'}`}>{usuario.estado_cuenta}</span>
+                                            {canAssign && (
+                                                <button
+                                                    onClick={() => handleRemoveUsuario(usuario)}
+                                                    className="p-1.5 text-slate-400 hover:text-red-600 dark:text-slate-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-all"
+                                                    title="Remover de este rol"
+                                                >
+                                                    <FiUserMinus className="w-4 h-4" />
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -619,65 +698,65 @@ const Roles = () => {
     // --- MAIN LIST VIEW (CARDS CLICKEABLES) ---
     return (
         <div className="space-y-6">
-            {/* Header */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-between">
-                {!isReordering ? (
-                    <>
-                        <div className="flex flex-1 gap-3">
-                            <div className="relative flex-1 max-w-md">
-                                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            {/* Toolbar in Header */}
+            <HeaderActions>
+                <div className="flex items-center gap-3 w-full justify-end">
+                    {!isReordering ? (
+                        <>
+                            <div className="relative max-w-xs w-full hidden lg:block">
+                                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                                 <input
                                     type="text"
                                     placeholder="Buscar rol..."
                                     value={busqueda}
                                     onChange={(e) => setBusqueda(e.target.value)}
-                                    className="input pl-10"
+                                    className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800"
                                 />
                             </div>
                             <select
                                 value={filtroEstado}
                                 onChange={(e) => setFiltroEstado(e.target.value)}
-                                className="input px-4 cursor-pointer"
+                                className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden sm:block"
                             >
-                                <option value="">Todos los estados</option>
+                                <option value="">Todos</option>
                                 <option value="activo">Activos</option>
                                 <option value="inactivo">Inactivos</option>
                             </select>
-                        </div>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={handleStartReordering}
-                                className="btn-primary bg-purple-600 hover:bg-purple-700 flex items-center gap-2"
-                            >
-                                <FiMove className="w-5 h-5" />
-                                Reordenar
+                            {canEdit && (
+                                <button
+                                    onClick={handleStartReordering}
+                                    className="btn-primary bg-purple-600 hover:bg-purple-700 flex items-center gap-2 py-1.5 px-3 text-sm shadow-sm transition-all"
+                                >
+                                    <FiMove className="w-4 h-4" />
+                                    <span className="hidden sm:inline">Reordenar</span>
+                                </button>
+                            )}
+                            {canCreate && (
+                                <button
+                                    onClick={openCreateModal}
+                                    className="btn-primary flex items-center gap-2 py-1.5 px-4 text-sm shadow-sm transition-all"
+                                >
+                                    <FiPlus className="w-4 h-4" />
+                                    Nuevo
+                                </button>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <div className="bg-purple-50/80 dark:bg-purple-900/20 border border-purple-200/60 dark:border-purple-800/60 rounded-lg px-3 py-1.5 flex items-center gap-2">
+                                <FiMove className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                                <span className="text-purple-700 dark:text-purple-300 font-medium text-sm hidden sm:inline">Arrastra para reordenar</span>
+                            </div>
+                            <button onClick={handleCancelReordering} disabled={savingOrder} className="flex items-center gap-2 px-3 py-1.5 bg-slate-500 text-white rounded-lg hover:bg-slate-600 shadow-sm text-sm">
+                                <FiX className="w-4 h-4" /> <span className="hidden sm:inline">Cancelar</span>
                             </button>
-                            <button
-                                onClick={openCreateModal}
-                                className="btn-primary flex items-center gap-2"
-                            >
-                                <FiPlus className="w-5 h-5" />
-                                Nuevo Rol
+                            <button onClick={handleSaveOrder} disabled={savingOrder} className="flex items-center gap-2 px-4 py-1.5 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 shadow-sm text-sm">
+                                {savingOrder ? '...' : <><FiSave className="w-4 h-4" /> <span className="hidden sm:inline">Guardar</span></>}
                             </button>
-                        </div>
-                    </>
-                ) : (
-                    <div className="flex-1 flex items-center justify-between">
-                        <div className="bg-purple-50 border border-purple-200 rounded-lg px-4 py-2 flex items-center gap-2">
-                            <FiMove className="w-5 h-5 text-purple-600" />
-                            <span className="text-purple-700 font-medium">Arrastra para reordenar la jerarquía</span>
-                        </div>
-                        <div className="flex gap-3">
-                            <button onClick={handleCancelReordering} disabled={savingOrder} className="flex items-center gap-2 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 shadow-sm">
-                                <FiX className="w-5 h-5" /> Cancelar
-                            </button>
-                            <button onClick={handleSaveOrder} disabled={savingOrder} className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 shadow-sm">
-                                {savingOrder ? 'Guardando...' : <><FiSave className="w-5 h-5" /> Guardar Orden</>}
-                            </button>
-                        </div>
-                    </div>
-                )}
-            </div>
+                        </>
+                    )}
+                </div>
+            </HeaderActions>
 
             {/* List */}
             {loading ? (
@@ -756,29 +835,35 @@ const Roles = () => {
                                     {!isReordering && (
                                         <div className="flex items-center gap-2 relative z-10">
                                             {rol.es_activo === false ? (
-                                                <button
-                                                    onClick={(e) => handleReactivar(rol, e)}
-                                                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg transition-colors"
-                                                    title="Reactivar rol"
-                                                >
-                                                    <FiRefreshCw className="w-4 h-4" /> Reactivar
-                                                </button>
+                                                canDelete && (
+                                                    <button
+                                                        onClick={(e) => handleReactivar(rol, e)}
+                                                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 dark:bg-green-900/30 dark:text-green-300 dark:hover:bg-green-900/50 border border-green-200 dark:border-green-800 rounded-lg transition-colors"
+                                                        title="Reactivar rol"
+                                                    >
+                                                        <FiRefreshCw className="w-4 h-4" /> Reactivar
+                                                    </button>
+                                                )
                                             ) : (
                                                 <>
-                                                    <button
-                                                        onClick={(e) => { e.stopPropagation(); openEditModal(rol); }}
-                                                        className="p-2 text-gray-500 hover:bg-primary-50 hover:text-primary-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-primary-400 rounded-lg transition-colors"
-                                                        title="Editar"
-                                                    >
-                                                        <FiEdit2 className="w-5 h-5" />
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => { handleDelete(rol, e); }}
-                                                        className={`p-2 rounded-lg transition-colors ${esFijo ? 'text-gray-400 dark:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700' : 'text-gray-500 dark:text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400'}`}
-                                                        title={esFijo ? "Rol de sistema protegido" : "Desactivar"}
-                                                    >
-                                                        <FiTrash2 className="w-5 h-5" />
-                                                    </button>
+                                                    {canEdit && (
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); openEditModal(rol); }}
+                                                            className="p-2 text-gray-500 hover:bg-primary-50 hover:text-primary-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-primary-400 rounded-lg transition-colors"
+                                                            title="Editar"
+                                                        >
+                                                            <FiEdit2 className="w-5 h-5" />
+                                                        </button>
+                                                    )}
+                                                    {canDelete && (
+                                                        <button
+                                                            onClick={(e) => { handleDelete(rol, e); }}
+                                                            className={`p-2 rounded-lg transition-colors ${esFijo ? 'text-gray-400 dark:text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700' : 'text-gray-500 dark:text-gray-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400'}`}
+                                                            title={esFijo ? "Rol de sistema protegido" : "Desactivar"}
+                                                        >
+                                                            <FiTrash2 className="w-5 h-5" />
+                                                        </button>
+                                                    )}
                                                 </>
                                             )}
                                         </div>

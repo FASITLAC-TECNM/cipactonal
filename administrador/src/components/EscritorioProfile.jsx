@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Monitor, Wifi, Cpu, HardDrive, Activity, CheckCircle, XCircle, AlertTriangle, Server, Clock, Settings, Laptop, Fingerprint, ScanFace, Lock, KeyRound, Save } from 'lucide-react';
-import { useConfig } from '../context/ConfigContext';
+
 import { API_CONFIG } from '../config/Apiconfig';
 import { useBiometricosSync } from '../hooks/useBiometricosSync';
 
@@ -63,7 +63,7 @@ const BiometricStatus = ({ label, status, details, ip }) => {
 };
 
 const EscritorioProfile = ({ dispositivo }) => {
-    const { formatDate, formatTime } = useConfig();
+
 
     // Usamos el hook de sincronización en tiempo real para biométricos
     const { biometricos, loadingBio, errorBio } = useBiometricosSync(dispositivo?.id, 5000);

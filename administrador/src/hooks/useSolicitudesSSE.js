@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-
+import { useAuth } from '../context/AuthContext';
 import { API_CONFIG } from '../config/Apiconfig';
 const API_URL = API_CONFIG.BASE_URL;
 
@@ -10,6 +10,7 @@ const API_URL = API_CONFIG.BASE_URL;
  * @param {Function} callbacks.onSolicitudActualizada - Se ejecuta al aceptar/rechazar una solicitud
  */
 export function useSolicitudesSSE({ onNuevaSolicitud, onSolicitudActualizada }) {
+    const { user, hasPermission } = useAuth();
     const eventSourceRef = useRef(null);
     const callbacksRef = useRef({ onNuevaSolicitud, onSolicitudActualizada });
 
@@ -21,6 +22,9 @@ export function useSolicitudesSSE({ onNuevaSolicitud, onSolicitudActualizada }) 
     useEffect(() => {
         const token = localStorage.getItem('auth_token');
         if (!token) return;
+
+        const canViewDevices = user?.esPropietarioSaaS || hasPermission('DISPOSITIVO_VER') || hasPermission('DISPOSITIVO_CREAR') || hasPermission('DISPOSITIVO_GESTIONAR');
+        if (!canViewDevices) return;
 
         const url = `${API_URL}/api/solicitudes/stream?token=${encodeURIComponent(token)}`;
         const es = new EventSource(url);

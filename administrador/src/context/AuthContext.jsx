@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 import { API_CONFIG } from '../config/Apiconfig';
 import { useRealTime } from '../hooks/useRealTime';
+import { tienePermisoPorCodigo } from '../config/permissions';
 const API_URL = API_CONFIG.BASE_URL;
 
 // Crear el contexto
@@ -206,11 +207,8 @@ export const AuthProvider = ({ children }) => {
      */
     const hasPermission = (permiso) => {
         if (!user) return false;
-        if (user.esAdmin) return true;
-
-        // Verificar permisos bitwise (implementar según tu lógica)
-        // Por ahora retornamos true si está autenticado
-        return true;
+        if (user.esPropietarioSaaS) return true;
+        return tienePermisoPorCodigo(user.permisos, permiso);
     };
 
     /**

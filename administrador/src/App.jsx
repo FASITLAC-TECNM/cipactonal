@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { NetworkProvider } from './context/NetworkContext';
@@ -6,6 +6,7 @@ import { ConfigProvider, useConfig } from './context/ConfigContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { CompanyProvider } from './context/CompanyContext';
+import { ProfileHeaderProvider } from './context/ProfileHeaderContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './components/layouts/MainLayout';
 import { protectedRoutes, specialRoutes } from './config/routes';
@@ -27,7 +28,9 @@ function App() {
                         <ThemeProvider>
                             <CompanyProvider>
                                 <NotificationProvider>
-                                    <AppRoutes />
+                                    <ProfileHeaderProvider>
+                                        <AppRoutes />
+                                    </ProfileHeaderProvider>
                                 </NotificationProvider>
                             </CompanyProvider>
                         </ThemeProvider>
@@ -88,35 +91,36 @@ function AppRoutes() {
                     }
                 />
 
-                {/* Rutas protegidas generadas dinámicamente */}
-                {protectedRoutes.map(({ path, component: Component, requireAdmin }) => (
-                    <Route
-                        key={path}
-                        path={path}
-                        element={
-                            <ProtectedRoute requireAdmin={requireAdmin}>
-                                <MainLayout>
+                {/* Rutas con Layout (no se desmonta al cambiar de página) */}
+                <Route element={<MainLayout />}>
+                    {/* Rutas protegidas generadas dinámicamente */}
+                    {/* eslint-disable-next-line no-unused-vars */}
+                    {protectedRoutes.map(({ path, component: Component, requireAdmin, permission }) => (
+                        <Route
+                            key={path}
+                            path={path}
+                            element={
+                                <ProtectedRoute requireAdmin={requireAdmin} permission={permission}>
                                     <Component />
-                                </MainLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                ))}
+                                </ProtectedRoute>
+                            }
+                        />
+                    ))}
 
-                {/* Rutas especiales (con parámetros) */}
-                {specialRoutes.map(({ path, component: Component, requireAdmin }) => (
-                    <Route
-                        key={path}
-                        path={path}
-                        element={
-                            <ProtectedRoute requireAdmin={requireAdmin}>
-                                <MainLayout>
+                    {/* Rutas especiales (con parámetros) */}
+                    {/* eslint-disable-next-line no-unused-vars */}
+                    {specialRoutes.map(({ path, component: Component, requireAdmin, permission }) => (
+                        <Route
+                            key={path}
+                            path={path}
+                            element={
+                                <ProtectedRoute requireAdmin={requireAdmin} permission={permission}>
                                     <Component />
-                                </MainLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                ))}
+                                </ProtectedRoute>
+                            }
+                        />
+                    ))}
+                </Route>
 
                 {/* Ruta 404 */}
                 <Route path="*" element={<Error404 />} />

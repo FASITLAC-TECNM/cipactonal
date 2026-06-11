@@ -6,11 +6,18 @@ import DepartamentsModal from '../components/modals/DepartamentsModal';
 import MapaDepartamentos from '../components/DepartamentsMap';
 import DynamicLoader from '../components/common/DynamicLoader';
 import { useTour } from '../hooks/useTour';
+import HeaderActions from '../components/HeaderActions';
+import { useAuth } from '../context/AuthContext';
 
 import { API_CONFIG } from '../config/Apiconfig';
 const API_URL = API_CONFIG.BASE_URL;
 
 const Departamentos = () => {
+    const { hasPermission } = useAuth();
+    const canCreate = hasPermission('DEPARTAMENTO_CREAR');
+    const canEdit = hasPermission('DEPARTAMENTO_EDITAR');
+    const canDelete = hasPermission('DEPARTAMENTO_ELIMINAR');
+
     const [departamentos, setDepartamentos] = useState([]);
     const [usuarios, setUsuarios] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -185,53 +192,55 @@ const Departamentos = () => {
     });
 
     return (
-        <div className="space-y-6 h-[calc(100vh-100px)] flex flex-col">
-            {/* Toolbar */}
-            <div className="flex justify-between items-center gap-4 flex-shrink-0">
-                <div className="flex flex-1 gap-3">
-                    <div className="relative flex-1 max-w-md" id="deptos-search">
-                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <div className="space-y-6 h-full flex flex-col">
+            {/* Toolbar in Header */}
+            <HeaderActions>
+                <div className="flex items-center gap-3 w-full justify-end">
+                    <div className="relative max-w-xs w-full hidden lg:block" id="deptos-search">
+                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Buscar departamentos..."
+                            placeholder="Buscar..."
                             value={busqueda}
                             onChange={e => setBusqueda(e.target.value)}
-                            className="input pl-10"
+                            className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800"
                         />
                     </div>
                     <select
                         value={filtroEstado}
                         onChange={(e) => setFiltroEstado(e.target.value)}
-                        className="input w-auto cursor-pointer"
+                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden sm:block"
                     >
-                        <option value="">Todos los estados</option>
+                        <option value="">Todos</option>
                         <option value="activo">Activos</option>
                         <option value="inactivo">Inactivos</option>
                     </select>
 
                     {/* Toggle Vista */}
-                    <div id="deptos-view-toggle" className="flex bg-slate-100 dark:bg-gray-800 rounded-lg p-1 border border-slate-200 dark:border-gray-700">
+                    <div id="deptos-view-toggle" className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60">
                         <button
                             onClick={() => setViewMode('grid')}
-                            className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                            className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white dark:bg-slate-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
                             title="Vista Tarjetas"
                         >
-                            <FiGrid className="w-5 h-5" />
+                            <FiGrid className="w-4 h-4" />
                         </button>
                         <button
                             onClick={() => setViewMode('list')}
-                            className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white dark:bg-gray-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                            className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white dark:bg-slate-700 shadow-sm text-primary-600 dark:text-primary-400' : 'text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
                             title="Vista Lista"
                         >
-                            <FiList className="w-5 h-5" />
+                            <FiList className="w-4 h-4" />
                         </button>
                     </div>
 
+                    {canCreate && (
+                        <button id="deptos-create-btn" onClick={handleCreate} className="btn-primary flex items-center gap-2 py-1.5 px-4 text-sm shadow-sm transition-all">
+                            <FiPlus className="w-4 h-4" /> <span className="hidden sm:inline">Nuevo</span>
+                        </button>
+                    )}
                 </div>
-                <button id="deptos-create-btn" onClick={handleCreate} className="btn-primary flex items-center gap-2">
-                    <FiPlus /> Nuevo Departamento
-                </button>
-            </div>
+            </HeaderActions>
 
             {/* Content Grid */}
             <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1fr_minmax(400px,_1fr)] xl:grid-cols-[1fr_minmax(500px,_1fr)] gap-6">
@@ -303,34 +312,42 @@ const Departamentos = () => {
                                                         </div>
                                                     </td>
                                                     <td className="px-5 py-3 text-right">
-                                                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                            {depto.es_activo === false ? (
-                                                                <button
-                                                                    onClick={(e) => { e.stopPropagation(); handleReactivar(depto); }}
-                                                                    className="p-1.5 text-slate-500 bg-white hover:bg-slate-50 border border-slate-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-green-400 rounded-lg transition-colors"
-                                                                    title="Reactivar"
-                                                                >
-                                                                    <FiRefreshCw className="w-4 h-4" />
-                                                                </button>
-                                                            ) : (
-                                                                <>
-                                                                    <button
-                                                                        onClick={(e) => { e.stopPropagation(); handleEdit(depto); }}
-                                                                        className="p-1.5 text-slate-500 bg-white hover:bg-slate-50 border border-slate-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-primary-400 rounded-lg transition-colors"
-                                                                        title="Editar"
-                                                                    >
-                                                                        <FiEdit2 className="w-4 h-4" />
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={(e) => { e.stopPropagation(); handleDelete(depto); }}
-                                                                        className="p-1.5 text-slate-500 bg-white hover:bg-slate-50 border border-slate-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-red-400 rounded-lg transition-colors"
-                                                                        title="Desactivar"
-                                                                    >
-                                                                        <FiTrash2 className="w-4 h-4" />
-                                                                    </button>
-                                                                </>
-                                                            )}
-                                                        </div>
+                                                        {(canEdit || canDelete) && (
+                                                            <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                {depto.es_activo === false ? (
+                                                                    canDelete && (
+                                                                        <button
+                                                                            onClick={(e) => { e.stopPropagation(); handleReactivar(depto); }}
+                                                                            className="p-1.5 text-slate-500 bg-white hover:bg-slate-50 border border-slate-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-green-400 rounded-lg transition-colors"
+                                                                            title="Reactivar"
+                                                                        >
+                                                                            <FiRefreshCw className="w-4 h-4" />
+                                                                        </button>
+                                                                    )
+                                                                ) : (
+                                                                    <>
+                                                                        {canEdit && (
+                                                                            <button
+                                                                                onClick={(e) => { e.stopPropagation(); handleEdit(depto); }}
+                                                                                className="p-1.5 text-slate-500 bg-white hover:bg-slate-50 border border-slate-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-primary-400 rounded-lg transition-colors"
+                                                                                title="Editar"
+                                                                            >
+                                                                                <FiEdit2 className="w-4 h-4" />
+                                                                            </button>
+                                                                        )}
+                                                                        {canDelete && (
+                                                                            <button
+                                                                                onClick={(e) => { e.stopPropagation(); handleDelete(depto); }}
+                                                                                className="p-1.5 text-slate-500 bg-white hover:bg-slate-50 border border-slate-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-red-400 rounded-lg transition-colors"
+                                                                                title="Desactivar"
+                                                                            >
+                                                                                <FiTrash2 className="w-4 h-4" />
+                                                                            </button>
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        )}
                                                     </td>
                                                 </tr>
                                             );

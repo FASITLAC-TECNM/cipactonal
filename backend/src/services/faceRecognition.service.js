@@ -4,7 +4,7 @@ import '@tensorflow/tfjs-backend-cpu';
 import * as tf from '@tensorflow/tfjs';
 
 import * as faceapi from '@vladmandic/face-api';
-import { Canvas, Image, ImageData } from 'canvas';
+import { Canvas, Image, ImageData } from '@napi-rs/canvas';
 import path from 'path';
 import { fileURLToPath } from 'url';
 

@@ -21,13 +21,28 @@ router.use(verificarEmpresa);
 
 // Estadísticas
 router.get('/estadisticas-globales', requirePermiso('REPORTE_EXPORTAR', 'REGISTRO_VER'), getEstadisticasGlobales);
-router.get('/estadisticas-empleado/:empleadoId', requirePermiso('REPORTE_EXPORTAR', 'REGISTRO_VER'), getEstadisticasEmpleado);
+router.get('/estadisticas-empleado/:empleadoId', (req, res, next) => {
+    if (req.usuario && String(req.params.empleadoId) === String(req.usuario.empleado_id)) {
+        return next();
+    }
+    return requirePermiso('REPORTE_EXPORTAR', 'REGISTRO_VER', 'REPORTE_VER')(req, res, next);
+}, getEstadisticasEmpleado);
 router.get('/comparativa-departamentos', getComparativaDepartamentos);
 router.get('/estadisticas-departamento/:departamentoId', requirePermiso('REPORTE_EXPORTAR', 'REGISTRO_VER'), getEstadisticasDepartamento);
 
 // Detalles para exportación
-router.get('/detalle-asistencias', requirePermiso('REPORTE_EXPORTAR'), getDetalleAsistencias);
-router.get('/detalle-incidencias', requirePermiso('REPORTE_EXPORTAR'), getDetalleIncidencias);
+router.get('/detalle-asistencias', (req, res, next) => {
+    if (req.usuario && req.query.empleado_id && String(req.query.empleado_id) === String(req.usuario.empleado_id)) {
+        return next();
+    }
+    return requirePermiso('REPORTE_EXPORTAR', 'REGISTRO_VER', 'REPORTE_VER')(req, res, next);
+}, getDetalleAsistencias);
+router.get('/detalle-incidencias', (req, res, next) => {
+    if (req.usuario && req.query.empleado_id && String(req.query.empleado_id) === String(req.usuario.empleado_id)) {
+        return next();
+    }
+    return requirePermiso('REPORTE_EXPORTAR', 'REGISTRO_VER', 'REPORTE_VER')(req, res, next);
+}, getDetalleIncidencias);
 
 // Desempeño
 router.get('/desempeno', requirePermiso('REPORTE_EXPORTAR'), getReporteDesempeno);

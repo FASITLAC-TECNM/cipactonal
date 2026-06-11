@@ -36,6 +36,8 @@ import {
 import EscritorioProfile from '../components/EscritorioProfile';
 import DynamicLoader from '../components/common/DynamicLoader';
 import { useTour } from '../hooks/useTour';
+import HeaderActions from '../components/HeaderActions';
+import { useAuth } from '../context/AuthContext';
 
 import { API_CONFIG } from '../config/Apiconfig';
 const API_URL = API_CONFIG.BASE_URL;
@@ -47,6 +49,12 @@ const ESTADOS = {
 };
 
 const Dispositivos = () => {
+    const { hasPermission } = useAuth();
+    const canCreate = hasPermission('DISPOSITIVO_CREAR');
+    const canEdit = hasPermission('DISPOSITIVO_EDITAR');
+    const canDelete = hasPermission('DISPOSITIVO_ELIMINAR');
+    const canManage = hasPermission('DISPOSITIVO_GESTIONAR');
+
     // Estado para Solicitudes
     const [solicitudes, setSolicitudes] = useState([]);
 
@@ -155,6 +163,7 @@ const Dispositivos = () => {
                 }
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [solicitudIdParam, tipoParam, vistaActiva, loading, solicitudes, setSearchParams]);
 
     // --- Lógica Modales ---
@@ -403,36 +412,36 @@ const Dispositivos = () => {
                 </div>
             </div>
 
-            {/* Controles y Navegación (Pills) */}
-            <div className="flex flex-col lg:flex-row justify-between gap-4 items-center bg-white dark:bg-gray-800 p-2 rounded-xl border border-slate-100 dark:border-gray-700 shadow-sm">
-                <div id="devices-tabs" className="flex w-full lg:w-auto overflow-x-auto bg-slate-50 dark:bg-gray-900 p-1 rounded-lg">
-                    {[
-                        { id: 'escritorio', label: 'Escritorios Activos', icon: Monitor },
-                        { id: 'movil', label: 'Móviles Asignados', icon: Smartphone },
-                        { id: 'pendientes', label: 'Pendientes de Aprobar', icon: Clock },
-                        { id: 'historial', label: 'Historial', icon: FileText }
-                    ].map(tab => (
-                        <button
-                            key={tab.id}
-                            onClick={() => setVistaActiva(tab.id)}
-                            className={`whitespace-nowrap flex-1 px-4 py-2 text-sm font-medium rounded-md transition-all flex items-center justify-center gap-2 ${vistaActiva === tab.id ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-white/50 dark:hover:bg-gray-800/50'}`}
-                        >
-                            <tab.icon className={`w-4 h-4 ${vistaActiva === tab.id ? (tab.id === 'escritorio' ? 'text-primary-600' : tab.id === 'movil' ? 'text-blue-500' : tab.id === 'pendientes' ? 'text-orange-500' : 'text-gray-500') : ''}`} />
-                            {tab.label}
-                            {tab.id === 'pendientes' && pendientesList.length > 0 && <span className="bg-orange-500 text-white text-[10px] px-1.5 py-0.5 rounded-full ml-1">{pendientesList.length}</span>}
-                        </button>
-                    ))}
-                </div>
+            {/* Toolbar in Header */}
+            <HeaderActions>
+                <div className="flex items-center gap-3 w-full overflow-x-auto no-scrollbar justify-end">
+                    <div id="devices-tabs" className="flex overflow-x-auto bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm p-0.5 rounded-lg border border-slate-200/60 dark:border-slate-700/60 mr-auto flex-shrink-0">
+                        {[
+                            { id: 'escritorio', label: 'Escritorios', icon: Monitor },
+                            { id: 'movil', label: 'Móviles', icon: Smartphone },
+                            { id: 'pendientes', label: 'Pendientes', icon: Clock },
+                            { id: 'historial', label: 'Historial', icon: FileText }
+                        ].map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setVistaActiva(tab.id)}
+                                className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-md transition-all flex items-center gap-1.5 ${vistaActiva === tab.id ? 'bg-white dark:bg-slate-700 text-gray-900 dark:text-white shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:text-gray-400 dark:hover:text-gray-300'}`}
+                            >
+                                <tab.icon className={`w-3.5 h-3.5 ${vistaActiva === tab.id ? (tab.id === 'escritorio' ? 'text-primary-600' : tab.id === 'movil' ? 'text-blue-500' : tab.id === 'pendientes' ? 'text-orange-500' : 'text-gray-500') : ''}`} />
+                                <span className="hidden xl:inline">{tab.label}</span>
+                                {tab.id === 'pendientes' && pendientesList.length > 0 && <span className="bg-orange-500 text-white text-[9px] px-1.5 py-0.5 rounded-full ml-1">{pendientesList.length}</span>}
+                            </button>
+                        ))}
+                    </div>
 
-                <div className="flex gap-3 w-full lg:w-auto">
-                    <div className="relative flex-1 lg:w-64" id="devices-search">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <div className="relative max-w-xs w-full hidden lg:block flex-shrink-0" id="devices-search">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Buscar dispositivo..."
+                            placeholder="Buscar..."
                             value={busqueda}
                             onChange={(e) => setBusqueda(e.target.value)}
-                            className="input pl-9 py-2 text-sm"
+                            className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800"
                         />
                     </div>
                     {/* Filtro extra solo para activos */}
@@ -440,15 +449,15 @@ const Dispositivos = () => {
                         <select
                             value={filtroEstado}
                             onChange={(e) => setFiltroEstado(e.target.value)}
-                            className="input py-2 text-sm w-full lg:w-36"
+                            className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden md:block flex-shrink-0"
                         >
-                            <option value="">Status: Todos</option>
+                            <option value="">Todos</option>
                             <option value="activo">Activos</option>
                             <option value="inactivo">Inactivos</option>
                         </select>
                     )}
                 </div>
-            </div>
+            </HeaderActions>
 
             {loading ? (
                 <DynamicLoader text="Actualizando información..." />
@@ -498,14 +507,16 @@ const Dispositivos = () => {
                                             <button onClick={() => openDetallesModal(dispositivo, false)} className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors border ${vistaActiva === 'escritorio' ? 'bg-white dark:bg-gray-800 text-primary-700 dark:text-primary-400 border-primary-200 dark:border-primary-800/50 hover:bg-primary-50 dark:hover:bg-primary-900/20' : 'bg-white dark:bg-gray-800 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}>
                                                 Ver Ficha Técnica
                                             </button>
-                                            {dispositivo.es_activo === false ? (
-                                                <button onClick={() => handleReactivarDispositivo(dispositivo)} className="px-3 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg border border-slate-200 hover:border-green-200 transition-colors bg-white dark:bg-gray-800" title="Reactivar">
-                                                    <RefreshCw className="w-4 h-4" />
-                                                </button>
-                                            ) : (
-                                                <button onClick={() => handleDesactivarDispositivo(dispositivo)} className="px-3 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg border border-slate-200 hover:border-red-200 transition-colors bg-white dark:bg-gray-800" title="Desactivar">
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
+                                            {canDelete && (
+                                                dispositivo.es_activo === false ? (
+                                                    <button onClick={() => handleReactivarDispositivo(dispositivo)} className="px-3 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg border border-slate-200 hover:border-green-200 transition-colors bg-white dark:bg-gray-800" title="Reactivar">
+                                                        <RefreshCw className="w-4 h-4" />
+                                                    </button>
+                                                ) : (
+                                                    <button onClick={() => handleDesactivarDispositivo(dispositivo)} className="px-3 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg border border-slate-200 hover:border-red-200 transition-colors bg-white dark:bg-gray-800" title="Desactivar">
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )
                                             )}
                                         </div>
                                     </div>
@@ -554,12 +565,16 @@ const Dispositivos = () => {
                                                     <button onClick={() => openDetallesModal(solicitud, true)} className="px-3 py-2 text-xs font-semibold bg-slate-50 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-slate-100 dark:hover:bg-gray-600 border border-slate-200 dark:border-gray-600 transition-colors" title="Detalles">
                                                         <FileText className="w-4 h-4" />
                                                     </button>
-                                                    <button onClick={() => openAceptarModal(solicitud)} className="flex-1 py-2 px-3 text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/50 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors flex items-center justify-center gap-1">
-                                                        <Check className="w-4 h-4" /> Aprobar
-                                                    </button>
-                                                    <button onClick={() => openRechazarModal(solicitud)} className="flex-1 py-2 px-3 text-xs font-semibold bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center justify-center gap-1">
-                                                        <X className="w-4 h-4" /> Declinar
-                                                    </button>
+                                                    {(canCreate || canManage) && (
+                                                        <button onClick={() => openAceptarModal(solicitud)} className="flex-1 py-2 px-3 text-xs font-semibold bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800/50 rounded-lg hover:bg-green-100 dark:hover:bg-green-900/40 transition-colors flex items-center justify-center gap-1">
+                                                            <Check className="w-4 h-4" /> Aprobar
+                                                        </button>
+                                                    )}
+                                                    {(canDelete || canManage) && (
+                                                        <button onClick={() => openRechazarModal(solicitud)} className="flex-1 py-2 px-3 text-xs font-semibold bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors flex items-center justify-center gap-1">
+                                                            <X className="w-4 h-4" /> Declinar
+                                                        </button>
+                                                    )}
                                                 </div>
                                             </div>
                                         );

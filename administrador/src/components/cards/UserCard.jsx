@@ -1,7 +1,11 @@
 import React from 'react';
 import { FiEdit2, FiMail, FiPhone, FiChevronRight, FiTrash2, FiRefreshCw } from 'react-icons/fi';
+import { useAuth } from '../../context/AuthContext';
 
 const UserCard = ({ usuario, onEdit, onViewProfile, onDelete, onReactivar }) => {
+    const { hasPermission } = useAuth();
+    const canEdit = hasPermission('USUARIO_EDITAR');
+    const canDelete = hasPermission('USUARIO_ELIMINAR');
 
     const getInitials = (nombre) => {
         if (!nombre) return '?';
@@ -12,20 +16,14 @@ const UserCard = ({ usuario, onEdit, onViewProfile, onDelete, onReactivar }) => 
         return nombre.substring(0, 2).toUpperCase();
     };
 
-    const statusBadge = {
-        activo: 'bg-green-100 text-green-700',
-        suspendido: 'bg-yellow-100 text-yellow-700',
-        baja: 'bg-red-100 text-red-700'
-    };
-
     return (
         <div
             onClick={() => onViewProfile(usuario.usuario)}
             className={`group relative card p-4 hover:-translate-y-1 transition-all cursor-pointer flex flex-col gap-3 ${usuario.estado_cuenta === 'baja'
-                ? 'bg-slate-50 dark:bg-gray-900/50 grayscale-[50%] opacity-75'
+                ? 'bg-slate-50 dark:bg-[#1e1e1c]/50 grayscale-[50%] opacity-75'
                 : usuario.estado_cuenta === 'suspendido'
                     ? 'bg-orange-50/50 dark:bg-yellow-900/10'
-                    : 'bg-white dark:bg-gray-800'
+                    : 'bg-white dark:bg-[#1e1e1c]'
                 }`}
         >
             {/* Header: Avatar, Info, Actions */}
@@ -37,7 +35,7 @@ const UserCard = ({ usuario, onEdit, onViewProfile, onDelete, onReactivar }) => 
                             <img
                                 src={usuario.foto}
                                 alt={usuario.nombre}
-                                className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-gray-600 shadow-sm"
+                                className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-[#2a2a27] shadow-sm"
                             />
                         ) : (
                             <div className="w-10 h-10 bg-primary-50 dark:bg-primary-900/30 border border-primary-200 rounded-xl flex items-center justify-center text-primary-700 font-bold text-sm shadow-sm opacity-90">
@@ -48,48 +46,54 @@ const UserCard = ({ usuario, onEdit, onViewProfile, onDelete, onReactivar }) => 
 
                     {/* 2. Información Principal */}
                     <div className="min-w-0">
-                        <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate" title={usuario.nombre}>
+                        <h3 className="text-sm font-bold text-gray-900 dark:text-[#e8e8e4] truncate" title={usuario.nombre}>
                             {usuario.nombre}
                         </h3>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">@{usuario.usuario}</p>
+                        <p className="text-xs text-gray-500 dark:text-[#a0a09a] truncate">@{usuario.usuario}</p>
                     </div>
                 </div>
 
                 {/* 5. Acciones */}
                 <div className="flex items-center gap-1 flex-shrink-0 -mr-2">
                     {usuario.estado_cuenta === 'baja' ? (
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                onReactivar && onReactivar(usuario);
-                            }}
-                            className="p-1.5 text-green-600 hover:bg-green-100 rounded-md transition-colors"
-                            title="Reactivar usuario"
-                        >
-                            <FiRefreshCw className="w-4 h-4" />
-                        </button>
+                        canDelete && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    onReactivar && onReactivar(usuario);
+                                }}
+                                className="p-1.5 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30 rounded-md transition-colors"
+                                title="Reactivar usuario"
+                            >
+                                <FiRefreshCw className="w-4 h-4" />
+                            </button>
+                        )
                     ) : (
                         <>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onEdit(usuario);
-                                }}
-                                className="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-slate-50 border border-transparent hover:border-slate-200 dark:hover:bg-gray-700 rounded-md transition-colors opacity-0 group-hover:opacity-100"
-                                title="Editar"
-                            >
-                                <FiEdit2 className="w-4 h-4" />
-                            </button>
-                            <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    onDelete && onDelete(usuario);
-                                }}
-                                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-slate-50 border border-transparent hover:border-slate-200 dark:hover:bg-gray-700 rounded-md transition-colors opacity-0 group-hover:opacity-100"
-                                title="Dar de baja"
-                            >
-                                <FiTrash2 className="w-4 h-4" />
-                            </button>
+                            {canEdit && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onEdit(usuario);
+                                    }}
+                                    className="p-1.5 text-slate-400 hover:text-primary-600 hover:bg-slate-50 border border-transparent hover:border-slate-200 dark:hover:bg-[#2a2a27] dark:hover:border-[#2a2a27] rounded-md transition-colors opacity-0 group-hover:opacity-100"
+                                    title="Editar"
+                                >
+                                    <FiEdit2 className="w-4 h-4" />
+                                </button>
+                            )}
+                            {canDelete && (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onDelete && onDelete(usuario);
+                                    }}
+                                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-slate-50 border border-transparent hover:border-slate-200 dark:hover:bg-[#2a2a27] dark:hover:border-[#2a2a27] rounded-md transition-colors opacity-0 group-hover:opacity-100"
+                                    title="Dar de baja"
+                                >
+                                    <FiTrash2 className="w-4 h-4" />
+                                </button>
+                            )}
                         </>
                     )}
                 </div>
@@ -98,14 +102,14 @@ const UserCard = ({ usuario, onEdit, onViewProfile, onDelete, onReactivar }) => 
             {/* Body: Contacto y Badges */}
             <div className="flex flex-col gap-2 mt-1">
                 {/* Contacto */}
-                <div className="flex flex-col gap-1.5 text-xs text-gray-500 dark:text-gray-400">
+                <div className="flex flex-col gap-1.5 text-xs text-gray-500 dark:text-[#a0a09a]">
                     <div className="flex items-center gap-2 truncate" title={usuario.correo}>
-                        <FiMail className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                        <FiMail className="w-3.5 h-3.5 text-gray-400 dark:text-[#a0a09a] flex-shrink-0" />
                         <span className="truncate">{usuario.correo}</span>
                     </div>
                     {usuario.telefono && (
                         <div className="flex items-center gap-2 truncate text-[11px]">
-                            <FiPhone className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
+                            <FiPhone className="w-3.5 h-3.5 text-gray-400 dark:text-[#a0a09a] flex-shrink-0" />
                             <span>{usuario.telefono}</span>
                         </div>
                     )}
@@ -120,7 +124,7 @@ const UserCard = ({ usuario, onEdit, onViewProfile, onDelete, onReactivar }) => 
                         {usuario.estado_cuenta}
                     </span>
                     {usuario.es_empleado && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white dark:bg-blue-900/30 text-slate-700 dark:text-blue-300 border border-slate-200 dark:border-blue-900/50">
+                        <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-white dark:bg-[#2a2a27] text-slate-700 dark:text-[#e8e8e4] border border-slate-200 dark:border-[#2a2a27]">
                             Empleado
                         </span>
                     )}

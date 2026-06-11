@@ -7,8 +7,8 @@ import DynamicLoader from './common/DynamicLoader';
  * Componente para proteger rutas que requieren autenticación
  * Si el usuario no está autenticado, redirige al login
  */
-const ProtectedRoute = ({ children, requireAdmin = false }) => {
-    const { isAuthenticated, isAdmin, loading } = useAuth();
+const ProtectedRoute = ({ children, requireAdmin = false, permission = null }) => {
+    const { isAuthenticated, isAdmin, hasPermission, loading } = useAuth();
 
     // Mostrar loading mientras se verifica la autenticación
     if (loading) {
@@ -24,14 +24,16 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
         return <Navigate to="/login" replace />;
     }
 
-    // Si requiere admin y no es admin, mostrar acceso denegado
-    if (requireAdmin && !isAdmin()) {
+    // Verificar si el usuario cumple con los requerimientos de acceso
+    const tieneAcceso = (!requireAdmin || isAdmin()) && (!permission || hasPermission(permission));
+
+    if (!tieneAcceso) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="card max-w-md text-center">
-                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+                <div className="card max-w-md text-center bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700">
+                    <div className="w-20 h-20 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
                         <svg
-                            className="w-10 h-10 text-red-600"
+                            className="w-10 h-10 text-red-600 dark:text-red-400"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -44,10 +46,10 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
                             />
                         </svg>
                     </div>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                         Acceso Denegado
                     </h2>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-gray-600 dark:text-gray-400 mb-6">
                         No tienes permisos para acceder a esta página.
                     </p>
                     <button

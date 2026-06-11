@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useSolicitudesSSE } from '../hooks/useSolicitudesSSE';
 import { API_CONFIG } from '../config/Apiconfig';
+import { useAuth } from './AuthContext';
 
 const NotificationContext = createContext();
 
@@ -13,6 +14,7 @@ export const useNotifications = () => {
 };
 
 export const NotificationProvider = ({ children }) => {
+    const { user, hasPermission } = useAuth();
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -26,6 +28,14 @@ export const NotificationProvider = ({ children }) => {
             if (!silent) setLoading(true);
             const token = localStorage.getItem('auth_token');
             if (!token) return;
+
+            const canViewDevices = user?.esPropietarioSaaS || hasPermission('DISPOSITIVO_VER') || hasPermission('DISPOSITIVO_CREAR') || hasPermission('DISPOSITIVO_GESTIONAR');
+            if (!canViewDevices) {
+                setNotifications([]);
+                setUnreadCount(0);
+                if (!silent) setLoading(false);
+                return;
+            }
 
             // Obtenemos solicitudes pendientes de ambos tipos
             // Nota: Asumimos que el backend puede filtrar por estado 'pendiente' si no se envía tipo,
