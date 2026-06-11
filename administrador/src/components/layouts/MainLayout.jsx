@@ -101,17 +101,17 @@ const MainLayout = ({ children }) => {
             <main className="relative flex flex-col flex-1 overflow-hidden">
                 {/* Banner de Impersonación */}
                 {isImpersonating && (
-                    <div className="z-30 flex justify-between items-center bg-red-600 shadow-md px-6 py-2 text-white">
-                        <div className="flex items-center gap-2 font-bold text-sm">
-                            <span className="relative flex w-2 h-2">
-                                <span className="inline-flex absolute bg-red-400 opacity-75 rounded-full w-full h-full animate-ping"></span>
-                                <span className="inline-flex relative bg-white rounded-full w-2 h-2"></span>
+                    <div className="z-30 flex flex-col sm:flex-row justify-between items-center bg-red-500/95 dark:bg-red-600/90 backdrop-blur-md shadow-lg shadow-red-500/20 dark:shadow-red-900/20 mx-4 lg:mx-8 mt-4 lg:mt-6 px-4 md:px-6 py-2.5 text-white rounded-2xl border border-red-400/50 dark:border-red-500/30 gap-3 shrink-0">
+                        <div className="flex items-center gap-3 font-bold text-xs sm:text-sm">
+                            <span className="relative flex w-2.5 h-2.5 shrink-0">
+                                <span className="inline-flex absolute bg-red-200 opacity-75 rounded-full w-full h-full animate-ping"></span>
+                                <span className="inline-flex relative bg-white rounded-full w-2.5 h-2.5"></span>
                             </span>
-                            MODO IMPERSONACIÓN: Estás operando como Administrador del Tenant
+                            <span className="leading-tight">MODO IMPERSONACIÓN: Estás operando como Administrador del Tenant</span>
                         </div>
                         <button
                             onClick={handleTerminarImpersonacion}
-                            className="bg-white hover:bg-red-50 shadow-sm px-3 py-1 rounded font-bold text-red-600 text-xs transition-colors"
+                            className="bg-white hover:bg-red-50 text-red-600 shadow-sm px-4 py-1.5 rounded-xl font-bold text-xs transition-all shrink-0 hover:scale-105 active:scale-95"
                         >
                             Volver al Panel SaaS
                         </button>
@@ -143,13 +143,7 @@ const MainLayout = ({ children }) => {
                         <>
                             <div id="header-profile-portal" className="w-full" />
                             {headerState !== 'ready' && (
-                                <div className="absolute inset-0 flex items-center px-6 md:px-8 gap-4 pointer-events-none">
-                                    {/* Skeleton de avatar */}
-                                    <div className="w-10 h-10 rounded-full bg-slate-200/70 dark:bg-slate-700/50 animate-pulse shrink-0" />
-                                    <div className="flex flex-col gap-1.5 flex-1">
-                                        <div className="h-4 w-40 rounded-lg bg-slate-200/70 dark:bg-slate-700/50 animate-pulse" />
-                                        <div className="h-3 w-24 rounded-lg bg-slate-200/50 dark:bg-slate-700/30 animate-pulse" />
-                                    </div>
+                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                                 </div>
                             )}
                         </>
@@ -173,7 +167,7 @@ const MainLayout = ({ children }) => {
                 </header>
 
                 {/* Contenido */}
-                <div className="flex flex-col flex-1 mx-auto p-6 md:p-8 w-full max-w-8xl overflow-hidden">
+                <div className="flex flex-col flex-1 mx-4 lg:mx-8 mb-4 lg:mb-6 overflow-hidden">
                     {children || <Outlet />}
                 </div>
             </main>

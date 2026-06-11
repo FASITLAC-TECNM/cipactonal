@@ -367,50 +367,40 @@ const Dispositivos = () => {
 
     return (
         <div className="space-y-6">
-            {/* Métricas Principales */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="devices-metrics">
-                <div onClick={() => setVistaActiva('escritorio')} className={`card p-6 cursor-pointer transition-all ${vistaActiva === 'escritorio' ? 'ring-2 ring-primary-500 shadow-md' : 'hover:-translate-y-1 hover:shadow-md'}`}>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Escritorios Activos</p>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{escritoriosActivos.filter(d => d.es_activo !== false).length}</h3>
-                        </div>
-                        <div className="p-3 bg-primary-50 dark:bg-primary-900/20 rounded-xl">
-                            <Monitor className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                        </div>
-                    </div>
-                </div>
-                <div onClick={() => setVistaActiva('movil')} className={`card p-6 cursor-pointer transition-all ${vistaActiva === 'movil' ? 'ring-2 ring-blue-500 shadow-md' : 'hover:-translate-y-1 hover:shadow-md'}`}>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Móviles Asignados</p>
-                            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mt-1">{movilesActivos.filter(d => d.es_activo !== false).length}</h3>
-                        </div>
-                        <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
-                            <Smartphone className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                        </div>
-                    </div>
-                </div>
-                <div onClick={() => setVistaActiva('pendientes')} className={`card p-6 cursor-pointer transition-all relative overflow-hidden ${vistaActiva === 'pendientes' || vistaActiva === 'historial' ? 'ring-2 ring-orange-500 shadow-md' : 'hover:-translate-y-1 hover:shadow-md'}`}>
-                    {pendientesList.length > 0 && <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-orange-100/50 dark:from-orange-900/10 to-transparent -mr-8 -mt-8 rounded-full pointer-events-none"></div>}
-                    <div className="flex items-center justify-between relative z-10">
-                        <div>
-                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Solicitudes Pendientes</p>
-                            <div className="flex items-center gap-3 mt-1">
-                                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{pendientesList.length}</h3>
-                                {pendientesList.length > 0 && (
-                                    <span className="flex items-center gap-1 text-[10px] font-bold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/30 px-2 py-0.5 rounded-full animate-pulse border border-orange-200 dark:border-orange-800">
-                                        <AlertTriangle className="w-3 h-3"/> Reclamo Acción
+            {/* Banner Alerta Solicitudes Pendientes */}
+            {pendientesList.length > 0 && (
+                <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-[1px] shadow-lg shadow-orange-500/20 animate-in fade-in slide-in-from-top-4 mb-2">
+                    <div className="bg-white dark:bg-[#1a1a18] rounded-[15px] p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
+                        {/* Glow background */}
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-3xl pointer-events-none translate-x-1/2 -translate-y-1/2"></div>
+                        
+                        <div className="flex items-center gap-4 relative z-10">
+                            <div className="bg-orange-100 dark:bg-orange-500/20 p-3 rounded-full relative">
+                                <div className="absolute inset-0 bg-orange-400/20 rounded-full animate-ping"></div>
+                                <AlertTriangle className="w-6 h-6 text-orange-600 dark:text-orange-400 relative z-10" />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-bold text-slate-800 dark:text-white flex items-center gap-2">
+                                    Atención Requerida
+                                    <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full font-bold shadow-sm">
+                                        {pendientesList.length} {pendientesList.length === 1 ? 'pendiente' : 'pendientes'}
                                     </span>
-                                )}
+                                </h3>
+                                <p className="text-sm text-slate-600 dark:text-gray-400 mt-0.5">
+                                    Hay dispositivos esperando autorización para conectarse a la red.
+                                </p>
                             </div>
                         </div>
-                        <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-xl">
-                            <Inbox className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-                        </div>
+                        
+                        <button 
+                            onClick={() => setVistaActiva('pendientes')}
+                            className="relative z-10 whitespace-nowrap px-6 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-sm font-bold rounded-xl shadow-md hover:shadow-lg transition-all hover:-translate-y-0.5"
+                        >
+                            Revisar ahora
+                        </button>
                     </div>
                 </div>
-            </div>
+            )}
 
             {/* Toolbar in Header */}
             <HeaderActions>

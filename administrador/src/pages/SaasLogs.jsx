@@ -3,6 +3,7 @@ import { FiActivity, FiServer, FiAlertTriangle, FiInfo, FiChevronLeft, FiChevron
 import { API_CONFIG } from '../config/Apiconfig';
 import DynamicLoader from '../components/common/DynamicLoader';
 import { createPortal } from 'react-dom';
+import Pagination from '../components/Pagination';
 
 const LOG_ICONS = {
     info: <FiInfo className="w-5 h-5 text-blue-500" />,
@@ -190,27 +191,13 @@ const SaasLogs = () => {
 
                 {/* Paginación */}
                 {!loading && meta.paginas > 1 && (
-                    <div className="bg-slate-50 dark:bg-[#2a2a27] px-6 py-4 flex items-center justify-between border-t border-slate-100 dark:border-[#3a3a36]">
-                        <span className="text-sm text-slate-500 dark:text-[#a0a09a] font-medium">
-                            Mostrando página <span className="font-bold text-slate-900 dark:text-[#e8e8e4]">{meta.page}</span> de <span className="font-bold text-slate-900 dark:text-[#e8e8e4]">{meta.paginas}</span>
-                        </span>
-                        <div className="flex gap-2">
-                            <button
-                                onClick={() => fetchLogs(meta.page - 1)}
-                                disabled={meta.page === 1}
-                                className="p-2 text-slate-600 dark:text-[#e8e8e4] hover:bg-white dark:hover:bg-[#363632] border border-slate-200 dark:border-[#3a3a36] rounded-lg disabled:opacity-30 transition-colors shadow-sm"
-                            >
-                                <FiChevronLeft className="w-5 h-5" />
-                            </button>
-                            <button
-                                onClick={() => fetchLogs(meta.page + 1)}
-                                disabled={meta.page === meta.paginas}
-                                className="p-2 text-slate-600 dark:text-[#e8e8e4] hover:bg-white dark:hover:bg-[#363632] border border-slate-200 dark:border-[#3a3a36] rounded-lg disabled:opacity-30 transition-colors shadow-sm"
-                            >
-                                <FiChevronRight className="w-5 h-5" />
-                            </button>
-                        </div>
-                    </div>
+                    <Pagination
+                        pagina={meta.page}
+                        totalPaginas={meta.paginas}
+                        total={meta.total}
+                        porPagina={meta.limit}
+                        onChange={fetchLogs}
+                    />
                 )}
             </div>
 

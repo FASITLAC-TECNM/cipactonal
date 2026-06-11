@@ -38,45 +38,47 @@ function Pagination({ pagina, totalPaginas, total, porPagina, onChange }) {
     };
 
     return (
-        <div className="sticky bottom-4 z-20 flex items-center justify-between p-3 mt-4 border border-slate-200/60 dark:border-[#2a2a27]/60 bg-white/80 dark:bg-[#1e1e1c]/80 backdrop-blur-xl rounded-2xl shadow-lg">
-            <p className="text-xs text-gray-500 dark:text-[#a0a09a]">
-                {inicio}-{fin} de {total}
-            </p>
-            <div className="flex gap-1">
-                <button
-                    onClick={() => onChange(Math.max(1, pagina - 1))}
-                    disabled={pagina === 1}
-                    className="px-3 py-1 text-sm rounded-lg border border-gray-300 dark:border-[#2a2a27] hover:bg-gray-50 dark:hover:bg-[#2a2a27] text-gray-700 dark:text-[#e8e8e4] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                    Anterior
-                </button>
+        <div className="fixed bottom-4 right-6 lg:right-10 z-40 pointer-events-none flex justify-end">
+            <div className="pointer-events-auto flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-2 border border-slate-200/60 dark:border-[#3a3a36]/60 bg-white/80 dark:bg-[#1e1e1c]/80 backdrop-blur-xl rounded-full shadow-lg shadow-slate-200/20 dark:shadow-black/20 w-max transition-all">
+                <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-[#a0a09a] whitespace-nowrap hidden sm:block leading-none m-0">
+                    {inicio}-{fin} de {total}
+                </p>
+                <div className="flex items-center gap-1 sm:border-l border-slate-200 dark:border-[#3a3a36] sm:pl-4 h-8">
+                    <button
+                        onClick={() => onChange(Math.max(1, pagina - 1))}
+                        disabled={pagina === 1}
+                        className="h-6 sm:h-8 px-2 sm:px-3 flex items-center justify-center text-[10px] sm:text-xs font-bold rounded-full hover:bg-slate-100 dark:hover:bg-[#2a2a27] text-slate-600 dark:text-[#a0a09a] hover:text-slate-900 dark:hover:text-[#e8e8e4] disabled:opacity-30 disabled:cursor-not-allowed transition-colors leading-none"
+                    >
+                        Anterior
+                    </button>
 
-                {getPageNumbers().map((num, i) =>
-                    num === '...' ? (
-                        <span key={`ellipsis-${i}`} className="px-2 py-1 text-sm text-gray-400">...</span>
-                    ) : (
-                        <button
-                            key={num}
-                            onClick={() => onChange(num)}
-                            className={`px-3 py-1 text-sm rounded-lg border transition-colors ${pagina === num
-                                    ? 'bg-primary-600 text-white border-primary-600'
-                                    : 'border-gray-300 dark:border-[#2a2a27] hover:bg-gray-50 dark:hover:bg-[#2a2a27] text-gray-700 dark:text-[#e8e8e4]'
-                                }`}
-                        >
-                            {num}
-                        </button>
-                    )
-                )}
+                    {getPageNumbers().map((num, i) =>
+                        num === '...' ? (
+                            <span key={`ellipsis-${i}`} className="px-1 sm:px-2 flex items-center justify-center text-xs text-slate-400 dark:text-[#a0a09a] h-6 sm:h-8 leading-none">...</span>
+                        ) : (
+                            <button
+                                key={num}
+                                onClick={() => onChange(num)}
+                                className={`w-6 sm:w-8 h-6 sm:h-8 flex items-center justify-center text-[10px] sm:text-xs font-black rounded-full transition-all leading-none ${pagina === num
+                                        ? 'bg-primary-600 text-white shadow-md shadow-primary-500/20'
+                                        : 'hover:bg-slate-100 dark:hover:bg-[#2a2a27] text-slate-600 dark:text-[#a0a09a] hover:text-slate-900 dark:hover:text-[#e8e8e4]'
+                                    }`}
+                            >
+                                {num}
+                            </button>
+                        )
+                    )}
 
-                <button
-                    onClick={() => onChange(Math.min(totalPaginas, pagina + 1))}
-                    disabled={pagina === totalPaginas}
-                    className="px-3 py-1 text-sm rounded-lg border border-gray-300 dark:border-[#2a2a27] hover:bg-gray-50 dark:hover:bg-[#2a2a27] text-gray-700 dark:text-[#e8e8e4] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                >
-                    Siguiente
-                </button>
+                    <button
+                        onClick={() => onChange(Math.min(totalPaginas, pagina + 1))}
+                        disabled={pagina === totalPaginas}
+                        className="h-6 sm:h-8 px-2 sm:px-3 flex items-center justify-center text-[10px] sm:text-xs font-bold rounded-full hover:bg-slate-100 dark:hover:bg-[#2a2a27] text-slate-600 dark:text-[#a0a09a] hover:text-slate-900 dark:hover:text-[#e8e8e4] disabled:opacity-30 disabled:cursor-not-allowed transition-colors leading-none"
+                    >
+                        Siguiente
+                    </button>
+                </div>
             </div>
-        </div >
+        </div>
     );
 }
 

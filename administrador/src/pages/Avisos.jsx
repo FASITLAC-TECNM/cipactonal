@@ -365,16 +365,6 @@ const Avisos = () => {
                             </div>
                         ))}
                     </div>
-                    
-                    <div className="flex-shrink-0 mt-2 border-t border-gray-200 dark:border-[#2a2a27] pt-3 pb-2 z-10 bg-slate-50 dark:bg-[#111110]">
-                        <Pagination
-                            pagina={pagina}
-                            totalPaginas={totalPaginasFechas}
-                            total={fechasUnicas.length}
-                            porPagina={diasPorPagina}
-                            onChange={setPagina}
-                        />
-                    </div>
                 </div>
             )}
 
@@ -589,6 +579,17 @@ const Avisos = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Paginación global de la vista */}
+            {!loading && avisosFiltrados.length > 0 && (
+                <Pagination
+                    pagina={pagina}
+                    totalPaginas={totalPaginasFechas}
+                    total={fechasUnicas.length}
+                    porPagina={diasPorPagina}
+                    onChange={setPagina}
+                />
             )}
         </div>
     );

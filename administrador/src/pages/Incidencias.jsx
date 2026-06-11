@@ -236,22 +236,22 @@ const Incidencias = () => {
 
     const getEstadoBadge = (estado) => {
         const badges = {
-            'pendiente': 'bg-yellow-100 text-yellow-800',
-            'aprobado': 'bg-green-100 text-green-800',
-            'rechazado': 'bg-red-100 text-red-800'
+            'pendiente': 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800/30',
+            'aprobado': 'bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/30',
+            'rechazado': 'bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 border-rose-200 dark:border-rose-800/30'
         };
-        return badges[estado] || 'bg-gray-100 text-gray-800';
+        return badges[estado] || 'bg-slate-50 dark:bg-slate-900/20 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800/30';
     };
 
     const getTipoBadge = (tipo) => {
         const badges = {
-            'retardo': 'bg-orange-100 text-orange-800',
-            'justificante': 'bg-blue-100 text-blue-800',
-            'permiso': 'bg-purple-100 text-purple-800',
-            'vacaciones': 'bg-teal-100 text-teal-800',
-            'festivo': 'bg-pink-100 text-pink-800'
+            'retardo': 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800/30',
+            'justificante': 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800/30',
+            'permiso': 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-800/30',
+            'vacaciones': 'bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 border-cyan-200 dark:border-cyan-800/30',
+            'festivo': 'bg-pink-50 dark:bg-pink-900/20 text-pink-600 dark:text-pink-400 border-pink-200 dark:border-pink-800/30'
         };
-        return badges[tipo] || 'bg-gray-100 text-gray-800';
+        return badges[tipo] || 'bg-slate-50 dark:bg-slate-900/20 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800/30';
     };
 
     const getTipoIcon = (tipo) => {
@@ -297,29 +297,59 @@ const Incidencias = () => {
 
     return (
         <div className="flex flex-col gap-6 h-[calc(100vh-6rem)]">
-            {/* Header */}
-            <div className="flex justify-between items-center">
-                <div>
-                    <h1 className="font-bold text-gray-900 dark:text-white text-2xl">Incidencias</h1>
-                    <p className="mt-1 text-gray-500 dark:text-gray-400 text-sm">
-                        Gestiona justificantes, permisos y vacaciones
-                    </p>
-                </div>
-            </div>
-
-            {/* Toolbar in Header */}
+            {/* Header Toolbar */}
             <HeaderActions>
-                <div className="flex items-center gap-3 w-full justify-end">
+                <div className="flex items-center gap-3 w-full justify-end flex-wrap">
+                    <select
+                        value={filtros.tipo}
+                        onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value })}
+                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
+                    >
+                        <option value="">Todos los tipos</option>
+                        <option value="retardo">Retardo</option>
+                        <option value="justificante">Justificante</option>
+                        <option value="permiso">Permiso</option>
+                        <option value="vacaciones">Vacaciones</option>
+                        <option value="festivo">Festivo</option>
+                    </select>
+
                     <select
                         value={filtros.estado}
                         onChange={(e) => setFiltros({ ...filtros, estado: e.target.value })}
-                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden md:block"
+                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
                     >
                         <option value="">Todos los estados</option>
                         <option value="pendiente">Pendiente</option>
                         <option value="aprobado">Aprobado</option>
                         <option value="rechazado">Rechazado</option>
                     </select>
+
+                    <select
+                        value={filtros.empleado_id}
+                        onChange={(e) => setFiltros({ ...filtros, empleado_id: e.target.value })}
+                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors hidden md:block"
+                    >
+                        <option value="">Todos los empleados</option>
+                        {empleados.map(emp => (
+                            <option key={emp.id} value={emp.id}>{emp.nombre}</option>
+                        ))}
+                    </select>
+
+                    <input
+                        type="date"
+                        value={filtros.fecha_inicio}
+                        onChange={(e) => setFiltros({ ...filtros, fecha_inicio: e.target.value })}
+                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors hidden lg:block"
+                    />
+
+                    <button
+                        onClick={fetchIncidencias}
+                        className="btn-secondary flex items-center gap-2 py-1.5 px-3 text-sm shadow-sm transition-all bg-white/50 dark:bg-[#2a2a27]/50"
+                        title="Aplicar Filtros"
+                    >
+                        <FiFilter className="w-4 h-4" />
+                    </button>
+
                     <button
                         onClick={() => {
                             resetForm();
@@ -333,154 +363,82 @@ const Incidencias = () => {
                 </div>
             </HeaderActions>
 
-            {/* Estadísticas */}
-            <div className="gap-6 grid grid-cols-1 md:grid-cols-4">
-                <div className="card">
-                    <p className="mb-1 text-gray-600 dark:text-gray-400 text-sm">Total</p>
-                    <p className="font-bold text-gray-900 dark:text-white text-3xl">{stats.total}</p>
-                </div>
-                <div className="card">
-                    <p className="mb-1 text-gray-600 dark:text-gray-400 text-sm">Pendientes</p>
-                    <p className="font-bold text-yellow-600 dark:text-yellow-500 text-3xl">{stats.pendientes}</p>
-                </div>
-                <div className="card">
-                    <p className="mb-1 text-gray-600 dark:text-gray-400 text-sm">Aprobadas</p>
-                    <p className="font-bold text-green-600 dark:text-green-500 text-3xl">{stats.aprobadas}</p>
-                </div>
-                <div className="card">
-                    <p className="mb-1 text-gray-600 dark:text-gray-400 text-sm">Rechazadas</p>
-                    <p className="font-bold text-red-600 dark:text-red-500 text-3xl">{stats.rechazadas}</p>
-                </div>
-            </div>
-
-            {/* Filtros */}
-            <div className="card">
-                <div className="flex items-center gap-2 mb-4">
-                    <FiFilter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
-                    <h3 className="font-semibold text-gray-900 dark:text-white text-sm">Filtros</h3>
-                </div>
-                <div className="gap-4 grid grid-cols-1 md:grid-cols-5">
-                    <select
-                        value={filtros.tipo}
-                        onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value })}
-                        className="input"
-                    >
-                        <option value="">Todos los tipos</option>
-                        <option value="retardo">Retardo</option>
-                        <option value="justificante">Justificante</option>
-                        <option value="permiso">Permiso</option>
-                        <option value="vacaciones">Vacaciones</option>
-                        <option value="festivo">Festivo</option>
-                    </select>
-
-                    {/* Filtro de estado movido al Header */}
-                    <select
-                        value={filtros.empleado_id}
-                        onChange={(e) => setFiltros({ ...filtros, empleado_id: e.target.value })}
-                        className="input"
-                    >
-                        <option value="">Todos los empleados</option>
-                        {empleados.map(emp => (
-                            <option key={emp.id} value={emp.id}>{emp.nombre}</option>
-                        ))}
-                    </select>
-
-                    <input
-                        type="date"
-                        value={filtros.fecha_inicio}
-                        onChange={(e) => setFiltros({ ...filtros, fecha_inicio: e.target.value })}
-                        className="input"
-                        placeholder="Fecha inicio"
-                    />
-
-                    <button
-                        onClick={fetchIncidencias}
-                        className="btn-primary"
-                    >
-                        Aplicar Filtros
-                    </button>
-                </div>
-            </div>
-
             {/* Tabla de incidencias */}
-            <div className="flex-1 min-h-0 flex flex-col bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
-                <div className="flex-1 overflow-y-auto custom-scrollbar p-5">
+            <div className="flex-1 min-h-0 flex flex-col card p-0 overflow-hidden">
+                <div className="flex-1 overflow-y-auto custom-scrollbar">
                 {incidencias.length === 0 ? (
-                    <div className="py-12 text-gray-500 dark:text-gray-400 text-center">
-                        <FiFileText className="mx-auto mb-4 w-16 h-16 text-gray-300 dark:text-gray-600" />
+                    <div className="py-12 text-slate-500 dark:text-[#a0a09a] text-center">
+                        <FiFileText className="mx-auto mb-4 w-16 h-16 text-slate-300 dark:text-[#706f69]" />
                         <p className="font-medium text-lg">No hay incidencias registradas</p>
-                        <p className="text-sm">Comienza creando una nueva incidencia</p>
+                        <p className="text-sm mt-1">Comienza creando una nueva incidencia o ajusta los filtros</p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto">
-                        <table className="divide-y divide-gray-200 dark:divide-gray-700 min-w-full">
-                            <thead className="bg-gray-50 dark:bg-gray-700">
+                    <div className="overflow-x-auto min-w-full">
+                        <table className="divide-y divide-slate-200 dark:divide-[#2a2a27] min-w-full">
+                            <thead className="bg-slate-50/50 dark:bg-[#1e1e1c]/50 backdrop-blur-sm sticky top-0 z-10">
                                 <tr>
-                                    <th className="px-6 py-3 font-medium text-gray-500 dark:text-gray-300 text-xs text-left uppercase">
+                                    <th className="px-6 py-3 font-medium text-slate-500 dark:text-[#a0a09a] text-xs text-left uppercase tracking-wider">
                                         Empleado
                                     </th>
-                                    <th className="px-6 py-3 font-medium text-gray-500 dark:text-gray-300 text-xs text-left uppercase">
+                                    <th className="px-6 py-3 font-medium text-slate-500 dark:text-[#a0a09a] text-xs text-left uppercase tracking-wider">
                                         Tipo
                                     </th>
-                                    <th className="px-6 py-3 font-medium text-gray-500 dark:text-gray-300 text-xs text-left uppercase">
-                                        Fecha Inicio
+                                    <th className="px-6 py-3 font-medium text-slate-500 dark:text-[#a0a09a] text-xs text-left uppercase tracking-wider">
+                                        Fechas
                                     </th>
-                                    <th className="px-6 py-3 font-medium text-gray-500 dark:text-gray-300 text-xs text-left uppercase">
-                                        Fecha Fin
-                                    </th>
-                                    <th className="px-6 py-3 font-medium text-gray-500 dark:text-gray-300 text-xs text-left uppercase">
+                                    <th className="px-6 py-3 font-medium text-slate-500 dark:text-[#a0a09a] text-xs text-left uppercase tracking-wider">
                                         Estado
                                     </th>
-                                    <th className="px-6 py-3 font-medium text-gray-500 dark:text-gray-300 text-xs text-left uppercase">
+                                    <th className="px-6 py-3 font-medium text-slate-500 dark:text-[#a0a09a] text-xs text-left uppercase tracking-wider">
                                         Acciones
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                            <tbody className="divide-y divide-slate-200 dark:divide-[#2a2a27]">
                                 {incidencias.slice((pagina - 1) * porPagina, pagina * porPagina).map((incidencia) => (
-                                    <tr key={incidencia.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                    <tr key={incidencia.id} className="hover:bg-slate-50/80 dark:hover:bg-[#2a2a27]/50 transition-colors group">
                                         <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="flex items-center">
                                                 {incidencia.empleado_foto ? (
                                                     <img
                                                         src={incidencia.empleado_foto}
                                                         alt={incidencia.empleado_nombre}
-                                                        className="rounded-full w-10 h-10 object-cover"
+                                                        className="rounded-full w-10 h-10 object-cover border border-slate-200 dark:border-[#3a3a36]"
                                                     />
                                                 ) : (
-                                                    <div className="flex justify-center items-center bg-primary-100 rounded-full w-10 h-10 font-semibold text-primary-700">
+                                                    <div className="flex justify-center items-center bg-blue-50 dark:bg-blue-900/20 rounded-full w-10 h-10 font-semibold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/30">
                                                         {getInitials(incidencia.empleado_nombre)}
                                                     </div>
                                                 )}
                                                 <div className="ml-3">
-                                                    <div className="font-medium text-gray-900 dark:text-white text-sm">
+                                                    <div className="font-medium text-slate-900 dark:text-[#e8e8e4] text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                         {incidencia.empleado_nombre}
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${getTipoBadge(incidencia.tipo)}`}>
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${getTipoBadge(incidencia.tipo)}`}>
                                                 {getTipoIcon(incidencia.tipo)}
                                                 {incidencia.tipo}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm whitespace-nowrap">
-                                            {formatFecha(incidencia.fecha_inicio)}
-                                        </td>
-                                        <td className="px-6 py-4 text-gray-500 dark:text-gray-400 text-sm whitespace-nowrap">
-                                            {formatFecha(incidencia.fecha_fin)}
+                                        <td className="px-6 py-4 text-slate-500 dark:text-[#a0a09a] text-sm whitespace-nowrap">
+                                            <div className="flex flex-col gap-0.5">
+                                                <span><span className="text-slate-400 dark:text-[#706f69] text-xs">De:</span> {formatFecha(incidencia.fecha_inicio)}</span>
+                                                <span><span className="text-slate-400 dark:text-[#706f69] text-xs">A:</span> {formatFecha(incidencia.fecha_fin)}</span>
+                                            </div>
                                         </td>
                                         <td className="px-6 py-4 whitespace-nowrap">
-                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${getEstadoBadge(incidencia.estado)}`}>
+                                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getEstadoBadge(incidencia.estado)}`}>
                                                 {incidencia.estado}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4 text-sm whitespace-nowrap">
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     onClick={() => openDetailModal(incidencia)}
-                                                    className="text-blue-600 hover:text-blue-900 dark:hover:text-blue-300 dark:text-blue-400"
+                                                    className="p-1.5 text-slate-400 hover:text-blue-600 dark:text-[#706f69] dark:hover:text-blue-400 bg-white dark:bg-[#111110] hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg border border-slate-200 dark:border-[#2a2a27] transition-all shadow-sm"
                                                     title="Ver detalles"
                                                 >
                                                     <FiFileText className="w-4 h-4" />
@@ -489,21 +447,21 @@ const Incidencias = () => {
                                                     <>
                                                         <button
                                                             onClick={() => openEditModal(incidencia)}
-                                                            className="text-gray-600 hover:text-gray-900 dark:hover:text-white dark:text-gray-400"
+                                                            className="p-1.5 text-slate-400 hover:text-orange-500 dark:text-[#706f69] dark:hover:text-orange-400 bg-white dark:bg-[#111110] hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg border border-slate-200 dark:border-[#2a2a27] transition-all shadow-sm"
                                                             title="Editar"
                                                         >
                                                             <FiEdit2 className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => handleAprobar(incidencia.id)}
-                                                            className="text-green-600 hover:text-green-900 dark:hover:text-green-300 dark:text-green-400"
+                                                            className="p-1.5 text-slate-400 hover:text-emerald-600 dark:text-[#706f69] dark:hover:text-emerald-400 bg-white dark:bg-[#111110] hover:bg-emerald-50 dark:hover:bg-emerald-900/20 rounded-lg border border-slate-200 dark:border-[#2a2a27] transition-all shadow-sm"
                                                             title="Aprobar"
                                                         >
                                                             <FiCheck className="w-4 h-4" />
                                                         </button>
                                                         <button
                                                             onClick={() => openRechazarModal(incidencia.id)}
-                                                            className="text-red-600 hover:text-red-900 dark:hover:text-red-300 dark:text-red-400"
+                                                            className="p-1.5 text-slate-400 hover:text-red-600 dark:text-[#706f69] dark:hover:text-red-400 bg-white dark:bg-[#111110] hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-slate-200 dark:border-[#2a2a27] transition-all shadow-sm"
                                                             title="Rechazar"
                                                         >
                                                             <FiX className="w-4 h-4" />

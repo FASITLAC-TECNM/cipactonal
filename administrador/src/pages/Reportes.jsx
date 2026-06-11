@@ -32,7 +32,7 @@ const COLORS = {
     puntual: '#22c55e', // Verde
     retardo: '#eab308', // Amarillo
     falta: '#ef4444',   // Rojo
-    azul: '#3b82f6',
+    azul: '#f59e0b',
     morado: '#8b5cf6',
     gris: '#94a3b8'
 };
@@ -1399,8 +1399,8 @@ const Reportes = () => {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-6rem)] bg-gray-50 dark:bg-gray-900 p-6 overflow-hidden">
-            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4">
+        <div className="flex flex-col flex-1 min-h-0 h-full w-full relative">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-2">
             {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">
@@ -1437,92 +1437,64 @@ const Reportes = () => {
                             <span className="hidden sm:inline">Exportar</span>
                         </button>
                     )}
-                </div>
-            </HeaderActions>
-
-            <div className="max-w-7xl mx-auto space-y-6">
-                {/* --- BARRA DE FILTROS --- */}
-                <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col gap-4">
-
-                    <div className="flex flex-col xl:flex-row gap-4 items-end xl:items-center">
-                        <div className={`w-full xl:w-auto grid gap-4 flex-1 ${alcance === 'empleado' ? 'grid-cols-1 md:grid-cols-2' : alcance === 'global' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1'}`}>
-
-                            {/* Selector Específico de Empleado (Oculto en Vista General) */}
-                            {alcance === 'empleado' && (
-                                <div className="animate-in fade-in zoom-in-95 duration-200 w-full">
-                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1.5 ml-1">
-                                        Seleccionar Empleado:
-                                    </label>
-                                    <SearchableSelect
-                                        options={empleados}
-                                        value={idSeleccionado}
-                                        onChange={setIdSeleccionado}
-                                    />
-                                </div>
-                            )}
-
-                            {/* Selector de Departamento (Solo en Vista General) */}
-                            {alcance === 'global' && (
-                                <div className="animate-in fade-in zoom-in-95 duration-200 w-full">
-                                    <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1.5 ml-1">
-                                        Filtrar por Departamento:
-                                    </label>
-                                    <select
-                                        value={filtroDepartamento}
-                                        onChange={(e) => setFiltroDepartamento(e.target.value)}
-                                        className="w-full pl-3 pr-4 py-2.5 bg-gray-50 dark:bg-gray-700 border-transparent focus:bg-white dark:focus:bg-gray-600 border focus:border-blue-500 rounded-xl text-sm font-medium dark:text-white transition-all outline-none appearance-none"
-                                    >
-                                        <option value="todos">Todos los Departamentos</option>
-                                        {departamentos.map(d => (
-                                            <option key={d.id} value={d.id}>{d.nombre}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
-
-                            {/* Selector de Tiempo */}
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase mb-1.5 ml-1">Periodo de Tiempo:</label>
-                                <div className="relative">
-                                    <select
-                                        value={modoFecha}
-                                        onChange={(e) => setModoFecha(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-700 border-transparent focus:bg-white dark:focus:bg-gray-600 border focus:border-blue-500 rounded-xl text-sm font-medium dark:text-white transition-all outline-none appearance-none"
-                                    >
-                                        <option value="intervalo">Rango de Fechas</option>
-                                        <option value="siempre">Histórico Completo</option>
-                                    </select>
-                                    <Calendar className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Inputs de Fecha */}
-                        {modoFecha === 'intervalo' && (
-                            <div className="flex gap-2 w-full xl:w-auto animate-in fade-in slide-in-from-left-4">
-                                <div className="flex-1">
-                                    <label className="block text-xs font-bold text-gray-400 dark:text-gray-400 uppercase mb-1.5 ml-1">Inicio</label>
-                                    <input
-                                        type="date"
-                                        value={fechaInicio}
-                                        onChange={(e) => setFechaInicio(e.target.value)}
-                                        className="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl text-sm dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <label className="block text-xs font-bold text-gray-400 dark:text-gray-400 uppercase mb-1.5 ml-1">Fin</label>
-                                    <input
-                                        type="date"
-                                        value={fechaFin}
-                                        onChange={(e) => setFechaFin(e.target.value)}
-                                        className="w-full px-3 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-xl text-sm dark:text-white outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </div>
+                    <div className="flex items-center gap-3 w-full flex-wrap flex-1">
+                        {alcance === 'empleado' && (
+                            <div className="w-[200px]">
+                                <SearchableSelect
+                                    options={empleados}
+                                    value={idSeleccionado}
+                                    onChange={setIdSeleccionado}
+                                    className="input py-1.5 text-sm bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36]"
+                                />
                             </div>
                         )}
 
+                        {alcance === 'global' && (
+                            <select
+                                value={filtroDepartamento}
+                                onChange={(e) => setFiltroDepartamento(e.target.value)}
+                                className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
+                            >
+                                <option value="todos">Todos los Departamentos</option>
+                                {departamentos.map(d => (
+                                    <option key={d.id} value={d.id}>{d.nombre}</option>
+                                ))}
+                            </select>
+                        )}
+
+                        <div className="relative">
+                            <select
+                                value={modoFecha}
+                                onChange={(e) => setModoFecha(e.target.value)}
+                                className="input py-1.5 text-sm pl-8 w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
+                            >
+                                <option value="intervalo">Rango de Fechas</option>
+                                <option value="siempre">Histórico Completo</option>
+                            </select>
+                            <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        </div>
+
+                        {modoFecha === 'intervalo' && (
+                            <div className="flex gap-2">
+                                <input
+                                    type="date"
+                                    value={fechaInicio}
+                                    onChange={(e) => setFechaInicio(e.target.value)}
+                                    className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
+                                />
+                                <input
+                                    type="date"
+                                    value={fechaFin}
+                                    onChange={(e) => setFechaFin(e.target.value)}
+                                    className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
+            </HeaderActions>
+
+            <div className="w-full space-y-6">
 
                 {/* --- CONTENIDO DEL DASHBOARD --- */}
                 {exporting && (
@@ -1550,7 +1522,7 @@ const Reportes = () => {
                             SECCIÓN NUEVA: COMPARATIVA DE DEPARTAMENTOS
                            ========================================================== */}
                         {(!idSeleccionado || alcance === 'global') && (
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 w-full animate-in slide-in-from-bottom-2">
+                            <div className="card p-6 w-full animate-in slide-in-from-bottom-2">
                                 <div className="flex justify-between items-center mb-6">
                                     <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                         <Building2 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
@@ -1606,7 +1578,7 @@ const Reportes = () => {
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                             {/* Gráfica Circular Comparativa */}
-                            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 col-span-1 flex flex-col">
+                            <div className="card p-6 col-span-1 flex flex-col">
                                 <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-2 flex items-center gap-2">
                                     <PieIcon className="w-5 h-5 text-gray-400" /> Distribución General
                                 </h3>
@@ -1643,7 +1615,7 @@ const Reportes = () => {
 
                             {/* Top 10 Desempeño Empleados */}
                             {(alcance === 'departamento' || alcance === 'global') && (
-                                <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 col-span-1 lg:col-span-2 flex flex-col">
+                                <div className="card p-6 col-span-1 lg:col-span-2 flex flex-col">
                                     <div className="flex justify-between items-center mb-6">
                                         <h3 className="text-lg font-bold text-gray-800 dark:text-white flex items-center gap-2">
                                             <Trophy className="w-5 h-5 text-yellow-500" />
@@ -1694,7 +1666,7 @@ const Reportes = () => {
 
                             {/* Listado de Asistencias (Empleado Único) Columna derecha ancha */}
                             {alcance === 'empleado' && (
-                                <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 col-span-1 lg:col-span-2 flex flex-col">
+                                <div className="card p-6 col-span-1 lg:col-span-2 flex flex-col">
                                     <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
                                         <FileSpreadsheet className="w-5 h-5 text-gray-400" /> Listado de Asistencias
                                     </h3>
@@ -1785,7 +1757,7 @@ const Reportes = () => {
 
                     </div>
                 ) : (
-                    <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-800 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+                    <div className="flex flex-col items-center justify-center py-20 card border-dashed">
                         <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-full mb-4">
                             <Search className="w-8 h-8 text-gray-400" />
                         </div>
@@ -1802,7 +1774,7 @@ const Reportes = () => {
             {/* --- MODAL DE DESCARGA (Código previo mantenido igual) --- */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md overflow-y-auto">
-                    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300 my-auto">
+                    <div className="card shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-300 my-auto">
 
                         <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-900/50">
                             <div className="flex items-center gap-3">
@@ -1857,7 +1829,7 @@ const Reportes = () => {
                                     )}
 
                                     {/* Card: Detalle de Asistencias */}
-                                    <div className="group bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 hover:border-blue-500 dark:hover:border-blue-400 transition-all hover:shadow-lg">
+                                    <div className="group card bg-white/40 dark:bg-[#1e1e1c]/40 p-5 hover:border-primary-500/50 dark:hover:border-primary-400/50 transition-all hover:shadow-lg">
                                         <div className="flex items-start justify-between mb-3">
                                             <div className="flex items-center gap-3">
                                                 <div className="p-2 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl group-hover:scale-110 transition-transform">
@@ -1889,7 +1861,7 @@ const Reportes = () => {
 
                                     {/* Card: Incidencias RRHH */}
                                     {alcance === 'empleado' && (
-                                        <div className="group bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-2xl p-5 hover:border-blue-500 dark:hover:border-blue-400 transition-all hover:shadow-lg">
+                                        <div className="group card bg-white/40 dark:bg-[#1e1e1c]/40 p-5 hover:border-primary-500/50 dark:hover:border-primary-400/50 transition-all hover:shadow-lg">
                                             <div className="flex items-start justify-between mb-3">
                                                 <div className="flex items-center gap-3">
                                                     <div className="p-2 bg-orange-50 dark:bg-orange-900/20 rounded-xl group-hover:scale-110 transition-transform">
@@ -1939,18 +1911,18 @@ const Reportes = () => {
 // Componente KPI Card
 // eslint-disable-next-line no-unused-vars
 const KpiCard = ({ title, value, total, sub, icon: Icon, color, bg }) => (
-    <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex items-start justify-between hover:shadow-md transition-shadow">
+    <div className="card p-5 flex items-start justify-between hover:shadow-md transition-shadow group">
         <div>
-            <p className="text-gray-500 dark:text-gray-400 text-sm font-medium mb-1">{title}</p>
-            <h4 className="text-3xl font-bold text-gray-900 dark:text-white">{value || 0}</h4>
+            <p className="text-slate-500 dark:text-[#a0a09a] text-sm font-medium mb-1">{title}</p>
+            <h4 className="text-3xl font-bold text-slate-900 dark:text-[#e8e8e4] group-hover:scale-105 transition-transform origin-left">{value || 0}</h4>
             {total ? (
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-2 font-medium">
+                <p className="text-xs text-slate-400 dark:text-[#706f69] mt-2 font-medium">
                     {total > 0 ? ((value / total) * 100).toFixed(1) : 0}% del total
                 </p>
             ) : null}
-            {sub && <p className="text-xs text-gray-400 mt-2">{sub}</p>}
+            {sub && <p className="text-xs text-slate-400 dark:text-[#706f69] mt-2">{sub}</p>}
         </div>
-        <div className={`p-3 rounded-xl ${bg}`}>
+        <div className={`p-3 rounded-xl border border-white/20 dark:border-black/20 ${bg} group-hover:scale-110 transition-transform`}>
             <Icon className={`w-6 h-6 ${color}`} />
         </div>
     </div>

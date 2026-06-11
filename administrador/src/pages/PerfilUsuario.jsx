@@ -471,7 +471,15 @@ const PerfilUsuario = () => {
         ].filter(item => item.value > 0);
     }, [estadisticas]);
 
-    if (loading) return <DynamicLoader text="Cargando perfil..." />;
+    if (loading) {
+        if (!portalMounted) return null;
+        return createPortal(
+            <div className="flex items-center justify-center w-full py-2">
+                <DynamicLoader text="Cargando perfil..." size="small" />
+            </div>,
+            document.getElementById('header-profile-portal')
+        );
+    }
     if (error) return <div className="p-8 text-center text-red-600">{error}</div>;
 
     const estadoBadge = getEstadoBadge(usuario?.estado_cuenta);

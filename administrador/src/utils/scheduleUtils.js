@@ -57,7 +57,7 @@ export const DIAS_SEMANA = [
  * Colores para asignar a empleados en el calendario global.
  */
 export const EMPLOYEE_COLORS = [
-    { bg: 'bg-blue-100', border: 'border-blue-300', text: 'text-blue-800', hex: '#3b82f6' },
+    { bg: 'bg-blue-100', border: 'border-blue-300', text: 'text-blue-800', hex: '#f59e0b' },
     { bg: 'bg-emerald-100', border: 'border-emerald-300', text: 'text-emerald-800', hex: '#10b981' },
     { bg: 'bg-purple-100', border: 'border-purple-300', text: 'text-purple-800', hex: '#8b5cf6' },
     { bg: 'bg-amber-100', border: 'border-amber-300', text: 'text-amber-800', hex: '#f59e0b' },

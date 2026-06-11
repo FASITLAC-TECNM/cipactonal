@@ -113,7 +113,7 @@ const Roles = () => {
     const [formData, setFormData] = useState({
         nombre: '',
         descripcion: '',
-        color: '#3B82F6',
+        color: '#f59e0b',
         posicion: 1,
         es_admin: false,
         es_empleado: false,
@@ -155,7 +155,7 @@ const Roles = () => {
         setFormData({
             nombre: '',
             descripcion: '',
-            color: '#3B82F6',
+            color: '#f59e0b',
             posicion: roles.length + 1,
             es_admin: false,
             es_empleado: false,
@@ -177,7 +177,7 @@ const Roles = () => {
                 setFormData({
                     nombre: data.nombre || '',
                     descripcion: data.descripcion || '',
-                    color: data.color || '#3B82F6',
+                    color: data.color || '#f59e0b',
                     posicion: data.posicion || 1,
                     es_admin: data.es_admin || false,
                     es_empleado: data.es_empleado || false,
@@ -201,7 +201,7 @@ const Roles = () => {
             ]);
             const rolData = await rolRes.json();
             const usuariosData = await usuariosRes.json();
-            if (rolData.success) setViewingRole({ ...rolData.data, color: rol.color || '#3B82F6' });
+            if (rolData.success) setViewingRole({ ...rolData.data, color: rol.color || '#f59e0b' });
             if (usuariosData.success) setRoleUsuarios(usuariosData.data);
         } catch (error) { console.error(error); } finally { setLoadingUsuarios(false); }
     };
@@ -698,8 +698,10 @@ const Roles = () => {
 
     // --- RENDER PRINCIPAL (Listado de Roles) ---
     return (
-        <div className="space-y-6 pb-24 animate-fade-in-up">
-            {/* Toolbar in Header */}
+        <div className="flex flex-col flex-1 min-h-0 h-full gap-6 w-full relative">
+            {/* Contenedor con scroll y degradado inferior */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 animate-fade-in-up pr-2 [mask-image:linear-gradient(to_bottom,black_90%,transparent_100%)]">
+                {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">
                     {!isReordering ? (
@@ -787,7 +789,7 @@ const Roles = () => {
                                     }
                                     ${draggedIndex === index ? 'opacity-50 scale-[0.98]' : ''}`}
                                 style={{
-                                    boxShadow: !isReordering ? `0 4px 20px -5px ${rol.color || '#3B82F6'}15` : 'none'
+                                    boxShadow: !isReordering ? `0 4px 20px -5px ${rol.color || '#f59e0b'}15` : 'none'
                                 }}
                             >
                                 <div className="flex items-center gap-4 p-5">
@@ -808,9 +810,9 @@ const Roles = () => {
 
                                     <div
                                         className="w-16 h-16 rounded-lg flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105"
-                                        style={{ backgroundColor: `${rol.color || '#3B82F6'}20` }}
+                                        style={{ backgroundColor: `${rol.color || '#f59e0b'}20` }}
                                     >
-                                        <FiShield className="w-7 h-7" style={{ color: rol.color || '#3B82F6' }} />
+                                        <FiShield className="w-7 h-7" style={{ color: rol.color || '#f59e0b' }} />
                                     </div>
 
                                     <div className="flex-1 min-w-0">
@@ -881,6 +883,10 @@ const Roles = () => {
                     })}
                 </div>
             )}
+            </div>
+            
+            {/* Gradient Inferior para que no se corte bruscamente */}
+            <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-slate-50 dark:from-[#111110] to-transparent pointer-events-none" />
 
             {/* Create/Edit Modal - Reutilizado */}
             {modalOpen && createPortal(
