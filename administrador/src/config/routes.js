@@ -1,22 +1,45 @@
 import { lazy } from 'react';
 
-// Lazy loading de todas las páginas
-const Dashboard = lazy(() => import('../pages/Tablero'));
-const Empleados = lazy(() => import('../pages/Empleados'));
-const Horarios = lazy(() => import('../pages/Horarios'));
-const Departamentos = lazy(() => import('../pages/Departamentos'));
-const Roles = lazy(() => import('../pages/Roles'));
-const Dispositivos = lazy(() => import('../pages/Dispositivos'));
-const Incidencias = lazy(() => import('../pages/Incidencias'));
-const Reportes = lazy(() => import('../pages/Reportes'));
-const Registros = lazy(() => import('../pages/Registros'));
-const Configuracion = lazy(() => import('../pages/Configuracion'));
-const PerfilUsuario = lazy(() => import('../pages/PerfilUsuario'));
-const Avisos = lazy(() => import('../pages/Avisos'));
-const AdminSaaS = lazy(() => import('../pages/AdminSaaS')); // Rutas SuperUser
-const EmpresasSaaS = lazy(() => import('../pages/EmpresasSaaS'));
-const ConfigurarEmpresaSaaS = lazy(() => import('../pages/ConfigurarEmpresaSaaS'));
-const SaasLogs = lazy(() => import('../pages/SaasLogs'));
+// Wrapper para manejar errores de carga de chunks (Vite/React) tras nuevos despliegues en producción
+const lazyWithRetry = (componentImport) =>
+    lazy(async () => {
+        const pageHasAlreadyBeenForceRefreshed = JSON.parse(
+            window.sessionStorage.getItem('page-has-been-force-refreshed') || 'false'
+        );
+
+        try {
+            const component = await componentImport();
+            window.sessionStorage.setItem('page-has-been-force-refreshed', 'false');
+            return component;
+        } catch (error) {
+            if (!pageHasAlreadyBeenForceRefreshed) {
+                // Si falla al cargar el chunk, forzar recarga para obtener el nuevo index.html con los nuevos hashes
+                window.sessionStorage.setItem('page-has-been-force-refreshed', 'true');
+                window.location.reload();
+                // Devolver una promesa que nunca se resuelve para evitar renderizado antes del recargo
+                return new Promise(() => {});
+            }
+            throw error;
+        }
+    });
+
+// Lazy loading de todas las páginas con reintento automático
+const Dashboard = lazyWithRetry(() => import('../pages/Tablero'));
+const Empleados = lazyWithRetry(() => import('../pages/Empleados'));
+const Horarios = lazyWithRetry(() => import('../pages/Horarios'));
+const Departamentos = lazyWithRetry(() => import('../pages/Departamentos'));
+const Roles = lazyWithRetry(() => import('../pages/Roles'));
+const Dispositivos = lazyWithRetry(() => import('../pages/Dispositivos'));
+const Incidencias = lazyWithRetry(() => import('../pages/Incidencias'));
+const Reportes = lazyWithRetry(() => import('../pages/Reportes'));
+const Registros = lazyWithRetry(() => import('../pages/Registros'));
+const Configuracion = lazyWithRetry(() => import('../pages/Configuracion'));
+const PerfilUsuario = lazyWithRetry(() => import('../pages/PerfilUsuario'));
+const Avisos = lazyWithRetry(() => import('../pages/Avisos'));
+const AdminSaaS = lazyWithRetry(() => import('../pages/AdminSaaS')); // Rutas SuperUser
+const EmpresasSaaS = lazyWithRetry(() => import('../pages/EmpresasSaaS'));
+const ConfigurarEmpresaSaaS = lazyWithRetry(() => import('../pages/ConfigurarEmpresaSaaS'));
+const SaasLogs = lazyWithRetry(() => import('../pages/SaasLogs'));
 
 export const protectedRoutes = [
     { path: '/dashboard', component: Dashboard },
