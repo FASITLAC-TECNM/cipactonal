@@ -162,310 +162,310 @@ const ConfigurarEmpresaSaaS = () => {
     const colorProgreso = progresoEmpleados > 90 ? 'bg-red-500 shadow-sm' : progresoEmpleados > 75 ? 'bg-amber-500 shadow-sm' : 'bg-blue-600 shadow-sm';
 
     return (
-        <div className="min-h-screen bg-[#f1f5f9] py-8 px-4 sm:px-6 lg:px-8 text-slate-700 font-sans">
-            <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-700">
-
-                {/* Cabecera / Navegacion */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-2">
-                    <div className="flex items-center gap-5">
-                        <button
-                            onClick={() => navigate('/empresas')}
-                            className="p-3 text-slate-400 hover:text-blue-600 bg-white border border-slate-200 rounded-2xl hover:border-blue-200 transition-all shadow-sm hover:shadow-md group"
-                        >
-                            <FiArrowLeft className="w-6 h-6 transform group-hover:-translate-x-1 transition-transform" />
-                        </button>
-                        <div>
-                            <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                                Admin. Instancia
-                            </h1>
-                            <p className="text-sm text-blue-600/60 font-mono mt-1 flex items-center gap-2 font-bold">
-                                <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                                {id}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className={`px-6 py-2.5 rounded-2xl text-xs font-black uppercase tracking-[0.2em] border shadow-sm
-                            ${empresa.es_activo 
-                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
-                                : 'bg-red-50 text-red-700 border-red-200'}`}>
-                            {empresa.es_activo ? 'Instancia Operativa' : 'Instancia Suspendida'}
-                        </div>
+        <div className="space-y-8 animate-fade-in-up pb-12">
+            {/* Cabecera / Navegacion */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                <div className="flex items-center gap-5">
+                    <button
+                        onClick={() => navigate('/empresas')}
+                        className="p-3 text-slate-600 hover:text-slate-900 dark:text-[#a0a09a] dark:hover:text-[#e8e8e4] bg-white/50 dark:bg-[#2a2a27]/50 border border-slate-200 dark:border-[#3a3a36] rounded-2xl transition-all shadow-sm group"
+                    >
+                        <FiArrowLeft className="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" />
+                    </button>
+                    <div>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-[#e8e8e4] tracking-tight">
+                            Ajustes de Entidad
+                        </h1>
+                        <p className="text-sm text-primary-600 dark:text-primary-400 font-mono mt-1 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-primary-500 animate-pulse"></span>
+                            {id}
+                        </p>
                     </div>
                 </div>
 
-                {error && (
-                    <div className="p-5 bg-red-50 text-red-700 font-bold rounded-2xl border border-red-200 flex items-center gap-4 animate-in slide-in-from-top-4 shadow-sm">
-                        <div className="bg-red-100 p-2 rounded-lg text-red-600"><FiAlertTriangle className="w-6 h-6" /></div>
-                        <p>{error}</p>
+                <div className="flex items-center gap-3">
+                    <div className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider border shadow-sm flex items-center gap-2
+                        ${empresa.es_activo 
+                            ? 'bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800/50' 
+                            : 'bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/50'}`}>
+                        <div className={`w-2 h-2 rounded-full ${empresa.es_activo ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                        {empresa.es_activo ? 'Instancia Operativa' : 'Instancia Suspendida'}
                     </div>
-                )}
+                </div>
+            </div>
 
-                {successMsg && (
-                    <div className="p-5 bg-emerald-50 text-emerald-700 font-bold rounded-2xl border border-emerald-200 flex items-center gap-4 animate-in slide-in-from-top-4 shadow-sm">
-                        <div className="bg-emerald-100 p-2 rounded-lg text-emerald-600"><FiCheckCircle className="w-6 h-6" /></div>
-                        <p>{successMsg}</p>
+            {error && (
+                <div className="p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 font-bold rounded-xl border border-red-100 dark:border-red-900/30 flex items-center gap-3 animate-fade-in-up">
+                    <FiAlertTriangle className="w-5 h-5 flex-shrink-0" />
+                    <p className="text-sm">{error}</p>
+                </div>
+            )}
+
+            {successMsg && (
+                <div className="p-4 bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 font-bold rounded-xl border border-green-100 dark:border-green-900/30 flex items-center gap-3 animate-fade-in-up">
+                    <FiCheckCircle className="w-5 h-5 flex-shrink-0" />
+                    <p className="text-sm">{successMsg}</p>
+                </div>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+
+                {/* Columna Izquierda: Identidad y Estadísticas */}
+                <div className="lg:col-span-1 space-y-6">
+                    {/* Tarjeta de Identidad */}
+                    <div className="card flex flex-col items-center text-center relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                        
+                        <div className="w-28 h-28 bg-slate-50 dark:bg-[#2a2a27] rounded-3xl border border-slate-100 dark:border-[#3a3a36] flex items-center justify-center p-4 mb-6 relative z-10 shadow-inner overflow-hidden">
+                            {empresa.logo ? (
+                                <img src={empresa.logo} alt="Logo Prev" className="max-w-full max-h-full object-contain transition-transform group-hover:scale-110 duration-500" />
+                            ) : (
+                                <FiGlobe className="w-12 h-12 text-slate-300 dark:text-[#a0a09a]" />
+                            )}
+                        </div>
+                        <h2 className="text-xl font-bold text-slate-800 dark:text-[#e8e8e4] leading-tight break-words max-w-full relative z-10">
+                            {empresa.nombre || 'Sin Nombre'}
+                        </h2>
+                        <p className="text-primary-600 dark:text-primary-400 text-[10px] font-bold uppercase tracking-widest mt-3 relative z-10 flex items-center justify-center gap-1.5">
+                            <FiShield className="w-3 h-3" />
+                            Entidad Registrada
+                        </p>
                     </div>
-                )}
 
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    {/* Tarjeta de Estadísticas de Consumo */}
+                    <div className="card relative overflow-hidden">
+                        <h3 className="font-bold text-slate-400 dark:text-[#a0a09a] text-xs uppercase tracking-wider flex items-center gap-2 mb-6">
+                            <FiActivity className="text-primary-500 w-4 h-4" />
+                            Métricas de Uso
+                        </h3>
 
-                    {/* Columna Izquierda: Identidad y Estadísticas */}
-                    <div className="lg:col-span-1 space-y-8">
-                        {/* Tarjeta de Identidad */}
-                        <div className="bg-white border border-slate-200 rounded-[2.5rem] p-10 flex flex-col items-center text-center shadow-xl shadow-slate-200/50 relative overflow-hidden group">
-                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-50 blur-[80px] rounded-full transition-all group-hover:bg-blue-100 duration-1000"></div>
-                            
-                            <div className="w-36 h-36 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-center p-4 mb-8 relative z-10 shadow-inner overflow-hidden">
-                                {empresa.logo ? (
-                                    <img src={empresa.logo} alt="Logo Prev" className="max-w-full max-h-full object-contain transition-transform group-hover:scale-110 duration-500" />
-                                ) : (
-                                    <FiGlobe className="w-16 h-16 text-slate-300" />
-                                )}
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <div className="flex justify-between items-end">
+                                    <span className="text-slate-500 dark:text-[#a0a09a] text-xs font-semibold">Usuarios</span>
+                                    <span className="text-slate-900 dark:text-[#e8e8e4] font-mono text-lg font-bold">{empresa.total_usuarios}<span className="text-slate-400 dark:text-[#a0a09a] text-xs font-normal"> / {empresa.limite_empleados || '∞'}</span></span>
+                                </div>
+                                <div className="w-full bg-slate-100 dark:bg-[#2a2a27] rounded-full h-2 border border-slate-200 dark:border-[#3a3a36] overflow-hidden">
+                                    <div className={`h-full rounded-full transition-all duration-1000 ${colorProgreso}`} style={{ width: `${progresoEmpleados}%` }}></div>
+                                </div>
                             </div>
-                            <h2 className="text-2xl font-black text-slate-800 leading-tight break-words max-w-full relative z-10 tracking-tight">
-                                {empresa.nombre || 'Sin Nombre'}
-                            </h2>
-                            <p className="text-blue-500 text-xs font-bold uppercase tracking-widest mt-4 relative z-10 flex items-center justify-center gap-2">
-                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 shadow-sm"></span>
-                                Entidad Registrada
-                            </p>
-                        </div>
 
-                        {/* Tarjeta de Estadísticas de Consumo */}
-                        <div className="bg-white border border-slate-200 rounded-[2rem] p-8 shadow-xl shadow-slate-200/50 relative overflow-hidden group">
-                            <h3 className="font-black text-slate-400 text-[10px] uppercase tracking-widest flex items-center gap-3 mb-8">
-                                <span className="p-1.5 bg-blue-50 rounded-lg"><FiActivity className="text-blue-600 w-4 h-4" /></span>
-                                Métricas de Uso
-                            </h3>
-
-                            <div className="space-y-8">
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-end">
-                                        <span className="text-slate-400 text-[10px] font-black uppercase tracking-tighter">Usuarios en BD</span>
-                                        <span className="text-slate-900 font-mono text-xl font-black">{empresa.total_usuarios}<span className="text-slate-300 text-xs font-normal"> / {empresa.limite_empleados || '∞'}</span></span>
-                                    </div>
-                                    <div className="w-full bg-slate-100 rounded-full h-3 border border-slate-200 overflow-hidden">
-                                        <div className={`h-full rounded-full transition-all duration-1000 ${colorProgreso}`} style={{ width: `${progresoEmpleados}%` }}></div>
-                                    </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-slate-50 dark:bg-[#2a2a27] p-4 rounded-xl border border-slate-100 dark:border-[#3a3a36] text-center transition-all hover:bg-white dark:hover:bg-[#363632]">
+                                    <p className="text-slate-500 dark:text-[#a0a09a] text-[10px] font-bold uppercase tracking-wider mb-1">Dptos.</p>
+                                    <p className="text-2xl font-bold text-slate-900 dark:text-[#e8e8e4]">{empresa.total_departamentos}</p>
                                 </div>
-
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 text-center group/item hover:bg-white hover:shadow-md transition-all">
-                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2 group-hover/item:text-blue-600 transition-colors">Dptos.</p>
-                                        <p className="text-3xl font-black text-slate-900 tracking-tighter">{empresa.total_departamentos}</p>
-                                    </div>
-                                    <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100 text-center group/item hover:bg-white hover:shadow-md transition-all">
-                                        <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2 group-hover/item:text-blue-600 transition-colors">Activos</p>
-                                        <p className="text-3xl font-black text-slate-900 tracking-tighter">{empresa.total_usuarios}</p>
-                                    </div>
+                                <div className="bg-slate-50 dark:bg-[#2a2a27] p-4 rounded-xl border border-slate-100 dark:border-[#3a3a36] text-center transition-all hover:bg-white dark:hover:bg-[#363632]">
+                                    <p className="text-slate-500 dark:text-[#a0a09a] text-[10px] font-bold uppercase tracking-wider mb-1">Activos</p>
+                                    <p className="text-2xl font-bold text-slate-900 dark:text-[#e8e8e4]">{empresa.total_usuarios}</p>
                                 </div>
                             </div>
                         </div>
-
-                        {/* Control Maestro (Kill Switch) */}
-                        <div className="bg-white border-2 border-red-50 rounded-[2rem] p-8 shadow-xl shadow-red-100 relative group">
-                            <h3 className="font-black text-slate-400 text-[10px] uppercase tracking-widest flex items-center gap-3 mb-3">
-                                <span className="p-1.5 bg-red-50 rounded-lg"><FiShield className="text-red-600 w-4 h-4" /></span>
-                                Estado de Servicio
-                            </h3>
-                            <p className="text-[10px] text-slate-400 mb-8 leading-relaxed font-medium uppercase tracking-wider">
-                                La suspensión bloquea el acceso total a la instancia.
-                            </p>
-
-                            <label className="flex items-center justify-between cursor-pointer group/toggle bg-slate-50 p-4 rounded-2xl border border-slate-100 hover:border-red-200 transition-all">
-                                <span className="font-black text-xs text-slate-500 group-toggle-hover:text-red-600 transition-colors uppercase">
-                                    {empresa.es_activo ? 'SUSPENDER' : 'RESTAURAR'}
-                                </span>
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        name="es_activo"
-                                        className="sr-only"
-                                        checked={empresa.es_activo}
-                                        onChange={handleChange}
-                                    />
-                                    <div className={`block w-14 h-7 rounded-full transition-all ${empresa.es_activo ? 'bg-emerald-100 border border-emerald-200' : 'bg-red-100 border border-red-200'}`}></div>
-                                    <div className={`absolute left-1.5 top-1.5 w-4 h-4 rounded-full transition-all duration-500 ${empresa.es_activo ? 'bg-emerald-600 translate-x-7' : 'bg-red-600 translate-x-0'}`}></div>
-                                </div>
-                            </label>
-                        </div>
                     </div>
 
-                    {/* Columna Derecha: Formulario y Configuraciones */}
-                    <div className="lg:col-span-3 space-y-8 font-sans">
-                        <form onSubmit={handleSubmit} className="space-y-8">
-                            
-                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-                                {/* Datos Generales */}
-                                <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 space-y-8 group">
-                                    <h3 className="text-xl font-black text-slate-900 flex items-center gap-4">
-                                        <span className="p-2.5 bg-blue-50 rounded-2xl border border-blue-100"><FiGlobe className="text-blue-600 w-6 h-6" /></span>
-                                        Identidad
-                                    </h3>
+                    {/* Control Maestro (Kill Switch) */}
+                    <div className="card border border-red-200 dark:border-red-900/30">
+                        <h3 className="font-bold text-slate-400 dark:text-[#a0a09a] text-xs uppercase tracking-wider flex items-center gap-2 mb-3">
+                            <FiShield className="text-red-500 w-4 h-4" />
+                            Estado de Servicio
+                        </h3>
+                        <p className="text-[11px] text-slate-500 dark:text-[#a0a09a] mb-6 font-medium">
+                            La suspensión bloquea el acceso total a la instancia.
+                        </p>
 
-                                    <div className="space-y-8">
-                                        <div className="group/field">
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 group-field-focus-within:text-blue-600 transition-colors">Nombre Comercial / Razón Social <span className="text-red-500">*</span></label>
-                                            <input
-                                                type="text"
-                                                name="nombre"
-                                                required
-                                                value={empresa.nombre}
-                                                onChange={handleChange}
-                                                className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-slate-800 placeholder-slate-300"
-                                                placeholder="Ej. Corporativo FASITLAC"
-                                            />
-                                        </div>
+                        <label className="flex items-center justify-between cursor-pointer bg-slate-50 dark:bg-[#2a2a27] p-3 rounded-xl border border-slate-100 dark:border-[#3a3a36] hover:border-red-200 dark:hover:border-red-900/50 transition-all">
+                            <span className="font-bold text-xs text-slate-600 dark:text-[#e8e8e4] uppercase">
+                                {empresa.es_activo ? 'Suspender' : 'Restaurar'}
+                            </span>
+                            <div className="relative">
+                                <input
+                                    type="checkbox"
+                                    name="es_activo"
+                                    className="sr-only"
+                                    checked={empresa.es_activo}
+                                    onChange={handleChange}
+                                />
+                                <div className={`block w-12 h-6 rounded-full transition-all ${empresa.es_activo ? 'bg-green-100 border border-green-200 dark:bg-green-900/30 dark:border-green-800' : 'bg-red-100 border border-red-200 dark:bg-red-900/30 dark:border-red-800'}`}></div>
+                                <div className={`absolute left-1 top-1 w-4 h-4 rounded-full transition-all duration-300 ${empresa.es_activo ? 'bg-green-500 translate-x-6' : 'bg-red-500 translate-x-0'}`}></div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
 
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                            <div className="group/field">
-                                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Teléfono</label>
-                                                <input
-                                                    type="tel"
-                                                    name="telefono"
-                                                    value={empresa.telefono}
-                                                    onChange={handleChange}
-                                                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-slate-800"
-                                                    placeholder="999 999 9999"
-                                                />
-                                            </div>
-                                            <div className="group/field">
-                                                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">E-mail</label>
-                                                <input
-                                                    type="email"
-                                                    name="correo"
-                                                    value={empresa.correo}
-                                                    onChange={handleChange}
-                                                    className="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-bold text-slate-800"
-                                                    placeholder="admin@empresa.com"
-                                                />
-                                            </div>
-                                        </div>
+                {/* Columna Derecha: Formulario y Configuraciones */}
+                <div className="lg:col-span-3 space-y-6">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        
+                        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                            {/* Datos Generales */}
+                            <div className="card space-y-6 relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-48 h-48 bg-primary-500/5 rounded-full blur-3xl -mr-24 -mt-24 pointer-events-none"></div>
 
-                                        <div className="group/field">
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">URL Logotipo (Alta Definición)</label>
-                                            <div className="relative">
-                                                <FiImage className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 w-5 h-5 pointer-events-none" />
-                                                <input
-                                                    type="url"
-                                                    name="logo"
-                                                    value={empresa.logo}
-                                                    onChange={handleChange}
-                                                    className="w-full pl-16 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-100 focus:border-blue-500 outline-none transition-all font-mono font-bold text-slate-500 text-xs shadow-sm"
-                                                    placeholder="https://cdn.empresa.com/logo.png"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-[#e8e8e4] flex items-center gap-3 relative z-10">
+                                    <FiGlobe className="text-primary-500 w-5 h-5" />
+                                    Identidad
+                                </h3>
 
-                                {/* Configuración de Licencia */}
-                                <div className="bg-white border border-slate-200 rounded-[2.5rem] p-8 sm:p-10 shadow-xl shadow-slate-200/50 space-y-8">
-                                    <h3 className="text-xl font-black text-slate-900 flex items-center gap-4">
-                                        <span className="p-2.5 bg-amber-50 rounded-2xl border border-amber-100"><FiShield className="text-amber-600 w-6 h-6" /></span>
-                                        Suscripción SaaS
-                                    </h3>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                                        <div className="group/field">
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Límite Empleados</label>
-                                            <input
-                                                type="number"
-                                                name="limite_empleados"
-                                                min="1"
-                                                value={empresa.limite_empleados}
-                                                onChange={handleChange}
-                                                className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-3xl focus:ring-4 focus:ring-amber-50 focus:border-amber-500 outline-none transition-all font-black text-slate-900 text-xl text-center"
-                                                placeholder="∞"
-                                            />
-                                        </div>
-                                        <div className="group/field">
-                                            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Límite Dispositivos</label>
-                                            <input
-                                                type="number"
-                                                name="limite_dispositivos"
-                                                min="1"
-                                                value={empresa.limite_dispositivos}
-                                                onChange={handleChange}
-                                                className="w-full px-6 py-5 bg-slate-50 border border-slate-200 rounded-3xl focus:ring-4 focus:ring-amber-50 focus:border-amber-500 outline-none transition-all font-black text-slate-900 text-xl text-center"
-                                                placeholder="∞"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Fecha de Expiración</label>
+                                <div className="space-y-5 relative z-10">
+                                    <div className="space-y-1.5">
+                                        <label className="label">Nombre Comercial / Razón Social <span className="text-red-500">*</span></label>
                                         <input
-                                            type="date"
-                                            name="fecha_vencimiento"
-                                            value={empresa.fecha_vencimiento}
+                                            type="text"
+                                            name="nombre"
+                                            required
+                                            value={empresa.nombre}
                                             onChange={handleChange}
-                                            className="w-full px-8 py-5 bg-slate-50 border border-slate-200 rounded-3xl focus:ring-4 focus:ring-amber-50 border-transparent outline-none transition-all font-black text-slate-900 text-center uppercase tracking-widest cursor-pointer hover:bg-slate-100"
+                                            className="input"
+                                            placeholder="Ej. Corporativo FASITLAC"
                                         />
                                     </div>
-                                    <div className="bg-amber-50 p-4 rounded-xl border border-amber-100 text-[10px] text-amber-700 font-bold uppercase tracking-widest text-center">
-                                        EL SISTEMA SUSPENDERÁ LA INSTANCIA AUTOMÁTICAMENTE.
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                        <div className="space-y-1.5">
+                                            <label className="label">Teléfono</label>
+                                            <input
+                                                type="tel"
+                                                name="telefono"
+                                                value={empresa.telefono}
+                                                onChange={handleChange}
+                                                className="input"
+                                                placeholder="999 999 9999"
+                                            />
+                                        </div>
+                                        <div className="space-y-1.5">
+                                            <label className="label">E-mail</label>
+                                            <input
+                                                type="email"
+                                                name="correo"
+                                                value={empresa.correo}
+                                                onChange={handleChange}
+                                                className="input"
+                                                placeholder="admin@empresa.com"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <label className="label">URL Logotipo (Alta Definición)</label>
+                                        <div className="relative">
+                                            <FiImage className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-[#a0a09a] w-4 h-4 pointer-events-none" />
+                                            <input
+                                                type="url"
+                                                name="logo"
+                                                value={empresa.logo}
+                                                onChange={handleChange}
+                                                className="input pl-10"
+                                                placeholder="https://cdn.empresa.com/logo.png"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Nueva Sección: Módulos Activos (Estética Bata Blanca) */}
-                            <div className="bg-white border-2 border-blue-50 rounded-[2.5rem] p-8 sm:p-12 shadow-2xl shadow-blue-100/50 group">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-12">
-                                    <h3 className="text-2xl font-black text-slate-900 flex items-center gap-5">
-                                        <span className="p-3 bg-blue-600 rounded-2xl shadow-lg shadow-blue-200"><FiCheckCircle className="text-white w-7 h-7" /></span>
-                                        Módulos Disponibles
-                                    </h3>
-                                    <span className="px-4 py-2 bg-slate-100 border border-slate-200 text-slate-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
-                                        Control Configuraciones de App
-                                    </span>
+                            {/* Configuración de Licencia */}
+                            <div className="card space-y-6 relative overflow-hidden group">
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-[#e8e8e4] flex items-center gap-3 relative z-10">
+                                    <FiShield className="text-amber-500 dark:text-amber-400 w-5 h-5" />
+                                    Suscripción SaaS
+                                </h3>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 relative z-10">
+                                    <div className="space-y-1.5">
+                                        <label className="label">Límite Empleados</label>
+                                        <input
+                                            type="number"
+                                            name="limite_empleados"
+                                            min="1"
+                                            value={empresa.limite_empleados}
+                                            onChange={handleChange}
+                                            className="input text-center text-lg font-mono"
+                                            placeholder="∞"
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="label">Límite Dispositivos</label>
+                                        <input
+                                            type="number"
+                                            name="limite_dispositivos"
+                                            min="1"
+                                            value={empresa.limite_dispositivos}
+                                            onChange={handleChange}
+                                            className="input text-center text-lg font-mono"
+                                            placeholder="∞"
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                    {Object.entries(empresa.configuracion_reportes?.modulos || {}).map(([key, val]) => (
-                                        <button
-                                            key={key}
-                                            type="button"
-                                            onClick={() => handleModuleToggle(key)}
-                                            className={`flex flex-col gap-4 p-7 rounded-[2rem] border-2 transition-all duration-300 text-left group/mod
-                                                ${val 
-                                                    ? 'bg-white border-blue-600 shadow-xl shadow-blue-50' 
-                                                    : 'bg-slate-50 border-slate-100 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 hover:bg-white hover:border-slate-200'}`}
-                                        >
-                                            <div className={`w-12 h-12 rounded-2xl border flex items-center justify-center transition-all duration-500
-                                                ${val ? 'bg-blue-600 border-blue-500 text-white shadow-lg' : 'bg-slate-200 border-slate-200 text-slate-400'}`}>
-                                                <FiActivity className="w-6 h-6" />
-                                            </div>
-                                            <div className="space-y-1">
-                                                <p className={`text-[10px] font-black uppercase tracking-widest ${val ? 'text-blue-600' : 'text-slate-400'}`}>
-                                                    {val ? 'ACTIVO' : 'INACTIVO'}
-                                                </p>
-                                                <p className="text-base font-black text-slate-900 capitalize leading-tight">
-                                                    {key.replace(/_/g, ' ')}
-                                                </p>
-                                            </div>
-                                        </button>
-                                    ))}
+                                <div className="space-y-1.5 relative z-10">
+                                    <label className="label">Fecha de Expiración</label>
+                                    <input
+                                        type="date"
+                                        name="fecha_vencimiento"
+                                        value={empresa.fecha_vencimiento}
+                                        onChange={handleChange}
+                                        className="input text-center"
+                                    />
+                                </div>
+                                <div className="bg-amber-50 dark:bg-amber-900/10 p-3 rounded-lg border border-amber-100 dark:border-amber-900/30 text-[11px] text-amber-700 dark:text-amber-400 font-bold uppercase text-center relative z-10">
+                                    El sistema suspenderá la instancia automáticamente.
                                 </div>
                             </div>
+                        </div>
 
-                            {/* Botón de Acción Final */}
-                            <div className="flex justify-center sm:justify-end pb-12">
-                                <button
-                                    type="submit"
-                                    disabled={saving}
-                                    className="group relative px-14 py-6 bg-slate-900 hover:bg-blue-600 text-white font-black rounded-[2rem] shadow-2xl transition-all flex items-center gap-5 disabled:opacity-50 hover:-translate-y-1 overflow-hidden"
-                                >
-                                    {saving ? <FiActivity className="animate-spin w-7 h-7" /> : <FiSave className="w-7 h-7" />}
-                                    <span className="text-xl tracking-tight uppercase">
-                                        {saving ? 'SINCRONIZANDO...' : 'ACTUALIZAR CONFIGURACIÓN DE INSTANCIA'}
-                                    </span>
-                                </button>
+                        {/* Nueva Sección: Módulos Activos (Estética Bata Blanca) */}
+                        <div className="card space-y-6 relative group overflow-hidden">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative z-10">
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-[#e8e8e4] flex items-center gap-3">
+                                    <FiCheckCircle className="text-primary-500 w-5 h-5" />
+                                    Módulos Disponibles
+                                </h3>
+                                <span className="px-3 py-1 bg-slate-100 dark:bg-[#2a2a27] border border-slate-200 dark:border-[#3a3a36] text-slate-500 dark:text-[#a0a09a] text-[10px] font-bold uppercase rounded-full">
+                                    Configuraciones de App
+                                </span>
                             </div>
-                        </form>
-                    </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
+                                {Object.entries(empresa.configuracion_reportes?.modulos || {}).map(([key, val]) => (
+                                    <button
+                                        key={key}
+                                        type="button"
+                                        onClick={() => handleModuleToggle(key)}
+                                        className={`flex flex-col gap-3 p-4 rounded-xl border transition-all text-left group/mod
+                                            ${val 
+                                                ? 'bg-white dark:bg-[#1e1e1c] border-primary-500 shadow-sm' 
+                                                : 'bg-slate-50 dark:bg-[#2a2a27]/50 border-slate-200 dark:border-[#3a3a36] opacity-70 grayscale hover:opacity-100 hover:grayscale-0 hover:border-slate-300 dark:hover:border-gray-500'}`}
+                                    >
+                                        <div className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-all
+                                            ${val ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-200 dark:border-primary-800 text-primary-600 dark:text-primary-400' : 'bg-slate-100 dark:bg-[#2a2a27] border-slate-200 dark:border-[#3a3a36] text-slate-400 dark:text-[#a0a09a]'}`}>
+                                            <FiActivity className="w-5 h-5" />
+                                        </div>
+                                        <div>
+                                            <p className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${val ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-[#a0a09a]'}`}>
+                                                {val ? 'Activo' : 'Inactivo'}
+                                            </p>
+                                            <p className="text-sm font-bold text-slate-900 dark:text-[#e8e8e4] capitalize leading-tight">
+                                                {key.replace(/_/g, ' ')}
+                                            </p>
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Botón de Acción Final */}
+                        <div className="flex justify-end pt-4">
+                            <button
+                                type="submit"
+                                disabled={saving}
+                                className="btn-primary flex items-center gap-3 px-8 py-3 text-sm"
+                            >
+                                {saving ? <FiActivity className="animate-spin w-5 h-5" /> : <FiSave className="w-5 h-5" />}
+                                <span>{saving ? 'Guardando...' : 'Actualizar Configuración'}</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>

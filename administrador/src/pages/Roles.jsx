@@ -504,18 +504,19 @@ const Roles = () => {
     // --- RENDER VISTA DETALLE (Con el botón Restaurado) ---
     if (viewingRole) {
         return (
-            <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                    <button onClick={() => { setViewingRole(null); setRoleUsuarios([]); }} className="flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium transition-colors">
-                        <FiArrowLeft className="w-5 h-5" /> Volver a Roles
-                    </button>
-                    <div className="flex-1"></div>
-                    {canEdit && (
-                        <button onClick={() => openEditModal(viewingRole)} className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 shadow-sm">
-                            <FiEdit2 className="w-4 h-4" /> Editar Rol
+            <div className="space-y-6 pb-24 animate-fade-in-up">
+                <HeaderActions>
+                    <div className="flex items-center justify-between w-full gap-4">
+                        <button onClick={() => { setViewingRole(null); setRoleUsuarios([]); }} className="flex items-center gap-2 text-slate-600 hover:text-slate-900 dark:text-[#a0a09a] dark:hover:text-[#e8e8e4] font-bold transition-colors bg-white dark:bg-[#2a2a27] px-4 py-2 rounded-xl border border-slate-200 dark:border-[#3a3a36] shadow-sm hover:-translate-y-0.5">
+                            <FiArrowLeft className="w-5 h-5" /> Volver a Roles
                         </button>
-                    )}
-                </div>
+                        {canEdit && (
+                            <button onClick={() => openEditModal(viewingRole)} className="btn-primary flex items-center gap-2">
+                                <FiEdit2 className="w-4 h-4" /> Editar Rol
+                            </button>
+                        )}
+                    </div>
+                </HeaderActions>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div className="card flex flex-col h-full transition-colors duration-200">
@@ -695,9 +696,9 @@ const Roles = () => {
         );
     }
 
-    // --- MAIN LIST VIEW (CARDS CLICKEABLES) ---
+    // --- RENDER PRINCIPAL (Listado de Roles) ---
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 pb-24 animate-fade-in-up">
             {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">
@@ -774,19 +775,19 @@ const Roles = () => {
                                 onDragOver={(e) => handleDragOver(e, index)}
                                 onDragEnd={handleDragEnd}
                                 onClick={() => !isReordering && openViewModal(rol)}
-                                className={`card p-0 transition-all overflow-hidden group hover:-translate-y-1
-                                    ${rol.es_activo === false ? 'bg-slate-50 opacity-70 border-slate-200' : 'bg-white'}
+                                className={`card p-0 transition-all overflow-hidden group ${!isReordering ? 'hover:-translate-y-1' : ''}
+                                    ${rol.es_activo === false ? 'bg-slate-50/50 dark:bg-[#2a2a27]/50 opacity-70 border-slate-200 dark:border-[#3a3a36]' : 'bg-white dark:bg-[#1e1e1c]'}
                                     ${isReordering
                                         ? esFijo
-                                            ? 'opacity-60 border-slate-200 bg-slate-50'
-                                            : 'cursor-move border-purple-300 shadow-sm'
+                                            ? 'opacity-60 border-slate-200 dark:border-[#3a3a36] bg-slate-50 dark:bg-[#2a2a27]'
+                                            : 'cursor-move border-primary-300 dark:border-primary-700 shadow-sm'
                                         : rol.es_activo === false
-                                            ? 'border-red-200 hover:border-red-300 cursor-pointer'
+                                            ? 'border-red-200 dark:border-red-900/30 hover:border-red-300 dark:hover:border-red-800/50 cursor-pointer'
                                             : 'cursor-pointer'
                                     }
-                                    ${draggedIndex === index ? 'opacity-50' : ''}`}
+                                    ${draggedIndex === index ? 'opacity-50 scale-[0.98]' : ''}`}
                                 style={{
-                                    boxShadow: !isReordering ? `0 2px 8px -2px ${rol.color || '#3B82F6'}30` : 'none'
+                                    boxShadow: !isReordering ? `0 4px 20px -5px ${rol.color || '#3B82F6'}15` : 'none'
                                 }}
                             >
                                 <div className="flex items-center gap-4 p-5">
@@ -814,17 +815,17 @@ const Roles = () => {
 
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <h3 className={`font-semibold text-lg ${rol.es_activo === false ? 'text-gray-400 dark:text-gray-500 line-through' : 'text-gray-900 dark:text-white'}`}>{rol.nombre}</h3>
-                                            {rol.es_activo === false && <span className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-2 py-0.5 rounded">Desactivado</span>}
-                                            {rol.es_admin && <span className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 px-2 py-0.5 rounded"><FiLock className="w-3 h-3" /> Admin</span>}
+                                            <h3 className={`font-semibold text-lg ${rol.es_activo === false ? 'text-slate-400 dark:text-[#a0a09a] line-through' : 'text-slate-900 dark:text-[#e8e8e4]'}`}>{rol.nombre}</h3>
+                                            {rol.es_activo === false && <span className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 px-2 py-0.5 rounded">Desactivado</span>}
+                                            {rol.es_admin && <span className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 px-2 py-0.5 rounded"><FiLock className="w-3 h-3" /> Admin</span>}
                                         </div>
-                                        <p className="text-gray-500 dark:text-gray-400 text-sm mb-2 line-clamp-1">{rol.descripcion || 'Sin descripción'}</p>
+                                        <p className="text-slate-500 dark:text-[#a0a09a] text-sm mb-2 line-clamp-1">{rol.descripcion || 'Sin descripción'}</p>
                                         <div className="flex items-center gap-6 text-sm">
-                                            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                            <div className="flex items-center gap-2 text-slate-600 dark:text-[#a0a09a]">
                                                 <FiUsers className="w-4 h-4" />
                                                 <span className="font-medium">{rol.usuarios_count || 0}</span> usuarios
                                             </div>
-                                            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-400">
+                                            <div className="flex items-center gap-2 text-slate-600 dark:text-[#a0a09a]">
                                                 <FiShield className="w-4 h-4" />
                                                 <span className="font-medium">{getPermisosCount(rol.permisos_lista)}</span> permisos
                                             </div>

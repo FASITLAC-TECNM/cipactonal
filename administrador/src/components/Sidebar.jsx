@@ -259,8 +259,7 @@ const Sidebar = () => {
                 </div>
 
                 {/* Footer del Sidebar (Configuración y Perfil) */}
-                {!user?.esPropietarioSaaS && (
-                    <div className={`flex-shrink-0 bg-transparent px-2 py-2 border-t border-slate-100/50 dark:border-[#2a2a27]`}>
+                <div className={`flex-shrink-0 bg-transparent px-2 py-2 border-t border-slate-100/50 dark:border-[#2a2a27]`}>
                         <OfflineIndicator isCollapsed={isCollapsed} />
                         
                         {/* Area de Perfil y Acciones Rápidas */}
@@ -309,7 +308,6 @@ const Sidebar = () => {
                             </nav>
                         )}
                     </div>
-                )}
             </aside>
             {confirmAction && <ConfirmBox message={confirmAction.message} onConfirm={confirmAction.onConfirm} onCancel={() => setConfirmAction(null)} />}
         </>

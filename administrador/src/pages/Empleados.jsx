@@ -35,7 +35,7 @@ const Empleados = () => {
 
     // --- PAGINACIÓN ---
     const [pagina, setPagina] = useState(1);
-    const porPagina = 16;
+    const porPagina = 12;
 
     // --- ESTADOS DEL MODAL ---
     const [modalConfig, setModalConfig] = useState({
@@ -159,7 +159,7 @@ const Empleados = () => {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-6rem)]">
+        <div className="flex flex-col h-[calc(100vh-6rem)] pb-24">
             {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">
