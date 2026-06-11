@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
     FiPlus, FiSearch, FiUser
 } from 'react-icons/fi';
@@ -17,6 +18,7 @@ const API_URL = API_CONFIG.BASE_URL;
 
 const Empleados = () => {
     const navigate = useViewTransitionNavigate();
+    const location = useLocation();
     const { hasPermission } = useAuth();
     const canCreate = hasPermission('USUARIO_CREAR');
 
@@ -49,6 +51,15 @@ const Empleados = () => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [busqueda, filtroEstado]);
+
+    // Efecto para abrir el modal desde otras rutas
+    useEffect(() => {
+        if (location.state?.openCreateModal && canCreate) {
+            handleOpenCreate();
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [location.state, canCreate]);
 
     useRealTime({
         'usuario-actualizado': () => fetchData(), // Updates fields like role, name
@@ -192,7 +203,7 @@ const Empleados = () => {
             </HeaderActions>
 
             {/* LISTA DE USUARIOS */}
-            <div className="flex-1 min-h-0 overflow-y-auto pr-2 pb-4 custom-scrollbar">
+            <div className="flex-1 min-h-0 overflow-y-auto pr-2 pb-4 pt-6 custom-scrollbar [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
                 {loading ? (
                     <DynamicLoader text="Cargando empleados..." />
                 ) : usuarios.length === 0 ? (

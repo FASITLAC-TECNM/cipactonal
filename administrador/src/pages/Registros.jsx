@@ -227,10 +227,9 @@ const Registros = () => {
                 </div>
             ) : (
                 <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 space-y-4">
                     {vistaAgrupada ? (
                         /* VISTA AGRUPADA (Acordeón mejorado) */
-                        <div className="space-y-4">
+                        <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-16 pt-6 space-y-4 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_85%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_85%,transparent_100%)]">
                             {Object.entries(eventosAgrupados).map(([tipo, listaEventos]) => {
                                 const config = getCategoriaConfig(tipo);
                                 const Icon = config.icon;
@@ -270,7 +269,7 @@ const Registros = () => {
                     ) : (
                         /* VISTA DE TABLA (Nueva implementación) */
                         <div className="card p-0 overflow-hidden flex-1 flex flex-col">
-                            <div className="overflow-x-auto flex-1 custom-scrollbar">
+                            <div className="overflow-y-auto overflow-x-auto flex-1 pb-16 pt-6 custom-scrollbar [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_85%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_85%,transparent_100%)]">
                                 <table className="min-w-full divide-y divide-slate-200 dark:divide-[#2a2a27]">
                                     <thead className="bg-slate-50/50 dark:bg-[#1e1e1c]/50 backdrop-blur-sm sticky top-0 z-10">
                                         <tr>
@@ -334,8 +333,7 @@ const Registros = () => {
                             </div >
                         </div >
                     )}
-
-                    </div>
+                    
                     {/* Paginación Estandarizada */}
                     <Pagination
                         pagina={pagina}

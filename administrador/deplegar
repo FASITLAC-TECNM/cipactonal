@@ -1,0 +1,3 @@
+#!/bin/bash
+# Alias/wrapper command for desplegar
+./desplegar "$@"

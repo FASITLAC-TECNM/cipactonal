@@ -700,7 +700,7 @@ const Roles = () => {
     return (
         <div className="flex flex-col flex-1 min-h-0 h-full gap-6 w-full relative">
             {/* Contenedor con scroll y degradado inferior */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 animate-fade-in-up pr-2 [mask-image:linear-gradient(to_bottom,black_90%,transparent_100%)]">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 animate-fade-in-up pr-2 pt-6 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
                 {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">

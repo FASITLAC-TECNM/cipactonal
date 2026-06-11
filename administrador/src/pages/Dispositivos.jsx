@@ -366,7 +366,7 @@ const Dispositivos = () => {
     }
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col flex-1 min-h-0 h-full w-full relative space-y-6">
             {/* Banner Alerta Solicitudes Pendientes */}
             {pendientesList.length > 0 && (
                 <div className="bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl p-[1px] shadow-lg shadow-orange-500/20 animate-in fade-in slide-in-from-top-4 mb-2">
@@ -452,7 +452,8 @@ const Dispositivos = () => {
             {loading ? (
                 <DynamicLoader text="Actualizando información..." />
             ) : (
-                <div className="space-y-4">
+                <div className="flex-1 min-h-0 flex flex-col">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-6 space-y-4 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
                     {/* VISTA ESCRITORIO O MOVIL */}
                     {(vistaActiva === 'escritorio' || vistaActiva === 'movil') && (
                         activosList.length === 0 ? (
@@ -462,52 +463,75 @@ const Dispositivos = () => {
                         ) : (
                             <div id="devices-list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                 {activosList.map((dispositivo) => (
-                                    <div key={dispositivo.id} className={`card p-5 relative overflow-hidden flex flex-col ${dispositivo.es_activo === false ? 'opacity-70 bg-slate-50 dark:bg-gray-900/50 border-gray-100 dark:border-gray-800' : 'hover:-translate-y-1 hover:shadow-lg transition-all dark:bg-gray-800'}`}>
-                                        <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl ${dispositivo.es_activo === false ? 'from-gray-100/50 dark:from-gray-800' : vistaActiva === 'escritorio' ? 'from-primary-100/30 dark:from-primary-900/10' : 'from-blue-100/30 dark:from-blue-900/10'} to-transparent -mr-8 -mt-8 rounded-full pointer-events-none`}></div>
-                                        <div className="flex items-start justify-between mb-4 relative z-10">
-                                            <div className="flex items-center gap-3">
-                                                <div className={`p-2.5 rounded-xl ${dispositivo.es_activo === false ? 'bg-gray-100 dark:bg-gray-800' : vistaActiva === 'escritorio' ? 'bg-primary-50 dark:bg-primary-900/20' : 'bg-blue-50 dark:bg-blue-900/20'}`}>
-                                                    {vistaActiva === 'escritorio' ? (
-                                                        <Laptop className={`w-5 h-5 ${dispositivo.es_activo === false ? 'text-gray-400' : 'text-primary-600 dark:text-primary-400'}`} />
-                                                    ) : (
-                                                        <Smartphone className={`w-5 h-5 ${dispositivo.es_activo === false ? 'text-gray-400' : 'text-blue-600 dark:text-blue-400'}`} />
-                                                    )}
-                                                </div>
-                                                <div>
-                                                    <h3 className={`font-semibold text-sm line-clamp-1 ${dispositivo.es_activo === false ? 'text-gray-400 line-through' : 'text-gray-900 dark:text-white'}`}>{vistaActiva === 'escritorio' ? dispositivo.nombre : dispositivo.empleado_nombre}</h3>
-                                                    <p className="text-[11px] text-gray-500 dark:text-gray-400 font-mono break-all">{vistaActiva === 'escritorio' ? dispositivo.ip : dispositivo.empleado_correo}</p>
+                                    <div key={dispositivo.id} className={`card p-0 relative overflow-hidden flex flex-col group transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border ${dispositivo.es_activo === false ? 'opacity-80 bg-slate-50 dark:bg-slate-900/50 grayscale-[20%] border-slate-200/50 dark:border-slate-800' : 'bg-white dark:bg-slate-800/90 border-slate-200/60 dark:border-slate-700/60 hover:border-blue-300 dark:hover:border-blue-700/50 hover:shadow-blue-500/10 dark:hover:shadow-blue-500/5'}`}>
+                                        {/* Cabecera de la tarjeta con gradiente */}
+                                        <div className={`p-5 pb-4 relative overflow-hidden bg-gradient-to-br border-b ${dispositivo.es_activo === false ? 'from-slate-100 to-slate-50 dark:from-slate-800 dark:to-slate-900/50 border-slate-200/50 dark:border-slate-800' : vistaActiva === 'escritorio' ? 'from-primary-50 to-white dark:from-primary-900/20 dark:to-slate-800/50 border-primary-100/50 dark:border-primary-900/30' : 'from-blue-50 to-white dark:from-blue-900/20 dark:to-slate-800/50 border-blue-100/50 dark:border-blue-900/30'}`}>
+                                            <div className="flex items-start justify-between relative z-10">
+                                                <div className="flex items-center gap-4 w-full min-w-0 pr-10">
+                                                    <div className={`p-3 rounded-2xl shrink-0 shadow-sm ${dispositivo.es_activo === false ? 'bg-white dark:bg-slate-800' : 'bg-white dark:bg-slate-800 ring-1 ring-black/5 dark:ring-white/10'}`}>
+                                                        {vistaActiva === 'escritorio' ? (
+                                                            <Laptop className={`w-5 h-5 ${dispositivo.es_activo === false ? 'text-slate-400' : 'text-primary-600 dark:text-primary-400'}`} />
+                                                        ) : (
+                                                            <Smartphone className={`w-5 h-5 ${dispositivo.es_activo === false ? 'text-slate-400' : 'text-blue-600 dark:text-blue-400'}`} />
+                                                        )}
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <h3 className={`font-bold text-[15px] truncate ${dispositivo.es_activo === false ? 'text-slate-500 line-through' : 'text-slate-800 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors'}`}>
+                                                            {vistaActiva === 'escritorio' ? dispositivo.nombre : dispositivo.empleado_nombre}
+                                                        </h3>
+                                                        <p className="text-[12px] text-slate-500 dark:text-slate-400 font-mono truncate mt-0.5 flex items-center gap-1.5">
+                                                            {vistaActiva === 'escritorio' ? <Wifi className="w-3.5 h-3.5 shrink-0 opacity-70"/> : <Mail className="w-3.5 h-3.5 shrink-0 opacity-70"/>}
+                                                            <span className="truncate">{vistaActiva === 'escritorio' ? dispositivo.ip : dispositivo.empleado_correo}</span>
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="flex flex-col items-end gap-1">
-                                                {dispositivo.es_activo === false && <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-slate-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border border-slate-200 dark:border-gray-600">Off</span>}
-                                                {dispositivo.es_root && <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full bg-red-100 text-red-700 border border-red-200">ROOT</span>}
+                                            {/* Tags flotantes top-right */}
+                                            <div className="absolute top-4 right-4 flex flex-col items-end gap-1.5">
+                                                {dispositivo.es_activo === false && <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">Off</span>}
+                                                {dispositivo.es_root && <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md bg-red-100/80 text-red-700 border border-red-200">ROOT</span>}
                                                 {parseInt(dispositivo.biometricos_count) > 0 && vistaActiva === 'escritorio' && (
-                                                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-800/30" title="Biométricos conectados">
+                                                    <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-purple-100/80 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50" title="Biométricos conectados">
                                                         <Fingerprint className="w-3 h-3" />
                                                         <span className="text-[10px] font-bold">{dispositivo.biometricos_count}</span>
                                                     </div>
                                                 )}
                                             </div>
                                         </div>
-                                        <div className="grid grid-cols-2 gap-2 mb-4 text-xs text-gray-600 dark:text-gray-400 bg-slate-50/50 dark:bg-gray-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-gray-700">
-                                            <div className="flex flex-col"><span className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">OS</span> <span className="font-semibold">{dispositivo.sistema_operativo}</span></div>
-                                            <div className="flex flex-col"><span className="text-[10px] font-medium text-gray-400 uppercase tracking-wider">{vistaActiva === 'escritorio' ? 'MAC' : 'Reg'}</span> <span className="font-semibold font-mono truncate">{vistaActiva === 'escritorio' ? dispositivo.mac : new Date(dispositivo.fecha_registro).toLocaleDateString()}</span></div>
-                                        </div>
-                                        <div className="flex gap-2 mt-auto">
-                                            <button onClick={() => openDetallesModal(dispositivo, false)} className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-colors border ${vistaActiva === 'escritorio' ? 'bg-white dark:bg-gray-800 text-primary-700 dark:text-primary-400 border-primary-200 dark:border-primary-800/50 hover:bg-primary-50 dark:hover:bg-primary-900/20' : 'bg-white dark:bg-gray-800 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/50 hover:bg-blue-50 dark:hover:bg-blue-900/20'}`}>
-                                                Ver Ficha Técnica
-                                            </button>
-                                            {canDelete && (
-                                                dispositivo.es_activo === false ? (
-                                                    <button onClick={() => handleReactivarDispositivo(dispositivo)} className="px-3 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg border border-slate-200 hover:border-green-200 transition-colors bg-white dark:bg-gray-800" title="Reactivar">
-                                                        <RefreshCw className="w-4 h-4" />
-                                                    </button>
-                                                ) : (
-                                                    <button onClick={() => handleDesactivarDispositivo(dispositivo)} className="px-3 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg border border-slate-200 hover:border-red-200 transition-colors bg-white dark:bg-gray-800" title="Desactivar">
-                                                        <Trash2 className="w-4 h-4" />
-                                                    </button>
-                                                )
-                                            )}
+
+                                        {/* Contenido / Stats */}
+                                        <div className="p-4 flex flex-col flex-1 gap-4 bg-white/40 dark:bg-transparent">
+                                            <div className="grid grid-cols-2 gap-3 text-xs">
+                                                <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 flex flex-col gap-1 hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Sistema</span>
+                                                    <span className="font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-1.5"><Cpu className="w-3.5 h-3.5 text-slate-400 shrink-0"/> {dispositivo.sistema_operativo}</span>
+                                                </div>
+                                                <div className="bg-slate-50 dark:bg-slate-900/50 p-3 rounded-xl border border-slate-100 dark:border-slate-800/80 flex flex-col gap-1 hover:border-slate-300 dark:hover:border-slate-600 transition-colors min-w-0">
+                                                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{vistaActiva === 'escritorio' ? 'MAC' : 'Registro'}</span>
+                                                    <span className="font-semibold font-mono text-slate-700 dark:text-slate-300 truncate flex items-center gap-1.5">
+                                                        {vistaActiva === 'escritorio' ? <Server className="w-3.5 h-3.5 text-slate-400 shrink-0"/> : <Calendar className="w-3.5 h-3.5 text-slate-400 shrink-0"/>}
+                                                        <span className="truncate">{vistaActiva === 'escritorio' ? dispositivo.mac : new Date(dispositivo.fecha_registro).toLocaleDateString()}</span>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Acciones */}
+                                            <div className="flex gap-2 mt-auto">
+                                                <button onClick={() => openDetallesModal(dispositivo, false)} className="flex-1 py-2 px-3 text-[13px] font-bold rounded-xl transition-all border shadow-sm flex items-center justify-center gap-2 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-200 dark:hover:border-blue-800">
+                                                    <FileText className="w-4 h-4 text-slate-400" /> Detalle Técnico
+                                                </button>
+                                                {canDelete && (
+                                                    dispositivo.es_activo === false ? (
+                                                        <button onClick={() => handleReactivarDispositivo(dispositivo)} className="px-3.5 py-2 rounded-xl border border-green-200 bg-green-50 text-green-600 hover:bg-green-100 hover:border-green-300 transition-colors shadow-sm dark:bg-green-900/20 dark:border-green-800 dark:hover:bg-green-900/40" title="Reactivar">
+                                                            <RefreshCw className="w-4 h-4" />
+                                                        </button>
+                                                    ) : (
+                                                        <button onClick={() => handleDesactivarDispositivo(dispositivo)} className="px-3.5 py-2 rounded-xl border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 hover:border-red-300 transition-colors shadow-sm dark:bg-red-900/20 dark:border-red-800 dark:hover:bg-red-900/40" title="Desactivar">
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                    )
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -609,6 +633,7 @@ const Dispositivos = () => {
                             </div>
                         </div>
                     )}
+                    </div>
                 </div>
             )}
 

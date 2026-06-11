@@ -222,7 +222,7 @@ const Horarios = () => {
     });
 
     return (
-        <div className="space-y-6">
+        <div className="flex flex-col flex-1 min-h-0 h-full w-full relative space-y-6">
             {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">
@@ -306,18 +306,22 @@ const Horarios = () => {
                 </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
-                        {filteredHorarios.slice((pagina - 1) * porPagina, pagina * porPagina).map((horario) => (
-                            <ScheduleCard
-                                key={horario.id}
-                                horario={horario}
-                                empleadoNombre={getEmpleadoNombre(horario)}
-                                onEdit={handleEdit}
-                                onDelete={handleDelete}
-                                onReactivar={handleReactivar}
-                            />
-                        ))}
+                <div className="flex-1 min-h-0 flex flex-col">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-6 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+                            {filteredHorarios.slice((pagina - 1) * porPagina, pagina * porPagina).map((horario) => (
+                                <ScheduleCard
+                                    key={horario.id}
+                                    horario={horario}
+                                    empleadoNombre={getEmpleadoNombre(horario)}
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                    onReactivar={handleReactivar}
+                                />
+                            ))}
+                        </div>
                     </div>
+                </div>
                     <Pagination
                         pagina={pagina}
                         totalPaginas={Math.ceil(filteredHorarios.length / porPagina)}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
     Plus, Search, Edit2, Trash2, Globe, Users, X, Check, AlertCircle
 } from 'lucide-react';
@@ -15,6 +16,9 @@ const Avisos = () => {
     const canCreate = hasPermission('AVISO_CREAR');
     const canEdit = hasPermission('AVISO_EDITAR');
     const canDelete = hasPermission('AVISO_ELIMINAR');
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     // --- ESTADOS ---
     const [avisos, setAvisos] = useState([]);
@@ -47,6 +51,17 @@ const Avisos = () => {
         fetchAvisos();
         fetchEmpleados();
     }, []);
+
+    // Efecto para abrir el modal desde el Dashboard (Tablero)
+    useEffect(() => {
+        if (location.state?.openCreateModal && canCreate) {
+            setFormData({ titulo: '', contenido: '', es_global: true, empleados: [] });
+            setEditingAviso(null);
+            setModalOpen(true);
+            setError(null);
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location.state, canCreate, navigate]);
 
     // --- FUNCIONES DE API ---
     const fetchAvisos = async () => {
@@ -301,7 +316,7 @@ const Avisos = () => {
                 </div>
             ) : (
                 <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
-                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 space-y-8">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-6 space-y-8 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
                         {Object.entries(avisosAgrupados).map(([fecha, lista]) => (
                             <div key={fecha}>
                                 <h3 className="text-sm font-bold text-gray-500 dark:text-[#706f69] mb-4 border-b border-gray-200 dark:border-[#2a2a27] pb-2 capitalize">

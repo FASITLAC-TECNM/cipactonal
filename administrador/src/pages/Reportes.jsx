@@ -1400,7 +1400,7 @@ const Reportes = () => {
 
     return (
         <div className="flex flex-col flex-1 min-h-0 h-full w-full relative">
-            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-2">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-6 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
             {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">

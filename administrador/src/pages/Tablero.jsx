@@ -21,7 +21,7 @@ import SaasDashboard from './SaasDashboard';
 const API_URL = API_CONFIG.BASE_URL;
 
 const Dashboard = () => {
-    const { user } = useAuth();
+    const { user, hasPermission } = useAuth();
     const { formatTime } = useConfig();
     const navigate = useViewTransitionNavigate();
     const [loading, setLoading] = useState(true);
@@ -103,38 +103,46 @@ const Dashboard = () => {
 
             {/* Acciones Rápidas Horizontales */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <button onClick={() => navigate('/empleados')} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
-                    <div className="p-3 bg-blue-100/80 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
-                        <FiUserPlus className="w-5 h-5" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Añadir Empleado</p>
-                    </div>
-                </button>
-                <button onClick={() => navigate('/registros')} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
-                    <div className="p-3 bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl group-hover:scale-110 transition-transform">
-                        <FiFileText className="w-5 h-5" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Últimos Registros</p>
-                    </div>
-                </button>
-                <button onClick={() => navigate('/avisos')} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
-                    <div className="p-3 bg-amber-100/80 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl group-hover:scale-110 transition-transform">
-                        <FiBell className="w-5 h-5" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Últimos Avisos</p>
-                    </div>
-                </button>
-                <button onClick={() => navigate('/avisos')} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
-                    <div className="p-3 bg-purple-100/80 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
-                        <FiMessageSquare className="w-5 h-5" />
-                    </div>
-                    <div>
-                        <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Crear Aviso Rápido</p>
-                    </div>
-                </button>
+                {hasPermission('USUARIO_CREAR') && (
+                    <button onClick={() => navigate('/empleados', { state: { openCreateModal: true } })} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
+                        <div className="p-3 bg-blue-100/80 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 transition-transform">
+                            <FiUserPlus className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Añadir Empleado</p>
+                        </div>
+                    </button>
+                )}
+                {hasPermission('REGISTRO_VER') && (
+                    <button onClick={() => navigate('/registros')} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
+                        <div className="p-3 bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-xl group-hover:scale-110 transition-transform">
+                            <FiFileText className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Últimos Registros</p>
+                        </div>
+                    </button>
+                )}
+                {hasPermission('AVISO_VER') && (
+                    <button onClick={() => navigate('/avisos')} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
+                        <div className="p-3 bg-amber-100/80 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-xl group-hover:scale-110 transition-transform">
+                            <FiBell className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Últimos Avisos</p>
+                        </div>
+                    </button>
+                )}
+                {hasPermission('AVISO_CREAR') && (
+                    <button onClick={() => navigate('/avisos', { state: { openCreateModal: true } })} className="card flex items-center gap-3 p-4 hover:-translate-y-1 hover:shadow-lg transition-all group cursor-pointer text-left">
+                        <div className="p-3 bg-purple-100/80 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400 rounded-xl group-hover:scale-110 transition-transform">
+                            <FiMessageSquare className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Crear Aviso Rápido</p>
+                        </div>
+                    </button>
+                )}
             </div>
 
             {/* Sección principal de últimas asistencias */}

@@ -365,7 +365,7 @@ const Incidencias = () => {
 
             {/* Tabla de incidencias */}
             <div className="flex-1 min-h-0 flex flex-col card p-0 overflow-hidden">
-                <div className="flex-1 overflow-y-auto custom-scrollbar">
+                <div className="flex-1 overflow-y-auto custom-scrollbar pt-6 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
                 {incidencias.length === 0 ? (
                     <div className="py-12 text-slate-500 dark:text-[#a0a09a] text-center">
                         <FiFileText className="mx-auto mb-4 w-16 h-16 text-slate-300 dark:text-[#706f69]" />

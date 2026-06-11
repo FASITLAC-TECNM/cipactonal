@@ -246,7 +246,7 @@ const Departamentos = () => {
             <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1fr_minmax(400px,_1fr)] xl:grid-cols-[1fr_minmax(500px,_1fr)] gap-6">
 
                 {/* Listado Scrollable */}
-                <div id="deptos-list" className="overflow-y-auto pr-2 pb-4 flex flex-col gap-4">
+                <div id="deptos-list" className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-6 flex flex-col gap-4 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
                     {loading ? (
                         <DynamicLoader text="Cargando departamentos..." />
                     ) : filteredDepartamentos.length === 0 ? (
