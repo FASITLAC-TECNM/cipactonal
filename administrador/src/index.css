@@ -4,9 +4,18 @@
 
 /* Estilos personalizados globales */
 @layer base {
+  /* Box-sizing global para evitar desbordamientos */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
   /* Light mode */
   body {
     @apply bg-slate-50 text-slate-800 antialiased transition-colors duration-300;
+    /* Usa 100dvh para móviles donde la barra del navegador cambia tamaño */
+    min-height: 100dvh;
+    /* Previene el scroll horizontal global */
+    overflow-x: hidden;
   }
 
   /* Dark mode — charcoal base, zero blue tint */
@@ -240,6 +249,15 @@
   justify-content: center;
 }
 
+/* En pantallas móviles el perfil expandido es un poco más compacto */
+@media (max-width: 639px) {
+  .profile-header-expanded {
+    min-height: 130px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+}
+
 /* Contenido del portal: entra con fade + slide desde abajo */
 @keyframes profile-content-in {
   0%   { opacity: 0; transform: translateY(14px); }
@@ -312,4 +330,37 @@
 
 .animate-fade-in-up {
   animation: fadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ============================================================
+   Sub-Toolbar Portal
+   Barra secundaria de herramientas / filtros.
+   Se oculta automáticamente cuando está vacía, aparece cuando
+   React inyecta contenido vía portal.
+   ============================================================ */
+
+.sub-toolbar-portal:empty {
+  display: none;
+  padding: 0;
+}
+
+.sub-toolbar-portal:not(:empty) {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  animation: subtoolbar-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes subtoolbar-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

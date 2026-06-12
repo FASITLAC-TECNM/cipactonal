@@ -1,9 +1,11 @@
 /**
  * Componente de paginación reutilizable.
  * Muestra máximo 5 botones de página con ellipsis (...) cuando hay muchas páginas.
+ * Solo se renderiza cuando totalPaginas > 1.
  */
 function Pagination({ pagina, totalPaginas, total, porPagina, onChange }) {
-    // if (totalPaginas <= 1) return null; // Eliminado para siempre mostrar los controles
+    // No mostrar si solo hay 1 página o ninguna
+    if (!totalPaginas || totalPaginas <= 1) return null;
 
     const inicio = (pagina - 1) * porPagina + 1;
     const fin = Math.min(pagina * porPagina, total);
@@ -38,7 +40,7 @@ function Pagination({ pagina, totalPaginas, total, porPagina, onChange }) {
     };
 
     return (
-        <div className="fixed bottom-4 right-6 lg:right-10 z-40 pointer-events-none flex justify-end">
+        <div className="fixed bottom-16 lg:bottom-4 right-4 sm:right-6 lg:right-10 z-40 pointer-events-none flex justify-end">
             <div className="pointer-events-auto flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-2 border border-slate-200/60 dark:border-[#3a3a36]/60 bg-white/80 dark:bg-[#1e1e1c]/80 backdrop-blur-xl rounded-full shadow-lg shadow-slate-200/20 dark:shadow-black/20 w-max transition-all">
                 <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-[#a0a09a] whitespace-nowrap hidden sm:block leading-none m-0">
                     {inicio}-{fin} de {total}

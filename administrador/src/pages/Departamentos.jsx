@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FiPlus, FiSearch, FiGrid, FiList, FiUsers, FiMapPin, FiRefreshCw, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import SubToolbar from '../components/SubToolbar';
+import MobileActions from '../components/MobileActions';
+
 import ConfirmBox from '../components/ConfirmBox';
 import DepartamentsCard from '../components/cards/DepartamentsCard';
 import DepartamentsModal from '../components/modals/DepartamentsModal';
@@ -196,25 +199,6 @@ const Departamentos = () => {
             {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">
-                    <div className="relative max-w-xs w-full hidden lg:block" id="deptos-search">
-                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Buscar..."
-                            value={busqueda}
-                            onChange={e => setBusqueda(e.target.value)}
-                            className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800"
-                        />
-                    </div>
-                    <select
-                        value={filtroEstado}
-                        onChange={(e) => setFiltroEstado(e.target.value)}
-                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden sm:block"
-                    >
-                        <option value="">Todos</option>
-                        <option value="activo">Activos</option>
-                        <option value="inactivo">Inactivos</option>
-                    </select>
 
                     {/* Toggle Vista */}
                     <div id="deptos-view-toggle" className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60">
@@ -241,6 +225,27 @@ const Departamentos = () => {
                     )}
                 </div>
             </HeaderActions>
+
+            {/* Búsqueda en SubToolbar (accesible en móvil) */}
+            <SubToolbar>
+                <FiSearch className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <input
+                    type="text"
+                    placeholder="Buscar departamento..."
+                    value={busqueda}
+                    onChange={e => setBusqueda(e.target.value)}
+                    className="input py-1 text-xs flex-1 max-w-[220px] bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                />
+                <select
+                    value={filtroEstado}
+                    onChange={(e) => setFiltroEstado(e.target.value)}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Todos</option>
+                    <option value="activo">Activos</option>
+                    <option value="inactivo">Inactivos</option>
+                </select>
+            </SubToolbar>
 
             {/* Content Grid */}
             <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[1fr_minmax(400px,_1fr)] xl:grid-cols-[1fr_minmax(500px,_1fr)] gap-6">

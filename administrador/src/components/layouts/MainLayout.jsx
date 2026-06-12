@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useLocation, Outlet } from 'react-router-dom';
+import { useLocation, Outlet, useNavigate } from 'react-router-dom';
 import SidebarWithAuth from '../Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import { useProfileHeader } from '../../context/ProfileHeaderContext';
@@ -41,6 +41,7 @@ const getPageConfig = (pathname) => {
 const MainLayout = ({ children }) => {
     const { user } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
     const { headerState, resetProfileHeader } = useProfileHeader();
     const headerRef = useRef(null);
     const prevPathRef = useRef(location.pathname);
@@ -80,17 +81,17 @@ const MainLayout = ({ children }) => {
     };
 
     // Clases del header según estado
-    // - En página de perfil: empieza pequeño (76px) mientras carga, crece a 160px cuando los datos están
-    // - En otras páginas: tamaño fijo 76px
+    // - En página de perfil: empieza pequeño (min-h-[68px]) mientras carga, crece a 160px cuando los datos están
+    // - En otras páginas: altura automática con mínimo definido
     const headerHeightClass = (() => {
-        if (!isProfilePage) return 'h-[76px] items-center justify-between';
+        if (!isProfilePage) return 'min-h-[60px] sm:min-h-[68px] lg:min-h-[76px] items-center justify-between';
         if (headerState === 'ready') return 'profile-header-expanded';
         // loading o idle → tamaño compacto mientras espera
-        return 'h-[76px] items-center justify-between';
+        return 'min-h-[60px] sm:min-h-[68px] lg:min-h-[76px] items-center justify-between';
     })();
 
     return (
-        <div className="relative flex bg-slate-50 dark:bg-[#111110] h-screen overflow-hidden transition-colors duration-300 select-none">
+        <div className="relative flex bg-slate-50 dark:bg-[#111110] h-[100dvh] overflow-hidden transition-colors duration-300 select-none">
             {/* Fondo gradiente sutil y moderno */}
             <div className="-z-10 absolute inset-0 bg-gradient-to-br from-amber-50/20 via-white to-orange-50/15 dark:from-[#111110] dark:via-[#111110] dark:to-[#111110] pointer-events-none" />
 
@@ -98,20 +99,20 @@ const MainLayout = ({ children }) => {
             <SidebarWithAuth />
 
             {/* Contenido principal */}
-            <main className="relative flex flex-col flex-1 overflow-hidden">
+            <main className="relative flex flex-col flex-1 min-w-0 overflow-hidden">
                 {/* Banner de Impersonación */}
                 {isImpersonating && (
-                    <div className="z-30 flex flex-col sm:flex-row justify-between items-center bg-red-500/95 dark:bg-red-600/90 backdrop-blur-md shadow-lg shadow-red-500/20 dark:shadow-red-900/20 mx-4 lg:mx-8 mt-4 lg:mt-6 px-4 md:px-6 py-2.5 text-white rounded-2xl border border-red-400/50 dark:border-red-500/30 gap-3 shrink-0">
-                        <div className="flex items-center gap-3 font-bold text-xs sm:text-sm">
+                    <div className="z-30 flex flex-col sm:flex-row justify-between items-center bg-red-500/95 dark:bg-red-600/90 backdrop-blur-md shadow-lg shadow-red-500/20 dark:shadow-red-900/20 mx-3 sm:mx-4 lg:mx-8 mt-3 sm:mt-4 lg:mt-6 px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 text-white rounded-xl sm:rounded-2xl border border-red-400/50 dark:border-red-500/30 gap-2 sm:gap-3 shrink-0">
+                        <div className="flex items-center gap-2 sm:gap-3 font-bold text-xs sm:text-sm min-w-0">
                             <span className="relative flex w-2.5 h-2.5 shrink-0">
                                 <span className="inline-flex absolute bg-red-200 opacity-75 rounded-full w-full h-full animate-ping"></span>
                                 <span className="inline-flex relative bg-white rounded-full w-2.5 h-2.5"></span>
                             </span>
-                            <span className="leading-tight">MODO IMPERSONACIÓN: Estás operando como Administrador del Tenant</span>
+                            <span className="leading-tight truncate">MODO IMPERSONACIÓN: Estás operando como Administrador del Tenant</span>
                         </div>
                         <button
                             onClick={handleTerminarImpersonacion}
-                            className="bg-white hover:bg-red-50 text-red-600 shadow-sm px-4 py-1.5 rounded-xl font-bold text-xs transition-all shrink-0 hover:scale-105 active:scale-95"
+                            className="bg-white hover:bg-red-50 text-red-600 shadow-sm px-3 sm:px-4 py-1.5 rounded-xl font-bold text-xs transition-all shrink-0 hover:scale-105 active:scale-95 whitespace-nowrap"
                         >
                             Volver al Panel SaaS
                         </button>
@@ -120,8 +121,8 @@ const MainLayout = ({ children }) => {
 
                 {/* 
                     Header animado.
+                    - Altura automática (min-height) para acomodar cualquier cantidad de controles.
                     - Transición CSS en height y padding para que el crecimiento sea suave.
-                    - overflow-hidden durante la expansión para que el contenido no "salte".
                 */}
                 <header
                     ref={headerRef}
@@ -129,16 +130,18 @@ const MainLayout = ({ children }) => {
                         z-20 flex
                         bg-white dark:bg-[#1a1a18]
                         shadow-card dark:shadow-card-dark
-                        mx-4 lg:mx-8 mt-4 lg:mt-6 mb-2 lg:mb-4
-                        px-6 md:px-8
+                        mx-3 sm:mx-4 lg:mx-8
+                        mt-3 sm:mt-4 lg:mt-6
+                        mb-0
+                        px-4 sm:px-5 md:px-6 lg:px-8
+                        py-2 sm:py-2.5
                         border border-slate-200/50 dark:border-[#2a2a27]
-                        rounded-3xl shrink-0
+                        rounded-2xl sm:rounded-3xl shrink-0
                         ${headerHeightClass}
                         ${isProfilePage ? 'header-profile-transition overflow-hidden' : 'transition-all duration-300'}
                     `}
                 >
                     {isProfilePage ? (
-                        // Mientras carga: placeholder pulsante
                         // Cuando listo: el portal inyecta el contenido real
                         <>
                             <div id="header-profile-portal" className="w-full" />
@@ -149,25 +152,63 @@ const MainLayout = ({ children }) => {
                         </>
                     ) : (
                         <>
-                            <div className="flex-shrink-0 min-w-[150px]">
-                                <h1 className="mb-1 font-extrabold text-slate-800 dark:text-white text-xl leading-none tracking-tight">
-                                    <TypewriterTitle text={currentPage.titulo} />
-                                </h1>
-                                {(location.pathname === '/' || location.pathname === '/dashboard') && (
-                                    <p className="font-bold text-[12px] text-blue-600 dark:text-blue-400 tracking-wide">
-                                        {getGreeting()}, {user?.usuario?.nombre?.split(' ')[0] || 'Usuario'}.
-                                    </p>
-                                )}
+                            <div className="flex-shrink-0 flex items-center" style={{minWidth: '120px'}}>
+                                <div>
+                                    <h1 className="font-extrabold text-slate-800 dark:text-white text-base sm:text-lg lg:text-xl leading-none tracking-tight">
+                                        <TypewriterTitle text={currentPage.titulo} />
+                                    </h1>
+                                    {(location.pathname === '/' || location.pathname === '/dashboard') && (
+                                        <p className="font-bold text-[11px] sm:text-[12px] text-primary-600 dark:text-primary-400 tracking-wide mt-0.5">
+                                            {getGreeting()}, {user?.usuario?.nombre?.split(' ')[0] || 'Usuario'}.
+                                        </p>
+                                    )}
+                                </div>
                             </div>
 
-                            {/* Portal Area for Toolbars */}
-                            <div id="header-actions-portal" className="flex flex-1 justify-end items-center gap-3 px-4 min-w-0"></div>
+                            {/* Portal Area for Toolbars — sin flex-wrap, controles secundarios van al SubToolbar */}
+                            <div id="header-actions-portal" className="flex flex-1 justify-end items-center gap-2 sm:gap-3 min-w-0 overflow-hidden"></div>
+                            
+                            {/* Avatar móvil */}
+                            <div className="lg:hidden flex-shrink-0 ml-2">
+                                <button
+                                    onClick={() => navigate(`/empleados/usuario/${user?.usuario?.usuario}`)}
+                                    className="w-8 h-8 bg-slate-100 dark:bg-[#2a2a27] rounded-full flex items-center justify-center text-slate-700 dark:text-[#e8e8e4] font-bold text-xs shadow-inner overflow-hidden border border-slate-200 dark:border-[#363632]"
+                                >
+                                    {user?.usuario?.foto ? (
+                                        <img src={user.usuario.foto} alt="Perfil" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <span>{user?.usuario?.nombre?.substring(0, 2).toUpperCase() || '?'}</span>
+                                    )}
+                                </button>
+                            </div>
                         </>
                     )}
                 </header>
 
-                {/* Contenido */}
-                <div className="flex flex-col flex-1 mx-4 lg:mx-8 mb-4 lg:mb-6 overflow-hidden">
+                {/* Sub-Toolbar Portal — segunda barra para controles secundarios */}
+                <div
+                    id="sub-toolbar-portal"
+                    className="
+                        sub-toolbar-portal
+                        mx-3 sm:mx-4 lg:mx-8
+                        mt-2
+                        bg-white/90 dark:bg-[#1a1a18]/90
+                        backdrop-blur-sm
+                        border border-slate-200/50 dark:border-[#2a2a27]/80
+                        rounded-xl sm:rounded-2xl
+                        px-4 sm:px-5 md:px-6
+                        py-2
+                        shadow-sm
+                        shrink-0
+                        empty:hidden
+                    "
+                />
+
+                {/* Espaciado debajo del bloque header + sub-toolbar */}
+                <div className="mb-2 sm:mb-3 lg:mb-4 shrink-0" />
+
+                {/* Contenido — padding-bottom en móvil para la barra inferior */}
+                <div className="flex flex-col flex-1 mx-3 sm:mx-4 lg:mx-8 mb-3 sm:mb-4 lg:mb-6 pb-20 lg:pb-0 min-h-0 overflow-hidden">
                     {children || <Outlet />}
                 </div>
             </main>

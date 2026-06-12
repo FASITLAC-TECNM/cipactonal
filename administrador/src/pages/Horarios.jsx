@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FiPlus, FiSearch, FiClock } from 'react-icons/fi';
+import SubToolbar from '../components/SubToolbar';
+import MobileActions from '../components/MobileActions';
+
 import ConfirmBox from '../components/ConfirmBox';
 import Pagination from '../components/Pagination';
 import ScheduleCard from '../components/cards/ScheduleCard';
@@ -294,6 +297,29 @@ const Horarios = () => {
                     )}
                 </div>
             </HeaderActions>
+
+            {/* Búsqueda en SubToolbar (accesible en móvil) */}
+            {vista !== 'festivos' && (
+                <SubToolbar>
+                    <FiSearch className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                    <input
+                        type="text"
+                        placeholder="Buscar por empleado..."
+                        value={busqueda}
+                        onChange={(e) => setBusqueda(e.target.value)}
+                        className="input py-1 text-xs flex-1 max-w-[220px] bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                    />
+                    <select
+                        value={filtroEstado}
+                        onChange={(e) => setFiltroEstado(e.target.value)}
+                        className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                    >
+                        <option value="">Todos</option>
+                        <option value="activo">Activos</option>
+                        <option value="inactivo">Inactivos</option>
+                    </select>
+                </SubToolbar>
+            )}
 
             {vista === 'festivos' ? (
                 <HolidaysCalendar />

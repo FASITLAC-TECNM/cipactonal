@@ -11,6 +11,7 @@ const API_URL = API_CONFIG.BASE_URL;
 import { useConfig } from '../context/ConfigContext';
 import DynamicLoader from '../components/common/DynamicLoader';
 import HeaderActions from '../components/HeaderActions';
+import SubToolbar from '../components/SubToolbar';
 import Pagination from '../components/Pagination';
 
 // --- CONFIGURACIÓN DE CONSTANTES (Igual que antes) ---
@@ -142,77 +143,81 @@ const Registros = () => {
     // --- RENDERIZADO ---
 
     return (
-        <div className="flex flex-col h-[calc(100vh-6rem)] gap-6">
+        <div className="flex flex-col h-full min-h-0 gap-6">
 
-            {/* Toolbar in Header */}
+            {/* Controles de vista en el header — siempre visibles */}
             <HeaderActions>
-                <div className="flex items-center gap-3 w-full justify-between flex-wrap">
-                    
-                    <div className="flex items-center gap-3 flex-wrap flex-1">
-                        <select
-                            value={filtros.tipo_evento}
-                            onChange={(e) => setFiltros({ ...filtros, tipo_evento: e.target.value })}
-                            className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
+                <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60 w-fit">
+                        <button
+                            onClick={() => setVistaAgrupada(false)}
+                            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-xs font-medium rounded-md transition-colors ${!vistaAgrupada ? 'bg-white dark:bg-[#2a2a27] text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-[#e8e8e4]'}`}
+                            title="Vista Tabla"
                         >
-                            <option value="">Todas las Categorías</option>
-                            {Object.entries(CATEGORIAS).map(([key, conf]) => <option key={key} value={key}>{conf.label}</option>)}
-                        </select>
-
-                        <select
-                            value={filtros.prioridad}
-                            onChange={(e) => setFiltros({ ...filtros, prioridad: e.target.value })}
-                            className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors hidden md:block"
-                        >
-                            <option value="">Cualquier Prioridad</option>
-                            {Object.entries(PRIORIDADES).map(([key, conf]) => <option key={key} value={key}>{conf.label}</option>)}
-                        </select>
-
-                        <input
-                            type="date"
-                            value={filtros.fecha_inicio}
-                            onChange={(e) => setFiltros({ ...filtros, fecha_inicio: e.target.value })}
-                            className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors hidden lg:block"
-                        />
-                        <input
-                            type="date"
-                            value={filtros.fecha_fin}
-                            onChange={(e) => setFiltros({ ...filtros, fecha_fin: e.target.value })}
-                            className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors hidden xl:block"
-                        />
-
-                        <button onClick={handleFiltrar} className="btn-secondary py-1.5 px-3 text-sm shadow-sm transition-all bg-white/50 dark:bg-[#2a2a27]/50" title="Aplicar Filtros">
-                            <FiFilter className="w-4 h-4" />
+                            <FiList className="w-4 h-4" /> <span className="hidden sm:inline">Tabla</span>
                         </button>
-                        {(filtros.tipo_evento || filtros.prioridad || filtros.fecha_inicio || filtros.fecha_fin) && (
-                            <button onClick={handleLimpiar} className="text-xs text-slate-500 hover:text-red-500 dark:text-[#a0a09a] dark:hover:text-red-400 font-medium transition-colors" title="Limpiar Filtros">
-                                Limpiar
-                            </button>
-                        )}
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60 w-fit">
-                            <button
-                                onClick={() => setVistaAgrupada(false)}
-                                className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-colors ${!vistaAgrupada ? 'bg-white dark:bg-[#2a2a27] text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-[#e8e8e4]'}`}
-                            >
-                                <FiList className="w-4 h-4" /> <span className="hidden sm:inline">Tabla</span>
-                            </button>
-                            <button
-                                onClick={() => setVistaAgrupada(true)}
-                                className={`flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded-md transition-colors ${vistaAgrupada ? 'bg-white dark:bg-[#2a2a27] text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-[#e8e8e4]'}`}
-                            >
-                                <FiGrid className="w-4 h-4" /> <span className="hidden sm:inline">Agrupada</span>
-                            </button>
-                        </div>
-
-                        <button onClick={fetchEventos} className="btn-primary py-1.5 px-3 text-sm shadow-sm transition-all" title="Actualizar">
-                            <FiRefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                        <button
+                            onClick={() => setVistaAgrupada(true)}
+                            className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 text-xs font-medium rounded-md transition-colors ${vistaAgrupada ? 'bg-white dark:bg-[#2a2a27] text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-[#e8e8e4]'}`}
+                            title="Vista Agrupada"
+                        >
+                            <FiGrid className="w-4 h-4" /> <span className="hidden sm:inline">Agrupada</span>
                         </button>
                     </div>
-
+                    <button onClick={fetchEventos} className="btn-primary py-1.5 px-3 text-sm shadow-sm transition-all" title="Actualizar">
+                        <FiRefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                    </button>
                 </div>
             </HeaderActions>
+
+            {/* Filtros en la barra secundaria — siempre visibles y organizados */}
+            <SubToolbar>
+                <FiFilter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <select
+                    value={filtros.tipo_evento}
+                    onChange={(e) => setFiltros({ ...filtros, tipo_evento: e.target.value })}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Todas las Categorías</option>
+                    {Object.entries(CATEGORIAS).map(([key, conf]) => <option key={key} value={key}>{conf.label}</option>)}
+                </select>
+
+                <select
+                    value={filtros.prioridad}
+                    onChange={(e) => setFiltros({ ...filtros, prioridad: e.target.value })}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Cualquier Prioridad</option>
+                    {Object.entries(PRIORIDADES).map(([key, conf]) => <option key={key} value={key}>{conf.label}</option>)}
+                </select>
+
+                <div className="flex items-center gap-1.5">
+                    <input
+                        type="date"
+                        value={filtros.fecha_inicio}
+                        onChange={(e) => setFiltros({ ...filtros, fecha_inicio: e.target.value })}
+                        className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                        title="Fecha inicio"
+                    />
+                    <span className="text-slate-400 text-xs">—</span>
+                    <input
+                        type="date"
+                        value={filtros.fecha_fin}
+                        onChange={(e) => setFiltros({ ...filtros, fecha_fin: e.target.value })}
+                        className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                        title="Fecha fin"
+                    />
+                </div>
+
+                <button onClick={handleFiltrar} className="btn-secondary py-1 px-2.5 text-xs shadow-sm" title="Aplicar Filtros">
+                    <FiFilter className="w-3.5 h-3.5" />
+                </button>
+                {(filtros.tipo_evento || filtros.prioridad || filtros.fecha_inicio || filtros.fecha_fin) && (
+                    <button onClick={handleLimpiar} className="text-xs text-slate-500 hover:text-red-500 dark:text-[#a0a09a] dark:hover:text-red-400 font-medium transition-colors px-1" title="Limpiar Filtros">
+                        Limpiar
+                    </button>
+                )}
+            </SubToolbar>
 
             {/* Contenido */}
             {loading ? (
@@ -269,7 +274,7 @@ const Registros = () => {
                     ) : (
                         /* VISTA DE TABLA (Nueva implementación) */
                         <div className="card p-0 overflow-hidden flex-1 flex flex-col">
-                            <div className="overflow-y-auto overflow-x-auto flex-1 pb-16 pt-6 custom-scrollbar [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_85%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_85%,transparent_100%)]">
+                            <div className="overflow-y-auto overflow-x-auto flex-1 pb-16 custom-scrollbar">
                                 <table className="min-w-full divide-y divide-slate-200 dark:divide-[#2a2a27]">
                                     <thead className="bg-slate-50/50 dark:bg-[#1e1e1c]/50 backdrop-blur-sm sticky top-0 z-10">
                                         <tr>

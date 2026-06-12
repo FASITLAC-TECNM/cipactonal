@@ -4,13 +4,15 @@ import {
     FiPlus, FiSearch, FiUser
 } from 'react-icons/fi';
 import DynamicLoader from '../components/common/DynamicLoader';
+import HeaderActions from '../components/HeaderActions';
+import SubToolbar from '../components/SubToolbar';
+import MobileActions from '../components/MobileActions';
 import ConfirmBox from '../components/ConfirmBox';
 import Pagination from '../components/Pagination';
 import { useViewTransitionNavigate } from '../hooks/useViewTransitionNavigate';
 import UserCard from '../components/cards/UserCard';
 import UserModal from '../components/modals/UserModal';
 import { useRealTime } from '../hooks/useRealTime';
-import HeaderActions from '../components/HeaderActions';
 import { useAuth } from '../context/AuthContext';
 
 import { API_CONFIG } from '../config/Apiconfig';
@@ -170,37 +172,39 @@ const Empleados = () => {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-6rem)] pb-24">
+        <div className="flex flex-col h-full min-h-0">
             {/* Toolbar in Header */}
             <HeaderActions>
-                <div className="flex items-center gap-3 w-full justify-end">
-                    <div className="relative max-w-xs w-full hidden md:block">
-                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Buscar..."
-                            value={busqueda}
-                            onChange={(e) => setBusqueda(e.target.value)}
-                            className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800"
-                        />
-                    </div>
-                    <select
-                        value={filtroEstado}
-                        onChange={(e) => setFiltroEstado(e.target.value)}
-                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden sm:block"
-                    >
-                        <option value="">Todos</option>
-                        <option value="activo">Activo</option>
-                        <option value="suspendido">Suspendido</option>
-                        <option value="baja">Baja</option>
-                    </select>
+                <div className="flex items-center gap-2 sm:gap-3 w-full justify-end">
                     {canCreate && (
-                        <button onClick={handleOpenCreate} className="btn-primary flex items-center gap-2 py-1.5 px-4 text-sm shadow-sm hover:shadow-md transition-all">
-                            <FiPlus className="w-4 h-4" /> Nuevo
+                        <button onClick={handleOpenCreate} className="btn-primary flex items-center gap-2 py-1.5 px-3 sm:px-4 text-sm shadow-sm hover:shadow-md transition-all">
+                            <FiPlus className="w-4 h-4" /> <span className="hidden sm:inline">Nuevo</span>
                         </button>
                     )}
                 </div>
             </HeaderActions>
+
+            {/* Búsqueda en SubToolbar (visible en móvil) */}
+            <SubToolbar>
+                <FiSearch className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <input
+                    type="text"
+                    placeholder="Buscar empleado..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                    className="input py-1 text-xs flex-1 max-w-[220px] bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                />
+                <select
+                    value={filtroEstado}
+                    onChange={(e) => setFiltroEstado(e.target.value)}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Todos</option>
+                    <option value="activo">Activo</option>
+                    <option value="suspendido">Suspendido</option>
+                    <option value="baja">Baja</option>
+                </select>
+            </SubToolbar>
 
             {/* LISTA DE USUARIOS */}
             <div className="flex-1 min-h-0 overflow-y-auto pr-2 pb-4 pt-6 custom-scrollbar [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">

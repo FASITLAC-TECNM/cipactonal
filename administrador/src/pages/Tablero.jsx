@@ -253,15 +253,26 @@ const Dashboard = () => {
                     )}
                 </div>
 
-                <div className="p-4 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-900/30">
-                    <Pagination
-                        pagina={paginaAsistencias}
-                        totalPaginas={totalPaginasAsistencias}
-                        total={ultimasAsistencias.length}
-                        porPagina={asistenciasPorPagina}
-                        onChange={setPaginaAsistencias}
-                    />
-                </div>
+                {totalPaginasAsistencias > 1 && (
+                    <div className="p-3 border-t border-slate-200/60 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-900/30 flex items-center justify-between">
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                            {(paginaAsistencias - 1) * asistenciasPorPagina + 1}–{Math.min(paginaAsistencias * asistenciasPorPagina, ultimasAsistencias.length)} de {ultimasAsistencias.length}
+                        </span>
+                        <div className="flex items-center gap-1">
+                            <button
+                                onClick={() => setPaginaAsistencias(p => Math.max(1, p - 1))}
+                                disabled={paginaAsistencias === 1}
+                                className="px-2.5 py-1 text-xs rounded-lg bg-white dark:bg-[#2a2a27] border border-slate-200 dark:border-[#3a3a36] text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-50 dark:hover:bg-[#333330] transition-colors"
+                            >Ant.</button>
+                            <span className="px-2 text-xs font-semibold text-slate-700 dark:text-slate-200">{paginaAsistencias}/{totalPaginasAsistencias}</span>
+                            <button
+                                onClick={() => setPaginaAsistencias(p => Math.min(totalPaginasAsistencias, p + 1))}
+                                disabled={paginaAsistencias === totalPaginasAsistencias}
+                                className="px-2.5 py-1 text-xs rounded-lg bg-white dark:bg-[#2a2a27] border border-slate-200 dark:border-[#3a3a36] text-slate-600 dark:text-slate-300 disabled:opacity-30 hover:bg-slate-50 dark:hover:bg-[#333330] transition-colors"
+                            >Sig.</button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -61,7 +61,7 @@ const EmployeeSelector = ({ selected, onChange, employees }) => {
                 <div className="space-y-2 animate-in fade-in duration-300">
                     {/* Buscador */}
                     <div className="relative group">
-                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
                         <input
                             type="text"
                             placeholder="Buscar por nombre o usuario..."
@@ -794,6 +794,7 @@ const Configuracion = () => {
     const currentSection = SECCIONES.find(s => s.id === activeTab);
 
     return (
+        <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar pb-16 lg:pb-0">
         <div className="w-full mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
 
             {/* Contenedor Principal Flex */}
@@ -2068,6 +2069,7 @@ const Configuracion = () => {
                     </div>
                 </main>
             </div>
+        </div>
         </div>
     );
 };

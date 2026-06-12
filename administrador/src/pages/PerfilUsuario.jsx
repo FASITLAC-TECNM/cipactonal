@@ -914,7 +914,7 @@ const PerfilUsuario = () => {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
                 {/* COLUMNA IZQUIERDA */}
-                <div className="lg:col-span-4 space-y-6 w-full lg:sticky lg:top-6 lg:h-[calc(100vh-300px)] overflow-y-auto pr-2 pb-6 pt-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] animate-fade-in-up [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]" style={{ animationDelay: '100ms' }}>
+                <div className="lg:col-span-4 space-y-6 w-full lg:sticky lg:top-6 lg:h-[calc(100dvh-300px)] overflow-y-auto pr-2 pb-6 pt-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] animate-fade-in-up [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]" style={{ animationDelay: '100ms' }}>
 
                     {usuario?.es_empleado && (
                         <div className="card p-5">
@@ -1025,7 +1025,7 @@ const PerfilUsuario = () => {
                 </div>
 
                 {/* COLUMNA DERECHA */}
-                <div className="lg:col-span-8 space-y-6 w-full lg:h-[calc(100vh-300px)] overflow-y-auto pr-2 pb-6 pt-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] animate-fade-in-up [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]" style={{ animationDelay: '200ms' }}>
+                <div className="lg:col-span-8 space-y-6 w-full lg:h-[calc(100dvh-300px)] overflow-y-auto pr-2 pb-6 pt-6 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] animate-fade-in-up [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]" style={{ animationDelay: '200ms' }}>
 
                     {/* APARTADO ESTADÍSTICAS */}
                     {usuario?.es_empleado && (

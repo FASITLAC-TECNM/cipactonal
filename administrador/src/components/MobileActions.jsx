@@ -2,21 +2,27 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 /**
- * Componente que teletransporta su contenido al #header-actions-portal en el MainLayout
+ * MobileActions — Portal para inyectar acciones rápidas en la barra inferior de móvil.
+ * Solo se muestra en pantallas < lg (igual que el mobile bar).
+ *
+ * Uso: importar en la página y envolver botones/íconos de acción rápida.
+ * <MobileActions>
+ *     <button onClick={...}><FiSearch /></button>
+ * </MobileActions>
  */
-const HeaderActions = ({ children }) => {
+const MobileActions = ({ children }) => {
     const [mounted, setMounted] = useState(false);
     const [portalNode, setPortalNode] = useState(null);
 
     useEffect(() => {
         let timeoutId;
         const checkNode = () => {
-            const node = document.getElementById('header-actions-portal');
+            const node = document.getElementById('mobile-actions-portal');
             if (node) {
                 setPortalNode(node);
                 setMounted(true);
             } else {
-                timeoutId = setTimeout(checkNode, 100);
+                timeoutId = setTimeout(checkNode, 50);
             }
         };
         timeoutId = setTimeout(checkNode, 0);
@@ -26,11 +32,11 @@ const HeaderActions = ({ children }) => {
     if (!mounted || !portalNode) return null;
 
     return createPortal(
-        <div className="flex-1 flex justify-end items-center gap-2 sm:gap-3 min-w-0 overflow-hidden animate-slide-in-top">
+        <div className="flex items-center gap-2">
             {children}
         </div>,
         portalNode
     );
 };
 
-export default HeaderActions;
+export default MobileActions;

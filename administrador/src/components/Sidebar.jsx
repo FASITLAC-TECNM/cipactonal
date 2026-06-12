@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Home, Book, Users, Calendar, Settings, BarChart3, AlertCircle, Menu, X, ChevronLeft, Building2, Shield, Cpu, WifiOff, MessageSquare, Globe, Activity, LogOut } from 'lucide-react'
+import { Home, Book, Users, Calendar, Settings, BarChart3, AlertCircle, Menu, X, ChevronLeft, Building2, Shield, Cpu, WifiOff, MessageSquare, Globe, Activity, LogOut, ChevronUp } from 'lucide-react'
 import { useNetwork } from '../context/NetworkContext';
 import { useNotifications } from '../context/NotificationContext';
 import { useCompany } from '../context/CompanyContext';
@@ -43,7 +43,7 @@ const Sidebar = () => {
     const navigate = useViewTransitionNavigate();
     const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(true);
-    const [isMobileOpen, setIsMobileOpen] = useState(false);
+    const [showMoreMenu, setShowMoreMenu] = useState(false);
     const { unreadCount } = useNotifications();
     const { empresa, loading: loadingEmpresa } = useCompany();
     const { user, logout, hasPermission } = useAuth();
@@ -97,11 +97,10 @@ const Sidebar = () => {
     });
 
     const handleMenuClick = (ruta) => {
-        setIsMobileOpen(false);
+        setShowMoreMenu(false);
         navigate(ruta);
     };
 
-    const toggleMobile = () => setIsMobileOpen(!isMobileOpen);
     const toggleCollapsed = () => setIsCollapsed(!isCollapsed);
 
     // Renderiza un botón de menú (reutilizable para la lista y el footer)
@@ -160,34 +159,117 @@ const Sidebar = () => {
 
     return (
         <>
-            {/* Botón hamburguesa móvil */}
-            <button
-                onClick={toggleMobile}
-                className="select-none lg:hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 p-2 bg-white dark:bg-[#1e1e1c] rounded-xl shadow-card dark:shadow-card-dark border border-slate-200/60 dark:border-[#2a2a27]">
-                {isMobileOpen ? (
-                    <X className="w-6 h-6 text-gray-700 dark:text-gray-200" />
-                ) : (
-                    <Menu className="w-6 h-6 text-gray-700 dark:text-gray-200" />
-                )}
-            </button>
+            {/* ================================================================
+                BARRA INFERIOR MÓVIL (BOTTOM NAVIGATION)
+                Visible solo en pantallas pequeñas (< lg)
+            ================================================================ */}
+            {(() => {
+                const showConfig = user?.esPropietarioSaaS || ['CONFIG_VER', 'CONFIG_GENERAL', 'CONFIG_EMPRESA', 'CONFIG_SEGURIDAD', 'CONFIG_ASISTENCIA', 'CONFIG_RED', 'CONFIG_REPORTES'].some(permiso => hasPermission(permiso));
+                const allMobileItems = [...menuItems];
+                if (showConfig) {
+                    allMobileItems.push({
+                        id: 'configuracion',
+                        nombre: 'Ajustes',
+                        icono: Settings,
+                        ruta: '/configuracion'
+                    });
+                }
 
-            {/* Overlay móvil */}
-            {isMobileOpen && (
-                <div
-                    className="select-none lg:hidden fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-30"
-                    onClick={toggleMobile}
-                />
-            )}
+                const maxVisible = 5;
+                const hasMore = allMobileItems.length > maxVisible;
+                const visibleItems = hasMore ? allMobileItems.slice(0, 4) : allMobileItems;
+                const moreItems = hasMore ? allMobileItems.slice(4) : [];
 
-            {/* Sidebar */}
+                return (
+                    <>
+                        {hasMore && showMoreMenu && (
+                            <>
+                                <div className="lg:hidden fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)}></div>
+                                <div className="lg:hidden fixed bottom-20 right-4 z-50 bg-white dark:bg-[#1a1a18] border border-slate-200/60 dark:border-[#2a2a27] rounded-2xl shadow-xl flex flex-col overflow-hidden w-48 max-h-[60vh] overflow-y-auto custom-scrollbar-hidden animate-in fade-in slide-in-from-bottom-4">
+                                    {moreItems.map(item => {
+                                        const IconComponent = item.icono;
+                                        const isActive = location.pathname === item.ruta;
+                                        return (
+                                            <button
+                                                key={item.id}
+                                                onClick={() => handleMenuClick(item.ruta)}
+                                                className={`
+                                                    flex items-center gap-3 px-4 py-3 border-b border-slate-100 dark:border-slate-800/50 last:border-0
+                                                    ${isActive ? 'bg-primary-50 dark:bg-primary-900/10 text-primary-600 dark:text-primary-400 font-bold' : 'text-slate-600 dark:text-[#a0a09a] hover:bg-slate-50 dark:hover:bg-[#2a2a27]'}
+                                                `}
+                                            >
+                                                <IconComponent className={`w-4 h-4 flex-shrink-0 ${isActive ? 'scale-110' : ''}`} />
+                                                <span className="text-xs truncate">{item.nombre}</span>
+                                                {item.id === 'dispositivos' && unreadCount > 0 && (
+                                                    <span className="ml-auto w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></span>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </>
+                        )}
+
+                        <nav className="
+                            lg:hidden fixed bottom-0 left-0 right-0 z-50
+                            bg-white/95 dark:bg-[#1a1a18]/95 backdrop-blur-xl
+                            border-t border-slate-200/60 dark:border-[#2a2a27]
+                            safe-area-bottom h-16
+                        ">
+                            <div className="flex items-center h-full px-2 justify-between gap-1">
+                                {visibleItems.map(item => {
+                                    const IconComponent = item.icono;
+                                    const isActive = location.pathname === item.ruta;
+                                    return (
+                                        <button
+                                            key={item.id}
+                                            onClick={() => handleMenuClick(item.ruta)}
+                                            className={`
+                                                flex flex-col items-center justify-center flex-1 h-full
+                                                transition-all duration-300 relative px-1
+                                                ${isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-500 dark:text-[#a0a09a] hover:text-slate-700 dark:hover:text-slate-300'}
+                                            `}
+                                        >
+                                            <IconComponent className={`w-5 h-5 mb-1 ${isActive ? 'scale-110' : ''}`} />
+                                            <span className={`text-[10px] font-medium leading-none whitespace-nowrap ${isActive ? 'font-bold' : ''}`}>
+                                                {item.nombre}
+                                            </span>
+                                            {item.id === 'dispositivos' && unreadCount > 0 && (
+                                                <span className="absolute top-1.5 right-3 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-[#1a1a18]"></span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                                {hasMore && (
+                                    <button
+                                        onClick={() => setShowMoreMenu(!showMoreMenu)}
+                                        className={`
+                                            flex flex-col items-center justify-center flex-1 h-full
+                                            transition-all duration-300 relative px-1
+                                            ${showMoreMenu ? 'text-primary-600 dark:text-primary-400' : 'text-slate-500 dark:text-[#a0a09a] hover:text-slate-700 dark:hover:text-slate-300'}
+                                        `}
+                                    >
+                                        <ChevronUp className={`w-5 h-5 mb-1 transition-transform duration-300 ${showMoreMenu ? 'rotate-180 scale-110' : ''}`} />
+                                        <span className={`text-[10px] font-medium leading-none whitespace-nowrap ${showMoreMenu ? 'font-bold' : ''}`}>
+                                            Más
+                                        </span>
+                                    </button>
+                                )}
+                            </div>
+                        </nav>
+                    </>
+                );
+            })()}
+
+            {/* Sidebar de Escritorio */}
             <aside
                 className={`
-          select-none fixed lg:sticky top-4 lg:my-4 lg:ml-4 lg:h-[calc(100vh-2rem)] h-screen
+          select-none shrink-0
+          hidden lg:flex lg:sticky top-4 my-4 ml-4 h-[calc(100dvh-2rem)]
           bg-white dark:bg-[#171715] border border-slate-200/60 dark:border-[#2a2a27]
-          transition-all duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] z-40 lg:z-10 flex flex-col
-          lg:rounded-3xl shadow-panel dark:shadow-panel-dark
-          ${isCollapsed ? 'w-20' : 'w-[260px]'}
-          ${isMobileOpen ? 'translate-x-0' : '-translate-x-[120%] lg:translate-x-0'}
+          transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 flex-col
+          rounded-3xl shadow-panel dark:shadow-panel-dark
+          ${isCollapsed ? 'w-[68px] sm:w-20' : 'w-[240px] sm:w-[260px]'}
         `}
             >
                 {/* Offline Indicator */}

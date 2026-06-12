@@ -37,6 +37,7 @@ import EscritorioProfile from '../components/EscritorioProfile';
 import DynamicLoader from '../components/common/DynamicLoader';
 import { useTour } from '../hooks/useTour';
 import HeaderActions from '../components/HeaderActions';
+import SubToolbar from '../components/SubToolbar';
 import { useAuth } from '../context/AuthContext';
 
 import { API_CONFIG } from '../config/Apiconfig';
@@ -404,8 +405,8 @@ const Dispositivos = () => {
 
             {/* Toolbar in Header */}
             <HeaderActions>
-                <div className="flex items-center gap-3 w-full overflow-x-auto no-scrollbar justify-end">
-                    <div id="devices-tabs" className="flex overflow-x-auto bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm p-0.5 rounded-lg border border-slate-200/60 dark:border-slate-700/60 mr-auto flex-shrink-0">
+                <div className="flex items-center gap-2 sm:gap-3 w-full justify-end flex-wrap">
+                    <div id="devices-tabs" className="flex overflow-x-auto bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm p-0.5 rounded-lg border border-slate-200/60 dark:border-slate-700/60 mr-auto flex-shrink-0 max-w-full">
                         {[
                             { id: 'escritorio', label: 'Escritorios', icon: Monitor },
                             { id: 'movil', label: 'Móviles', icon: Smartphone },
@@ -424,30 +425,31 @@ const Dispositivos = () => {
                         ))}
                     </div>
 
-                    <div className="relative max-w-xs w-full hidden lg:block flex-shrink-0" id="devices-search">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Buscar..."
-                            value={busqueda}
-                            onChange={(e) => setBusqueda(e.target.value)}
-                            className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800"
-                        />
-                    </div>
-                    {/* Filtro extra solo para activos */}
-                    {(vistaActiva === 'escritorio' || vistaActiva === 'movil') && (
-                        <select
-                            value={filtroEstado}
-                            onChange={(e) => setFiltroEstado(e.target.value)}
-                            className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden md:block flex-shrink-0"
-                        >
-                            <option value="">Todos</option>
-                            <option value="activo">Activos</option>
-                            <option value="inactivo">Inactivos</option>
-                        </select>
-                    )}
+
                 </div>
             </HeaderActions>
+
+            <SubToolbar>
+                <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <input
+                    type="text"
+                    placeholder="Buscar dispositivo..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                    className="input py-1 text-xs flex-1 max-w-[220px] bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                />
+                {(vistaActiva === 'escritorio' || vistaActiva === 'movil') && (
+                    <select
+                        value={filtroEstado}
+                        onChange={(e) => setFiltroEstado(e.target.value)}
+                        className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                    >
+                        <option value="">Todos</option>
+                        <option value="activo">Activos</option>
+                        <option value="inactivo">Inactivos</option>
+                    </select>
+                )}
+            </SubToolbar>
 
             {loading ? (
                 <DynamicLoader text="Actualizando información..." />

@@ -28,6 +28,8 @@ import {
 import DynamicLoader from '../components/common/DynamicLoader';
 import ConfirmBox from '../components/ConfirmBox';
 import HeaderActions from '../components/HeaderActions';
+import SubToolbar from '../components/SubToolbar';
+import MobileActions from '../components/MobileActions';
 import { useAuth } from '../context/AuthContext';
 
 import { API_CONFIG } from '../config/Apiconfig';
@@ -701,30 +703,11 @@ const Roles = () => {
         <div className="flex flex-col flex-1 min-h-0 h-full gap-6 w-full relative">
             {/* Contenedor con scroll y degradado inferior */}
             <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 animate-fade-in-up pr-2 pt-6 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
-                {/* Toolbar in Header */}
+            {/* Toolbar in Header */}
             <HeaderActions>
                 <div className="flex items-center gap-3 w-full justify-end">
                     {!isReordering ? (
                         <>
-                            <div className="relative max-w-xs w-full hidden lg:block">
-                                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <input
-                                    type="text"
-                                    placeholder="Buscar rol..."
-                                    value={busqueda}
-                                    onChange={(e) => setBusqueda(e.target.value)}
-                                    className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800"
-                                />
-                            </div>
-                            <select
-                                value={filtroEstado}
-                                onChange={(e) => setFiltroEstado(e.target.value)}
-                                className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 focus:bg-white dark:focus:bg-slate-800 hidden sm:block"
-                            >
-                                <option value="">Todos</option>
-                                <option value="activo">Activos</option>
-                                <option value="inactivo">Inactivos</option>
-                            </select>
                             {canEdit && (
                                 <button
                                     onClick={handleStartReordering}
@@ -760,6 +743,28 @@ const Roles = () => {
                     )}
                 </div>
             </HeaderActions>
+
+            <SubToolbar>
+                <FiSearch className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <input
+                    type="text"
+                    placeholder="Buscar rol..."
+                    value={busqueda}
+                    onChange={(e) => setBusqueda(e.target.value)}
+                    className="input py-1 text-xs flex-1 max-w-[220px] bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                />
+                <select
+                    value={filtroEstado}
+                    onChange={(e) => setFiltroEstado(e.target.value)}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Todos</option>
+                    <option value="activo">Activos</option>
+                    <option value="inactivo">Inactivos</option>
+                </select>
+            </SubToolbar>
+
+
 
             {/* List */}
             {loading ? (

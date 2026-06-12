@@ -14,6 +14,7 @@ import {
 } from 'react-icons/fi';
 import DynamicLoader from '../components/common/DynamicLoader';
 import HeaderActions from '../components/HeaderActions';
+import SubToolbar from '../components/SubToolbar';
 import ConfirmBox from '../components/ConfirmBox';
 import Pagination from '../components/Pagination';
 
@@ -296,72 +297,77 @@ const Incidencias = () => {
     }
 
     return (
-        <div className="flex flex-col gap-6 h-[calc(100vh-6rem)]">
-            {/* Header Toolbar */}
+        <div className="flex flex-col gap-6 h-full min-h-0">
+            {/* Botón primario en el header */}
             <HeaderActions>
-                <div className="flex items-center gap-3 w-full justify-end flex-wrap">
-                    <select
-                        value={filtros.tipo}
-                        onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value })}
-                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
-                    >
-                        <option value="">Todos los tipos</option>
-                        <option value="retardo">Retardo</option>
-                        <option value="justificante">Justificante</option>
-                        <option value="permiso">Permiso</option>
-                        <option value="vacaciones">Vacaciones</option>
-                        <option value="festivo">Festivo</option>
-                    </select>
-
-                    <select
-                        value={filtros.estado}
-                        onChange={(e) => setFiltros({ ...filtros, estado: e.target.value })}
-                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
-                    >
-                        <option value="">Todos los estados</option>
-                        <option value="pendiente">Pendiente</option>
-                        <option value="aprobado">Aprobado</option>
-                        <option value="rechazado">Rechazado</option>
-                    </select>
-
-                    <select
-                        value={filtros.empleado_id}
-                        onChange={(e) => setFiltros({ ...filtros, empleado_id: e.target.value })}
-                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors hidden md:block"
-                    >
-                        <option value="">Todos los empleados</option>
-                        {empleados.map(emp => (
-                            <option key={emp.id} value={emp.id}>{emp.nombre}</option>
-                        ))}
-                    </select>
-
-                    <input
-                        type="date"
-                        value={filtros.fecha_inicio}
-                        onChange={(e) => setFiltros({ ...filtros, fecha_inicio: e.target.value })}
-                        className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors hidden lg:block"
-                    />
-
-                    <button
-                        onClick={fetchIncidencias}
-                        className="btn-secondary flex items-center gap-2 py-1.5 px-3 text-sm shadow-sm transition-all bg-white/50 dark:bg-[#2a2a27]/50"
-                        title="Aplicar Filtros"
-                    >
-                        <FiFilter className="w-4 h-4" />
-                    </button>
-
+                <div className="flex items-center gap-2 sm:gap-3">
                     <button
                         onClick={() => {
                             resetForm();
                             setShowModal(true);
                         }}
-                        className="btn-primary flex items-center gap-2 py-1.5 px-4 text-sm shadow-sm transition-all"
+                        className="btn-primary flex items-center gap-2 py-1.5 px-3 sm:px-4 text-sm shadow-sm transition-all"
                     >
                         <FiPlus className="w-4 h-4" />
-                        <span className="hidden sm:inline">Nuevo</span>
+                        <span className="hidden sm:inline">Nueva</span>
                     </button>
                 </div>
             </HeaderActions>
+
+            {/* Filtros en la barra secundaria */}
+            <SubToolbar>
+                <FiFilter className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <select
+                    value={filtros.tipo}
+                    onChange={(e) => setFiltros({ ...filtros, tipo: e.target.value })}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Todos los tipos</option>
+                    <option value="retardo">Retardo</option>
+                    <option value="justificante">Justificante</option>
+                    <option value="permiso">Permiso</option>
+                    <option value="vacaciones">Vacaciones</option>
+                    <option value="festivo">Festivo</option>
+                </select>
+
+                <select
+                    value={filtros.estado}
+                    onChange={(e) => setFiltros({ ...filtros, estado: e.target.value })}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Todos los estados</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="aprobado">Aprobado</option>
+                    <option value="rechazado">Rechazado</option>
+                </select>
+
+                <select
+                    value={filtros.empleado_id}
+                    onChange={(e) => setFiltros({ ...filtros, empleado_id: e.target.value })}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                >
+                    <option value="">Todos los empleados</option>
+                    {empleados.map(emp => (
+                        <option key={emp.id} value={emp.id}>{emp.nombre}</option>
+                    ))}
+                </select>
+
+                <input
+                    type="date"
+                    value={filtros.fecha_inicio}
+                    onChange={(e) => setFiltros({ ...filtros, fecha_inicio: e.target.value })}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                    title="Fecha inicio"
+                />
+
+                <button
+                    onClick={fetchIncidencias}
+                    className="btn-secondary flex items-center gap-1.5 py-1 px-2.5 text-xs shadow-sm"
+                    title="Aplicar Filtros"
+                >
+                    <FiFilter className="w-3.5 h-3.5" />
+                </button>
+            </SubToolbar>
 
             {/* Tabla de incidencias */}
             <div className="flex-1 min-h-0 flex flex-col card p-0 overflow-hidden">

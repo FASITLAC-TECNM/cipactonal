@@ -6,6 +6,8 @@ import {
 import { API_CONFIG } from '../config/Apiconfig';
 import DynamicLoader from '../components/common/DynamicLoader';
 import HeaderActions from '../components/HeaderActions';
+import SubToolbar from '../components/SubToolbar';
+import MobileActions from '../components/MobileActions';
 import Pagination from '../components/Pagination';
 import { useAuth } from '../context/AuthContext';
 
@@ -249,54 +251,43 @@ const Avisos = () => {
         <div className="flex flex-col flex-1 min-h-0 h-full gap-6 w-full">
             {/* TOOLBAR IN HEADER */}
             <HeaderActions>
-                <div className="flex items-center gap-2 w-full justify-end">
-                    <div className="relative max-w-[200px] w-full hidden sm:block">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-                        <input
-                            type="text"
-                            placeholder="Buscar avisos..."
-                            value={busqueda}
-                            onChange={(e) => {
-                                setBusqueda(e.target.value);
-                                setPagina(1);
-                            }}
-                            className="input pl-9 py-1.5 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 outline-none w-full"
-                        />
-                    </div>
-                    <input
-                        type="date"
-                        value={fechaFiltro}
-                        onChange={(e) => {
-                            setFechaFiltro(e.target.value);
-                            setPagina(1);
-                        }}
-                        className="input py-1.5 px-2 text-sm bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border-slate-200/60 dark:border-slate-700/60 outline-none w-[130px]"
-                        title="Filtrar por fecha"
-                    />
-                    {(busqueda || fechaFiltro) && (
-                        <button
-                            onClick={() => {
-                                setBusqueda('');
-                                setFechaFiltro('');
-                                setPagina(1);
-                            }}
-                            className="p-1.5 bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 rounded-lg transition-colors"
-                            title="Limpiar filtros"
-                        >
-                            <X className="w-4 h-4" />
-                        </button>
-                    )}
-                    <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1"></div>
+                <div className="flex items-center gap-2 w-full justify-end flex-wrap">
+                    <div className="w-px h-6 bg-slate-200 dark:bg-slate-700 mx-1 hidden sm:block"></div>
                     {canCreate && (
                         <button
                             onClick={handleOpenCreate}
-                            className="btn-primary flex items-center gap-2 py-1.5 px-4 text-sm shadow-sm transition-all"
+                            className="btn-primary flex items-center gap-2 py-1.5 px-3 sm:px-4 text-sm shadow-sm transition-all"
                         >
-                            <Plus className="w-4 h-4" /> Nuevo
+                            <Plus className="w-4 h-4" /> <span className="hidden sm:inline">Nuevo</span>
                         </button>
                     )}
                 </div>
             </HeaderActions>
+
+            {/* Búsqueda en SubToolbar (accesible en móvil) */}
+            <SubToolbar>
+                <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <input
+                    type="text"
+                    placeholder="Buscar avisos..."
+                    value={busqueda}
+                    onChange={(e) => { setBusqueda(e.target.value); setPagina(1); }}
+                    className="input py-1 text-xs flex-1 max-w-[220px] bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                />
+                <input
+                    type="date"
+                    value={fechaFiltro}
+                    onChange={(e) => { setFechaFiltro(e.target.value); setPagina(1); }}
+                    className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                    title="Filtrar por fecha"
+                />
+                {(busqueda || fechaFiltro) && (
+                    <button onClick={() => { setBusqueda(''); setFechaFiltro(''); setPagina(1); }} className="p-1 bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-900/30 dark:text-red-400 rounded-lg transition-colors" title="Limpiar filtros">
+                        <X className="w-3.5 h-3.5" />
+                    </button>
+                )}
+            </SubToolbar>
+
 
             {/* ERROR GENERAL */}
             {error && !modalOpen && (

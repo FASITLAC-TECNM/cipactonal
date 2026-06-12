@@ -4,6 +4,7 @@ import DynamicLoader from '../components/common/DynamicLoader';
 import ConfirmBox from '../components/ConfirmBox';
 import Pagination from '../components/Pagination';
 import HeaderActions from '../components/HeaderActions';
+import SubToolbar from '../components/SubToolbar';
 import {
     BarChart3, Settings, Filter, PieChart as PieIcon, X,
     CheckCircle, AlertTriangle, AlertCircle, Users, TrendingUp,
@@ -1403,26 +1404,27 @@ const Reportes = () => {
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-6 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
             {/* Toolbar in Header */}
             <HeaderActions>
-                <div className="flex items-center gap-3 w-full justify-end">
-                    <div className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60 w-fit">
+                <div className="flex items-center gap-2 sm:gap-3 w-full justify-end flex-wrap">
+                    <div className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60 w-fit shrink-0">
                         <button
                             onClick={() => { setAlcance('global'); setIdSeleccionado(''); }}
-                            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${alcance === 'global' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
+                            className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-md transition-colors ${alcance === 'global' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
                         >
                             General
                         </button>
                         <button
                             onClick={() => setAlcance('empleado')}
-                            className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${alcance === 'empleado' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
+                            className={`px-2 sm:px-3 py-1 text-xs font-medium rounded-md transition-colors ${alcance === 'empleado' ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-primary-400 shadow-sm' : 'text-slate-500 hover:text-slate-700 dark:hover:text-gray-300'}`}
                         >
-                            Por Empleado
+                            <span className="hidden sm:inline">Por Empleado</span>
+                            <span className="sm:hidden">Empleado</span>
                         </button>
                     </div>
 
                     <button
                         onClick={actualizarEstadisticas}
                         disabled={dashboardLoading}
-                        className="p-1.5 text-slate-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-md transition-colors disabled:opacity-50"
+                        className="p-1.5 text-slate-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 hover:bg-white/50 dark:hover:bg-slate-800/50 rounded-md transition-colors disabled:opacity-50 shrink-0"
                         title="Actualizar"
                     >
                         {dashboardLoading ? <DynamicLoader size="tiny" layout="row" /> : <RefreshCw className="w-4 h-4" />}
@@ -1431,68 +1433,69 @@ const Reportes = () => {
                     {alcance === 'empleado' && dashboardStats && (
                         <button
                             onClick={() => setIsModalOpen(true)}
-                            className="btn-primary flex items-center gap-2 py-1.5 px-4 text-sm shadow-sm transition-all"
+                            className="btn-primary flex items-center gap-1.5 sm:gap-2 py-1.5 px-3 sm:px-4 text-sm shadow-sm transition-all shrink-0"
                         >
                             <FileText className="w-4 h-4" />
                             <span className="hidden sm:inline">Exportar</span>
                         </button>
                     )}
-                    <div className="flex items-center gap-3 w-full flex-wrap flex-1">
-                        {alcance === 'empleado' && (
-                            <div className="w-[200px]">
-                                <SearchableSelect
-                                    options={empleados}
-                                    value={idSeleccionado}
-                                    onChange={setIdSeleccionado}
-                                    className="input py-1.5 text-sm bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36]"
-                                />
-                            </div>
-                        )}
 
-                        {alcance === 'global' && (
-                            <select
-                                value={filtroDepartamento}
-                                onChange={(e) => setFiltroDepartamento(e.target.value)}
-                                className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
-                            >
-                                <option value="todos">Todos los Departamentos</option>
-                                {departamentos.map(d => (
-                                    <option key={d.id} value={d.id}>{d.nombre}</option>
-                                ))}
-                            </select>
-                        )}
-
-                        <div className="relative">
-                            <select
-                                value={modoFecha}
-                                onChange={(e) => setModoFecha(e.target.value)}
-                                className="input py-1.5 text-sm pl-8 w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
-                            >
-                                <option value="intervalo">Rango de Fechas</option>
-                                <option value="siempre">Histórico Completo</option>
-                            </select>
-                            <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                        </div>
-
-                        {modoFecha === 'intervalo' && (
-                            <div className="flex gap-2">
-                                <input
-                                    type="date"
-                                    value={fechaInicio}
-                                    onChange={(e) => setFechaInicio(e.target.value)}
-                                    className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
-                                />
-                                <input
-                                    type="date"
-                                    value={fechaFin}
-                                    onChange={(e) => setFechaFin(e.target.value)}
-                                    className="input py-1.5 text-sm w-auto cursor-pointer bg-white/50 dark:bg-[#2a2a27]/50 backdrop-blur-sm border-slate-200/60 dark:border-[#3a3a36] focus:bg-white dark:focus:bg-[#111110] transition-colors"
-                                />
-                            </div>
-                        )}
-                    </div>
                 </div>
             </HeaderActions>
+
+            <SubToolbar>
+                {alcance === 'empleado' && (
+                    <div className="w-full max-w-[220px]">
+                        <SearchableSelect
+                            options={empleados}
+                            value={idSeleccionado}
+                            onChange={setIdSeleccionado}
+                            className="input py-1 text-xs bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                        />
+                    </div>
+                )}
+                {alcance === 'global' && (
+                    <select
+                        value={filtroDepartamento}
+                        onChange={(e) => setFiltroDepartamento(e.target.value)}
+                        className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                    >
+                        <option value="todos">Todos los Departamentos</option>
+                        {departamentos.map(d => (
+                            <option key={d.id} value={d.id}>{d.nombre}</option>
+                        ))}
+                    </select>
+                )}
+
+                <div className="relative shrink-0">
+                    <select
+                        value={modoFecha}
+                        onChange={(e) => setModoFecha(e.target.value)}
+                        className="input py-1 text-xs pl-7 w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                    >
+                        <option value="intervalo">Rango de Fechas</option>
+                        <option value="siempre">Histórico</option>
+                    </select>
+                    <Calendar className="w-3.5 h-3.5 text-slate-400 absolute left-2 top-1/2 -translate-y-1/2 pointer-events-none" />
+                </div>
+
+                {modoFecha === 'intervalo' && (
+                    <>
+                        <input
+                            type="date"
+                            value={fechaInicio}
+                            onChange={(e) => setFechaInicio(e.target.value)}
+                            className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                        />
+                        <input
+                            type="date"
+                            value={fechaFin}
+                            onChange={(e) => setFechaFin(e.target.value)}
+                            className="input py-1 text-xs w-auto cursor-pointer bg-white/80 dark:bg-[#2a2a27]/80 border-slate-200/60 dark:border-[#3a3a36]"
+                        />
+                    </>
+                )}
+            </SubToolbar>
 
             <div className="w-full space-y-6">
 
