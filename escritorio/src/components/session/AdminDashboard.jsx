@@ -79,7 +79,7 @@ export default function AdminDashboard({
                     <div className="p-2 lg:p-4">
                         <div className="flex items-center gap-3 mb-0 lg:mb-3">
                             <div className="relative flex-shrink-0">
-                                <div className="absolute inset-0 bg-[#1976D2] rounded-full p-[2px]">
+                                <div className="absolute inset-0 bg-accent rounded-full p-[2px]">
                                     <div className="w-full h-full bg-bg-primary rounded-full" />
                                 </div>
                                 {datosCompletos?.foto ? (
@@ -90,8 +90,8 @@ export default function AdminDashboard({
                                         style={{ background: "none" }}
                                     />
                                 ) : (
-                                    <div className="relative w-10 h-10 lg:w-12 lg:h-12 2xl:w-16 2xl:h-16 bg-[#E3F2FD] dark:bg-[#1565C0]/20 rounded-full flex items-center justify-center shadow-md border-2 border-[#1976D2]">
-                                        <User className="w-5 h-5 lg:w-6 lg:h-6 2xl:w-8 2xl:h-8 text-[#1976D2] dark:text-[#42A5F5]" />
+                                    <div className="relative w-10 h-10 lg:w-12 lg:h-12 2xl:w-16 2xl:h-16 bg-[#E3F2FD] dark:bg-accent-hover/20 rounded-full flex items-center justify-center shadow-md border-2 border-accent">
+                                        <User className="w-5 h-5 lg:w-6 lg:h-6 2xl:w-8 2xl:h-8 text-accent dark:text-accent-hover" />
                                     </div>
                                 )}
                             </div>
@@ -106,8 +106,8 @@ export default function AdminDashboard({
                         {/* Info rows - hidden on small sidebar */}
                         <div className="hidden lg:grid grid-cols-2 gap-x-3 gap-y-3 text-xs mt-2">
                             <div className="col-span-2 flex items-center gap-2 overflow-hidden">
-                                <div className="p-1.5 bg-[#E3F2FD] dark:bg-[#1565C0]/10 rounded-lg flex-shrink-0">
-                                    <User className="w-4 h-4 text-[#1976D2]" />
+                                <div className="p-1.5 bg-[#E3F2FD] dark:bg-accent-hover/10 rounded-lg flex-shrink-0">
+                                    <User className="w-4 h-4 text-accent" />
                                 </div>
                                 <div className="overflow-hidden">
                                     <p className="text-text-tertiary text-[10px] 2xl:text-xs font-bold uppercase leading-none mb-1">Usuario</p>
@@ -115,8 +115,8 @@ export default function AdminDashboard({
                                 </div>
                             </div>
                             <div className="col-span-2 flex items-center gap-2 overflow-hidden">
-                                <div className="p-1.5 bg-[#E3F2FD] dark:bg-[#1565C0]/10 rounded-lg flex-shrink-0">
-                                    <Mail className="w-4 h-4 text-[#1976D2]" />
+                                <div className="p-1.5 bg-[#E3F2FD] dark:bg-accent-hover/10 rounded-lg flex-shrink-0">
+                                    <Mail className="w-4 h-4 text-accent" />
                                 </div>
                                 <div className="overflow-hidden flex-1 min-w-0">
                                     <p className="text-text-tertiary text-[10px] 2xl:text-xs font-bold uppercase leading-none mb-1">Email</p>
@@ -126,8 +126,8 @@ export default function AdminDashboard({
 
                             {userDepartamento && (
                                 <div className="col-span-2 flex items-center gap-2 overflow-hidden">
-                                    <div className="p-1.5 bg-[#E3F2FD] dark:bg-[#1565C0]/10 rounded-lg flex-shrink-0">
-                                        <Building2 className="w-4 h-4 text-[#1976D2]" />
+                                    <div className="p-1.5 bg-[#E3F2FD] dark:bg-accent-hover/10 rounded-lg flex-shrink-0">
+                                        <Building2 className="w-4 h-4 text-accent" />
                                     </div>
                                     <div className="overflow-hidden flex-1 min-w-0">
                                         <p className="text-text-tertiary text-[10px] 2xl:text-xs font-bold uppercase leading-none mb-1">Departamento</p>
@@ -141,7 +141,7 @@ export default function AdminDashboard({
                                             {departamentos.length > 1 && (
                                                 <button
                                                     onClick={() => setShowDeptPopover(!showDeptPopover)}
-                                                    className="px-2 py-0.5 bg-[#1976D2] text-white text-[10px] 2xl:text-xs font-bold rounded-lg hover:bg-[#1565C0] transition-colors flex-shrink-0"
+                                                    className="px-2 py-0.5 bg-accent text-white text-[10px] 2xl:text-xs font-bold rounded-lg hover:bg-accent-hover transition-colors flex-shrink-0"
                                                 >
                                                     +{departamentos.length - 1}
                                                 </button>
@@ -152,8 +152,8 @@ export default function AdminDashboard({
                             )}
                             {userRFC && (
                                 <div className="col-span-2 flex items-center gap-2 overflow-hidden">
-                                    <div className="p-1.5 bg-[#E3F2FD] dark:bg-[#1565C0]/10 rounded-lg flex-shrink-0">
-                                        <FileText className="w-4 h-4 text-[#1976D2]" />
+                                    <div className="p-1.5 bg-[#E3F2FD] dark:bg-accent-hover/10 rounded-lg flex-shrink-0">
+                                        <FileText className="w-4 h-4 text-accent" />
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-text-tertiary text-[10px] 2xl:text-xs font-bold uppercase leading-none mb-1">RFC</p>
@@ -163,8 +163,8 @@ export default function AdminDashboard({
                             )}
                             {userNSS && (
                                 <div className="col-span-2 flex items-center gap-2 overflow-hidden">
-                                    <div className="p-1.5 bg-[#E3F2FD] dark:bg-[#1565C0]/10 rounded-lg flex-shrink-0">
-                                        <HeartPulse className="w-4 h-4 text-[#1976D2]" />
+                                    <div className="p-1.5 bg-[#E3F2FD] dark:bg-accent-hover/10 rounded-lg flex-shrink-0">
+                                        <HeartPulse className="w-4 h-4 text-accent" />
                                     </div>
                                     <div className="min-w-0">
                                         <p className="text-text-tertiary text-[10px] 2xl:text-xs font-bold uppercase leading-none mb-1">NSS</p>
@@ -185,12 +185,12 @@ export default function AdminDashboard({
                                     <button
                                         onClick={() => setActiveSection("empleado")}
                                         className={`w-full flex items-center gap-3 px-2 lg:px-3 py-2.5 lg:py-3 rounded-xl transition-all text-left ${isActive
-                                            ? "bg-[#1976D2] text-white shadow-md"
+                                            ? "bg-accent text-white shadow-md"
                                             : "text-text-secondary hover:bg-bg-primary"
                                             } justify-center lg:justify-start`}
                                         title="Información del Empleado"
                                     >
-                                        <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-white" : "text-[#1976D2]"}`} />
+                                        <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-white" : "text-accent"}`} />
                                         <span className={`font-semibold text-sm hidden lg:inline ${isActive ? "text-white" : "text-text-primary"}`}>
                                             Información del Empleado
                                         </span>
@@ -215,12 +215,12 @@ export default function AdminDashboard({
                                         key={item.id}
                                         onClick={() => setActiveSection(item.id)}
                                         className={`w-full flex items-center gap-3 px-2 lg:px-3 py-2.5 lg:py-3 rounded-xl transition-all text-left justify-center lg:justify-start ${isActive
-                                            ? "bg-[#1976D2] text-white shadow-md"
+                                            ? "bg-accent text-white shadow-md"
                                             : "text-text-secondary hover:bg-bg-primary"
                                             }`}
                                         title={item.title}
                                     >
-                                        <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-white" : "text-[#1976D2]"}`} />
+                                        <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? "text-white" : "text-accent"}`} />
                                         <span className={`font-semibold text-sm hidden lg:inline ${isActive ? "text-white" : "text-text-primary"}`}>
                                             {item.title}
                                         </span>
@@ -273,11 +273,11 @@ export default function AdminDashboard({
                                             <div
                                                 key={index}
                                                 onClick={() => onSelectNotice?.(notice)}
-                                                className="bg-bg-primary rounded-xl p-3 border border-border-subtle cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-[#1976D2]/40 transition-all duration-300 ease-out"
+                                                className="bg-bg-primary rounded-xl p-3 border border-border-subtle cursor-pointer hover:shadow-md hover:-translate-y-0.5 hover:border-accent/40 transition-all duration-300 ease-out"
                                             >
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-center justify-between">
-                                                        <p className="text-[9px] font-bold text-[#1976D2] uppercase tracking-wider">
+                                                        <p className="text-[9px] font-bold text-accent uppercase tracking-wider">
                                                             {notice.date}
                                                         </p>
                                                         <p className="text-[9px] font-medium text-text-tertiary">
@@ -302,7 +302,7 @@ export default function AdminDashboard({
                             <div className={`grid grid-cols-2 gap-3 flex-shrink-0`}>
                                 <button
                                     onClick={onShowHorario}
-                                    className="bg-bg-secondary hover:bg-bg-tertiary rounded-2xl shadow-sm p-4 transition-all hover:shadow-md flex flex-col items-center justify-center border border-border-subtle text-[#1976D2] dark:text-[#42A5F5]"
+                                    className="bg-bg-secondary hover:bg-bg-tertiary rounded-2xl shadow-sm p-4 transition-all hover:shadow-md flex flex-col items-center justify-center border border-border-subtle text-accent dark:text-accent-hover"
                                 >
                                     <Calendar className="w-8 h-8 mb-2" />
                                     <h3 className="text-sm font-bold text-text-primary mb-0.5">Ver Horario</h3>
@@ -315,7 +315,7 @@ export default function AdminDashboard({
                                     title={!isOnline ? "No disponible sin conexión" : "Ver historial de asistencia"}
                                     className={`rounded-2xl shadow-sm p-4 transition-all flex flex-col items-center justify-center border ${
                                         isOnline
-                                            ? "bg-bg-secondary hover:bg-bg-tertiary hover:shadow-md border-border-subtle text-[#1976D2] dark:text-[#42A5F5] cursor-pointer"
+                                            ? "bg-bg-secondary hover:bg-bg-tertiary hover:shadow-md border-border-subtle text-accent dark:text-accent-hover cursor-pointer"
                                             : "bg-bg-secondary/50 border-border-subtle opacity-40 cursor-not-allowed text-text-disabled"
                                     }`}
                                 >
@@ -377,7 +377,7 @@ export default function AdminDashboard({
                             <div className="space-y-1">
                                 {departamentos.map((dep, i) => (
                                     <div key={i} className="flex items-center gap-2.5 px-2 py-2 rounded-lg hover:bg-bg-secondary transition-colors">
-                                        <Building2 className="w-4 h-4 text-[#1976D2] flex-shrink-0" />
+                                        <Building2 className="w-4 h-4 text-accent flex-shrink-0" />
                                         <span className="text-text-primary font-medium text-sm truncate">{dep?.nombre || dep}</span>
                                     </div>
                                 ))}

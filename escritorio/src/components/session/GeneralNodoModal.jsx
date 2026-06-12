@@ -220,7 +220,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
         <div className="flex flex-col items-center justify-center gap-4 py-20 px-6">
           <AlertCircle className="w-10 h-10 text-red-500" />
           <p className="text-text-secondary text-center">{error}</p>
-          <button onClick={cargarDatosEscritorio} className="px-4 py-2 text-sm bg-[#1976D2] text-white rounded-xl font-semibold hover:bg-[#1565C0] flex items-center gap-2">
+          <button onClick={cargarDatosEscritorio} className="px-4 py-2 text-sm bg-accent text-white rounded-xl font-semibold hover:bg-accent-hover flex items-center gap-2">
             <RefreshCw className="w-4 h-4" /> Reintentar
           </button>
         </div>
@@ -240,7 +240,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
             <div className="flex gap-3">
               <button
                 onClick={cargarDatosEscritorio}
-                className="flex-1 px-4 py-2 text-sm bg-[#1976D2] text-white rounded-xl font-semibold hover:bg-[#1565C0] transition-colors flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-2 text-sm bg-accent text-white rounded-xl font-semibold hover:bg-accent-hover transition-colors flex items-center justify-center gap-2"
               >
                 <RefreshCw className="w-4 h-4" />
                 Reintentar
@@ -386,7 +386,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
         <div className={`bg-bg-primary p-6 border-b border-border-subtle ${inline ? 'sticky top-0 z-10 flex-shrink-0' : ''}`}>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <HardDrive className="w-8 h-8 text-[#1976D2]" />
+              <HardDrive className="w-8 h-8 text-accent" />
               <div>
                 <h3 className="text-2xl font-bold text-text-primary">General del Nodo</h3>
                 <p className="text-text-secondary text-sm mt-1">
@@ -406,7 +406,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-5 py-2.5 text-sm bg-[#1976D2] text-white rounded-xl font-bold hover:bg-[#1565C0] transition-all flex items-center gap-2 disabled:opacity-50 shadow-md"
+                className="px-5 py-2.5 text-sm bg-accent text-white rounded-xl font-bold hover:bg-accent-hover transition-all flex items-center gap-2 disabled:opacity-50 shadow-md"
               >
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {isSaving ? "Guardando..." : "Guardar Cambios"}
@@ -432,7 +432,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                     type="button"
                     onClick={detectSystemInfo}
                     disabled={isDetecting}
-                    className="absolute right-0 flex items-center gap-1.5 px-2.5 py-1 text-xs bg-[#1976D2]/10 dark:bg-blue-900/50 text-[#1976D2] dark:text-blue-300 rounded-lg hover:bg-[#1976D2]/20 dark:hover:bg-blue-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="absolute right-0 flex items-center gap-1.5 px-2.5 py-1 text-xs bg-accent/10 dark:bg-amber-900/50 text-accent dark:text-amber-300 rounded-lg hover:bg-accent/20 dark:hover:bg-amber-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 ${isDetecting ? "animate-spin" : ""}`} />
                     {isDetecting ? "Detectando..." : "Autodetectar"}
@@ -449,7 +449,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                       onChange={(e) =>
                         setNodeConfig({ ...nodeConfig, nodeName: e.target.value })
                       }
-                      className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg focus:ring-2 focus:ring-[#1976D2] focus:border-transparent text-text-primary placeholder:text-text-disabled"
+                      className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-text-primary placeholder:text-text-disabled"
                       placeholder="Ej: Entrada Principal"
                     />
                   </div>
@@ -464,7 +464,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                         setNodeConfig({ ...nodeConfig, nodeDescription: e.target.value })
                       }
                       rows={2}
-                      className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg focus:ring-2 focus:ring-[#1976D2] focus:border-transparent resize-none text-text-primary placeholder:text-text-disabled"
+                      className="w-full px-3 py-1.5 text-sm bg-bg-primary border border-border-subtle rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent resize-none text-text-primary placeholder:text-text-disabled"
                       placeholder="Descripción del nodo de trabajo"
                     />
                   </div>
@@ -518,7 +518,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                   {/* ── Panel de Actualización del Sistema ── */}
                   <div className="mt-4 bg-bg-secondary border border-border-subtle rounded-xl overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-3 border-b border-border-subtle">
-                      <ArrowUpCircle className="w-4 h-4 text-[#1976D2]" />
+                      <ArrowUpCircle className="w-4 h-4 text-accent" />
                       <h4 className="font-semibold text-text-primary text-sm">Actualización del Sistema</h4>
                       {hasUpdate && (
                         <span className="ml-auto text-[10px] font-bold bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full animate-pulse">
@@ -542,7 +542,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                           </div>
                           <button
                             onClick={checkForUpdates}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#1976D2]/10 dark:bg-blue-900/40 text-[#1976D2] dark:text-blue-300 rounded-lg hover:bg-[#1976D2]/20 transition-colors font-medium flex-shrink-0"
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-accent/10 dark:bg-amber-900/40 text-accent dark:text-amber-300 rounded-lg hover:bg-accent/20 transition-colors font-medium flex-shrink-0"
                           >
                             <RefreshCw className="w-3 h-3" />
                             Buscar actualizaciones
@@ -553,7 +553,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                       {/* checking */}
                       {updaterStatus === 'checking' && (
                         <div className="flex items-center gap-2 text-text-secondary">
-                          <Loader2 className="w-4 h-4 animate-spin text-[#1976D2]" />
+                          <Loader2 className="w-4 h-4 animate-spin text-accent" />
                           <span className="text-xs">Buscando actualizaciones...</span>
                         </div>
                       )}
@@ -562,12 +562,12 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                       {updaterStatus === 'available' && updateInfo && (
                         <div className="space-y-3">
                           <div className="flex items-start gap-3">
-                            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                              <Download className="w-4 h-4 text-[#1976D2]" />
+                            <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center flex-shrink-0">
+                              <Download className="w-4 h-4 text-accent" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-xs font-bold text-text-primary">Nueva versión disponible</p>
-                              <p className="text-[11px] text-[#1976D2] font-mono font-semibold">v{updateInfo.version}</p>
+                              <p className="text-[11px] text-accent font-mono font-semibold">v{updateInfo.version}</p>
                               {updateInfo.releaseDate && (
                                 <p className="text-[10px] text-text-secondary mt-0.5">{fmtDate(updateInfo.releaseDate)}</p>
                               )}
@@ -575,7 +575,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                           </div>
                           <button
                             onClick={startDownload}
-                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#1976D2] to-[#1565C0] text-white rounded-lg text-xs font-bold hover:from-[#1565C0] hover:to-[#0D47A1] transition-all shadow-md shadow-blue-500/20"
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-accent to-accent-hover text-white rounded-lg text-xs font-bold hover:from-accent-hover hover:to-[#92400e] transition-all shadow-md shadow-amber-500/20"
                           >
                             <Download className="w-3.5 h-3.5" />
                             Descargar actualización
@@ -588,11 +588,11 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-medium text-text-primary">Descargando...</span>
-                            <span className="text-xs font-mono text-[#1976D2]">{progress?.percent ?? 0}%</span>
+                            <span className="text-xs font-mono text-accent">{progress?.percent ?? 0}%</span>
                           </div>
                           <div className="h-2 bg-bg-primary rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-[#1976D2] to-[#42A5F5] rounded-full transition-all duration-500"
+                              className="h-full bg-gradient-to-r from-accent to-[#fbbf24] rounded-full transition-all duration-500"
                               style={{ width: `${progress?.percent ?? 0}%` }}
                             />
                           </div>
@@ -636,7 +636,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
                             <p className="text-[10px] text-text-secondary mt-0.5">{updaterError}</p>
                             <button
                               onClick={checkForUpdates}
-                              className="mt-2 text-[10px] text-[#1976D2] hover:underline flex items-center gap-1"
+                              className="mt-2 text-[10px] text-accent hover:underline flex items-center gap-1"
                             >
                               <RefreshCw className="w-2.5 h-2.5" /> Reintentar
                             </button>
@@ -683,7 +683,7 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex-1 px-4 py-2 text-sm bg-[#1976D2] text-white rounded-xl font-semibold hover:bg-[#1565C0] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2 text-sm bg-accent text-white rounded-xl font-semibold hover:bg-accent-hover transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSaving ? (
                   <>

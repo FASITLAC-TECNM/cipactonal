@@ -225,10 +225,10 @@ export default function KioskScreen() {
         icon: Camera,
         label: "Reconocimiento Facial",
         color: (hasCameraRegistered && isCameraConnected)
-          ? "from-[#1976D2] to-[#001A70] dark:from-slate-700 dark:to-slate-800"
+          ? "from-accent to-accent-active"
           : "from-gray-400 to-gray-500 dark:from-gray-600 dark:to-gray-700",
         hoverColor: (hasCameraRegistered && isCameraConnected)
-          ? "hover:from-[#1565C0] hover:to-[#001A70] dark:hover:from-slate-600 dark:hover:to-slate-700"
+          ? "hover:from-accent-hover hover:to-accent-active"
           : "",
         handler: (hasCameraRegistered && isCameraConnected) ? handleFacialCheck : null,
         isDisabled: !(hasCameraRegistered && isCameraConnected),
@@ -238,7 +238,7 @@ export default function KioskScreen() {
         icon: Fingerprint,
         label: "Huella Digital",
         color: isReaderConnected
-          ? "from-[#1976D2] to-[#001A70] dark:from-slate-700 dark:to-slate-800"
+          ? "from-accent to-accent-active"
           : "from-gray-400 to-gray-500 dark:from-gray-600 dark:to-gray-700",
         hoverColor: "", // Sin hover porque es solo visual
         handler: null, // Solo visual, el lector está siempre activo en background
@@ -250,9 +250,9 @@ export default function KioskScreen() {
         icon: User,
         label: "Usuario/Correo",
         color:
-          "from-[#1976D2] to-[#001A70] dark:from-slate-700 dark:to-slate-800",
+          "from-accent to-accent-active",
         hoverColor:
-          "hover:from-[#1565C0] hover:to-[#001A70] dark:hover:from-slate-600 dark:hover:to-slate-700",
+          "hover:from-accent-hover hover:to-accent-active",
         handler: handleUserLoginCheck,
       },
     };
@@ -279,7 +279,7 @@ export default function KioskScreen() {
           disabled={!isInternetConnected || !isDatabaseConnected}
           className={`flex flex-col items-center gap-2 p-2 rounded-xl transition-all w-12 sm:w-20 ${!isInternetConnected || !isDatabaseConnected
             ? "text-gray-400 cursor-not-allowed opacity-50"
-            : "text-[#1976D2] hover:bg-bg-secondary"
+            : "text-accent hover:bg-bg-secondary"
             }`}
         >
           <User className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-8 2xl:h-8" />
@@ -288,7 +288,7 @@ export default function KioskScreen() {
 
         <button
           onClick={() => setShowBitacora(true)}
-          className="flex flex-col items-center gap-2 text-[#1976D2] hover:bg-bg-secondary p-2 rounded-xl transition-all w-12 sm:w-20"
+          className="flex flex-col items-center gap-2 text-accent hover:bg-bg-secondary p-2 rounded-xl transition-all w-12 sm:w-20"
         >
           <ClipboardList className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-8 2xl:h-8" />
           <span className="text-[10px] sm:text-xs 2xl:text-base font-bold hidden sm:block">Bitácora</span>
@@ -305,7 +305,7 @@ export default function KioskScreen() {
 
         {/* Badge de versión — al fondo de la barra lateral */}
         <div className="relative pointer-events-none select-none flex items-center justify-center">
-          <span className="text-[9px] font-mono text-[#1976D2]/70 tracking-widest">
+          <span className="text-[9px] font-mono text-accent/70 tracking-widest">
             v{__APP_VERSION__}
           </span>
           {hasUpdate && (
@@ -364,9 +364,12 @@ export default function KioskScreen() {
 
                   <div className="mt-auto flex flex-col items-center w-full">
                     <div
-                      className="text-6xl sm:text-7xl lg:text-8xl 2xl:text-[10rem] font-bold mb-4 tracking-tighter"
+                      className="text-6xl sm:text-7xl lg:text-8xl 2xl:text-[10rem] font-bold mb-6 sm:mb-8 2xl:mb-12 tracking-tighter leading-none flex items-baseline justify-center gap-2 sm:gap-4"
                     >
-                      {formatTime(time).toLowerCase()}
+                      <span>{formatTime(time).toLowerCase().split(' ')[0]}</span>
+                      <span className="text-3xl sm:text-4xl lg:text-5xl 2xl:text-7xl font-bold opacity-80">
+                        {formatTime(time).toLowerCase().split(' ')[1]}
+                      </span>
                     </div>
                     <div className="text-2xl sm:text-3xl 2xl:text-5xl font-bold opacity-100 tracking-tight">
                       {formatDate(time)}
@@ -397,7 +400,7 @@ export default function KioskScreen() {
                 <div
                   onClick={isClickable ? method.handler : undefined}
                   title={isDisabled ? method.disabledMessage : ""}
-                  className={`relative bg-gradient-to-br from-[#1976D2] to-[#001A70] dark:from-slate-700 dark:to-slate-800 rounded-3xl shadow-2xl h-full text-white text-center flex flex-col items-center justify-center p-4 sm:p-8 transition-all ${isDisabled
+                  className={`relative bg-gradient-to-br from-accent to-accent-active rounded-3xl shadow-2xl h-full text-white text-center flex flex-col items-center justify-center p-4 sm:p-8 transition-all ${isDisabled
                     ? "opacity-60 cursor-not-allowed"
                     : isClickable
                       ? "cursor-pointer hover:shadow-3xl hover:scale-[1.005]"
@@ -425,9 +428,12 @@ export default function KioskScreen() {
                   {/* Reloj abajo */}
                   <div className="mt-6 sm:mt-10 flex flex-col items-center w-full pointer-events-none">
                     <div
-                      className="text-4xl sm:text-6xl lg:text-7xl 2xl:text-[8rem] font-bold mb-2 tracking-tighter"
+                      className="text-4xl sm:text-6xl lg:text-7xl 2xl:text-[8rem] font-bold mb-4 sm:mb-6 2xl:mb-8 tracking-tighter leading-none flex items-baseline justify-center gap-2 sm:gap-4"
                     >
-                      {formatTime(time).toLowerCase()}
+                      <span>{formatTime(time).toLowerCase().split(' ')[0]}</span>
+                      <span className="text-2xl sm:text-3xl lg:text-4xl 2xl:text-6xl font-bold opacity-80">
+                        {formatTime(time).toLowerCase().split(' ')[1]}
+                      </span>
                     </div>
                     <div className="text-lg sm:text-2xl 2xl:text-4xl font-bold opacity-100 tracking-tight">
                       {formatDate(time)}
@@ -553,18 +559,18 @@ export default function KioskScreen() {
                       key={index}
                       onClick={() => setSelectedNotice(notice)}
                       className={`flex-shrink-0 rounded-lg transition-all duration-500 ease-in-out p-3 cursor-pointer select-none ${isCenterCard
-                        ? "w-56 bg-gradient-to-br from-[#E3F2FD] to-[#BBDEFB] dark:from-blue-900/40 dark:to-blue-800/20 scale-105 shadow-xl z-10 ring-2 ring-[#42A5F5]/50"
+                        ? "w-56 bg-gradient-to-br from-accent-light/50 to-accent-light/80 dark:from-accent-light/40 dark:to-accent-light/10 scale-105 shadow-xl z-10 ring-2 ring-accent/50"
                         : "w-40 bg-bg-secondary border border-border-subtle hover:shadow-md hover:bg-bg-tertiary scale-90 opacity-60"
                         }`}
                     >
                       <div className="flex items-center justify-between mb-2">
-                        <span className={`font-bold ${isCenterCard ? "text-[#1976D2] dark:text-blue-400 text-xs" : "text-text-secondary text-[10px]"}`}>
+                        <span className={`font-bold ${isCenterCard ? "text-accent dark:text-accent-hover text-xs" : "text-text-secondary text-[10px]"}`}>
                           {notice.date} • {notice.time}
                         </span>
                       </div>
-                      <h4 className={`font-bold leading-tight ${isCenterCard
-                        ? "text-[#001A70] dark:text-blue-200 text-base line-clamp-2"
-                        : "text-text-primary text-sm line-clamp-2"
+                      <h4 className={`font-bold leading-tight text-text-primary ${isCenterCard
+                        ? "text-base line-clamp-2"
+                        : "text-sm line-clamp-2"
                         }`}>
                         {notice.subject || notice.message.substring(0, 50)}
                       </h4>

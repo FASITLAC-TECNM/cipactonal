@@ -297,7 +297,7 @@ export default function DispositivosModal({ onClose, onBack, escritorioId, inlin
         <div className={`bg-bg-primary p-6 border-b border-border-subtle flex-shrink-0 ${inline ? 'sticky top-0 z-10' : ''}`}>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <Smartphone className="w-8 h-8 text-[#1976D2]" />
+              <Smartphone className="w-8 h-8 text-accent" />
               <div>
                 <h3 className="text-2xl font-bold text-text-primary">
                   Dispositivos Biométricos
@@ -331,7 +331,7 @@ export default function DispositivosModal({ onClose, onBack, escritorioId, inlin
               <button
                 onClick={handleSave}
                 disabled={saving || loading}
-                className="px-5 py-2.5 text-sm bg-[#1976D2] text-white rounded-xl font-bold hover:bg-[#1565C0] transition-all flex items-center gap-2 disabled:opacity-50 shadow-md"
+                className="px-5 py-2.5 text-sm bg-accent text-white rounded-xl font-bold hover:bg-accent-hover transition-all flex items-center gap-2 disabled:opacity-50 shadow-md"
               >
                 {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                 {saving ? "Guardando..." : "Guardar Cambios"}
@@ -351,7 +351,7 @@ export default function DispositivosModal({ onClose, onBack, escritorioId, inlin
                   ? "bg-red-100 text-red-800 border border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
                   : detectionStatus.type === "warning"
                     ? "bg-yellow-100 text-yellow-800 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-800"
-                    : "bg-blue-100 text-blue-800 border border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800"
+                    : "bg-blue-100 text-amber-800 border border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800"
                 }`}
             >
               {detectionStatus.type === "success" && <CheckCircle2 className="w-5 h-5" />}
@@ -499,7 +499,7 @@ export default function DispositivosModal({ onClose, onBack, escritorioId, inlin
               <button
                 onClick={handleSave}
                 disabled={saving || loading}
-                className="flex-1 px-6 py-3 bg-[#1976D2] text-white rounded-xl font-bold hover:bg-[#1565C0] transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                className="flex-1 px-6 py-3 bg-accent text-white rounded-xl font-bold hover:bg-accent-hover transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {saving ? (
                   <Loader2 className="w-5 h-5 animate-spin" />

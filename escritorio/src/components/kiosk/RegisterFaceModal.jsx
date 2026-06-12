@@ -297,7 +297,7 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
                     onChange={(e) => setEmpleadoId(e.target.value.slice(0, 8))}
                     placeholder="Ejemplo: EMP001"
                     maxLength={8}
-                    className="w-full px-4 py-3 rounded-lg border border-border-subtle bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-[#1976D2] uppercase font-bold tracking-wider transition-all"
+                    className="w-full px-4 py-3 rounded-lg border border-border-subtle bg-bg-primary text-text-primary focus:outline-none focus:ring-2 focus:ring-accent uppercase font-bold tracking-wider transition-all"
                     autoFocus
                     onKeyPress={(e) => {
                       if (e.key === 'Enter') {
@@ -315,7 +315,7 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
 
                 <button
                   onClick={handleStartCapture}
-                  className="w-full bg-[#1976D2] hover:bg-[#1565C0] text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-[#1976D2]/20 flex items-center justify-center gap-3 active:scale-[0.98]"
+                  className="w-full bg-accent hover:bg-accent-hover text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-accent/20 flex items-center justify-center gap-3 active:scale-[0.98]"
                 >
                   <UserPlus className="w-5 h-5 font-bold" />
                   Capturar Rostro
@@ -323,10 +323,10 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
 
                 <div className="bg-accent/5 border border-accent/20 rounded-xl p-4 flex gap-3">
                   <div className="p-2 bg-accent/10 rounded-lg h-fit">
-                    <XCircle className="w-4 h-4 text-[#1976D2]" />
+                    <XCircle className="w-4 h-4 text-accent" />
                   </div>
                   <p className="text-[10px] text-text-secondary leading-normal">
-                    <strong className="text-[#1976D2] uppercase">Protocolo:</strong> El descriptor facial generado será encriptado y guardado permanentemente para fines de autenticación administrativa y asistencia.
+                    <strong className="text-accent uppercase">Protocolo:</strong> El descriptor facial generado será encriptado y guardado permanentemente para fines de autenticación administrativa y asistencia.
                   </p>
                 </div>
               </div>
@@ -372,7 +372,7 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
                       <ellipse
                         cx="200" cy="140" rx="80" ry="105"
                         fill="none"
-                        stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.4)"}
+                        stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.4)"}
                         strokeWidth={faceDetected ? "3" : "2"}
                         strokeDasharray={faceDetected ? "none" : "8 4"}
                         filter={faceDetected ? "url(#registerGlow)" : "none"}
@@ -382,7 +382,7 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
                         <ellipse
                           cx="200" cy="140" rx="84" ry="109"
                           fill="none"
-                          stroke="#1976D2"
+                          stroke="rgb(var(--accent))"
                           strokeWidth="2"
                           opacity="0.3"
                           style={{ animation: "facePulse 2s ease-in-out infinite" }}
@@ -397,10 +397,10 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
                         />
                       )}
                       {/* Marcas de alineacion */}
-                      <path d="M 135 55 L 135 40 L 155 40" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
-                      <path d="M 265 55 L 265 40 L 245 40" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
-                      <path d="M 135 245 L 135 260 L 155 260" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
-                      <path d="M 265 245 L 265 260 L 245 260" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
+                      <path d="M 135 55 L 135 40 L 155 40" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
+                      <path d="M 265 55 L 265 40 L 245 40" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
+                      <path d="M 135 245 L 135 260 L 155 260" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
+                      <path d="M 265 245 L 265 260 L 245 260" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.5)"} strokeWidth="3" strokeLinecap="round" />
                     </svg>
 
                     <style>{`
@@ -430,7 +430,7 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
                   
                   {modelsLoaded && (
                     <div className="flex items-center justify-center gap-2 mt-2">
-                       <div className={`w-2 h-2 rounded-full ${faceDetected ? 'bg-[#1976D2] animate-pulse' : 'bg-text-disabled'}`} />
+                       <div className={`w-2 h-2 rounded-full ${faceDetected ? 'bg-accent animate-pulse' : 'bg-text-disabled'}`} />
                        <span className="text-[10px] font-bold text-text-tertiary uppercase tracking-widest">
                          {faceDetected ? "Rostro Detectado" : "Buscando Rostro..."}
                        </span>
@@ -439,7 +439,7 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
 
                   {!modelsLoaded && (
                     <div className="flex items-center justify-center gap-2 mt-2">
-                       <div className="w-4 h-4 border-2 border-[#1976D2] border-t-transparent rounded-full animate-spin" />
+                       <div className="w-4 h-4 border-2 border-accent border-t-transparent rounded-full animate-spin" />
                        <span className="text-[10px] font-bold text-text-tertiary">Detectando modelos...</span>
                     </div>
                   )}
@@ -481,7 +481,7 @@ export default function RegisterFaceModal({ onClose, empleadoId: propEmpleadoId 
                         setTimeout(() => handleStartCapture(), 100);
                       }
                     }}
-                    className="w-full bg-[#1976D2] hover:bg-[#1565C0] text-white font-bold py-3 rounded-xl transition-all shadow-md active:scale-95"
+                    className="w-full bg-accent hover:bg-accent-hover text-white font-bold py-3 rounded-xl transition-all shadow-md active:scale-95"
                   >
                     Intentar de Nuevo
                   </button>

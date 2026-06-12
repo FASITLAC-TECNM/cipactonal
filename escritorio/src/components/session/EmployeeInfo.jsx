@@ -163,7 +163,7 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
       return { text: 'ACTIVO', bgColor: 'bg-red-500', dotColor: 'bg-white animate-pulse' };
     }
     if (turnoRelevante.estado === 'proximo') {
-      return { text: 'SIGUIENTE', bgColor: 'bg-blue-500', dotColor: null };
+      return { text: 'SIGUIENTE', bgColor: 'bg-amber-500', dotColor: null };
     }
     return { text: 'SIN HORARIO', bgColor: 'bg-gray-500', dotColor: null };
   };
@@ -245,8 +245,8 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
             {/* Turno Relevante */}
             <div className="bg-bg-secondary rounded-xl p-4 mb-3 border border-border-subtle">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-[#E3F2FD] dark:bg-[#1565C0]/40 flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-[#1976D2] dark:text-[#42A5F5]" />
+                <div className="w-10 h-10 rounded-xl bg-[#E3F2FD] dark:bg-accent-hover/40 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-accent dark:text-accent-hover" />
                 </div>
                 <div className="flex-1">
                   <p className="text-xs text-text-secondary font-medium mb-0.5">
@@ -265,11 +265,11 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
                 onClick={() => setShowAllTurnos(!showAllTurnos)}
                 className="w-full flex items-center justify-center gap-2 bg-bg-secondary hover:bg-bg-tertiary rounded-xl p-3 mb-3 border border-border-subtle transition-colors"
               >
-                <Layers className="w-4 h-4 text-[#1976D2]" />
-                <span className="text-sm font-semibold text-[#1976D2] dark:text-[#42A5F5]">
+                <Layers className="w-4 h-4 text-accent" />
+                <span className="text-sm font-semibold text-accent dark:text-accent-hover">
                   {infoHoy.turnos.length} turnos hoy - {showAllTurnos ? 'Ocultar' : 'Ver todos'}
                 </span>
-                <ChevronRight className={`w-4 h-4 text-[#1976D2] transition-transform ${showAllTurnos ? 'rotate-90' : ''}`} />
+                <ChevronRight className={`w-4 h-4 text-accent transition-transform ${showAllTurnos ? 'rotate-90' : ''}`} />
               </button>
             )}
 
@@ -293,7 +293,7 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
                       className={`rounded-xl p-3 ${esActivo
                         ? 'bg-green-50 dark:bg-green-900/20 border-2 border-green-500'
                         : esProximo
-                          ? 'bg-blue-50 dark:bg-blue-900/20 border-2 border-blue-500 border-dashed'
+                          ? 'bg-blue-50 dark:bg-amber-900/20 border-2 border-amber-500 border-dashed'
                           : 'bg-bg-tertiary border border-border-subtle'
                         }`}
                     >
@@ -302,7 +302,7 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
                           <span className={`text-xs font-bold px-2 py-1 rounded-full ${esActivo
                             ? 'bg-green-500 text-white'
                             : esProximo
-                              ? 'bg-blue-500 text-white'
+                              ? 'bg-amber-500 text-white'
                               : 'bg-gray-200 dark:bg-gray-700 text-text-secondary'
                             }`}>
                             T{index + 1}
@@ -317,7 +317,7 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
                           </span>
                         )}
                         {esProximo && (
-                          <span className="text-xs text-blue-600 dark:text-blue-400 font-medium">
+                          <span className="text-xs text-amber-600 dark:text-amber-400 font-medium">
                             Próximo
                           </span>
                         )}
@@ -332,8 +332,8 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
         ) : !errorHorario && horarioParsed && infoHoy.trabaja && turnoRelevante?.estado === 'finalizado' ? (
           /* Jornada Finalizada */
           <div className="bg-bg-secondary rounded-xl p-4 border border-border-subtle text-center flex flex-col items-center justify-center flex-1">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#E3F2FD] dark:bg-[#1565C0]/30 flex items-center justify-center">
-              <CheckCircle className="w-6 h-6 text-[#1976D2]" />
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#E3F2FD] dark:bg-accent-hover/30 flex items-center justify-center">
+              <CheckCircle className="w-6 h-6 text-accent" />
             </div>
             <p className="text-text-primary font-semibold">Jornada Completada</p>
             <p className="text-xs text-text-secondary mt-1">
@@ -343,8 +343,8 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
         ) : !errorHorario && horarioParsed && !infoHoy.trabaja ? (
           /* Día de Descanso */
           <div className="bg-bg-secondary rounded-xl p-4 border border-border-subtle text-center flex flex-col items-center justify-center flex-1">
-            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#E3F2FD] dark:bg-[#1565C0]/30 flex items-center justify-center">
-              <Coffee className="w-6 h-6 text-[#1976D2]" />
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-[#E3F2FD] dark:bg-accent-hover/30 flex items-center justify-center">
+              <Coffee className="w-6 h-6 text-accent" />
             </div>
             <p className="text-text-primary font-semibold">Día de Descanso</p>
             <p className="text-xs text-text-secondary mt-1">Disfruta tu día libre</p>
@@ -352,8 +352,8 @@ export default function EmployeeInfo({ time, empleado, horario: horarioProp, loa
         ) : !errorHorario && !horarioParsed ? (
           /* Sin horario asignado */
           <div className="bg-bg-secondary rounded-xl p-6 border border-border-subtle text-center flex flex-col items-center justify-center flex-1">
-            <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-[#E3F2FD] dark:bg-[#1565C0]/20 flex items-center justify-center">
-              <Calendar className="w-8 h-8 text-[#1976D2]" />
+            <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-[#E3F2FD] dark:bg-accent-hover/20 flex items-center justify-center">
+              <Calendar className="w-8 h-8 text-accent" />
             </div>
             <p className="text-lg font-bold text-text-primary mb-1">Sin Horario Asignado</p>
             <p className="text-sm text-text-secondary">Contacta a tu supervisor para asignar tu horario</p>

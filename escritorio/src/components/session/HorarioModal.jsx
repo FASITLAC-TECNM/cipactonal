@@ -101,15 +101,15 @@ export default function HorarioModal({ onClose, usuario }) {
         {/* Header */}
         <div className="bg-bg-primary px-5 py-4 flex items-center justify-between shrink-0 border-b border-border-subtle">
           <div className="flex items-center gap-3">
-            <Calendar className="w-8 h-8 text-[#1976D2]" />
+            <Calendar className="w-8 h-8 text-accent" />
             <div>
               <h3 className="text-2xl font-bold text-text-primary">Mi Horario Semanal</h3>
               <div className="flex items-center gap-3 mt-1">
                 <span className="text-sm text-text-secondary flex items-center gap-1">
-                  <Timer className="w-3 h-3 text-[#1976D2]" /> {resumen.horasTotales} Horas Totales
+                  <Timer className="w-3 h-3 text-accent" /> {resumen.horasTotales} Horas Totales
                 </span>
                 <span className="text-sm text-text-secondary flex items-center gap-1">
-                  <Clock className="w-3 h-3 text-[#1976D2]" /> {resumen.diasLaborales} Días Laborales
+                  <Clock className="w-3 h-3 text-accent" /> {resumen.diasLaborales} Días Laborales
                 </span>
               </div>
             </div>
@@ -144,20 +144,20 @@ export default function HorarioModal({ onClose, usuario }) {
                   <div
                     key={dia.key}
                     className={`relative rounded-lg p-3 flex flex-col min-h-[160px] md:min-h-[220px] transition-all border
-                      ${esHoy ? 'bg-white dark:bg-slate-800 border-[#1976D2] shadow-md ring-1 ring-[#1976D2]/20' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}
+                      ${esHoy ? 'bg-white dark:bg-slate-800 border-accent shadow-md ring-1 ring-accent/20' : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700'}
                       ${!activo && !esHoy ? 'bg-slate-50 dark:bg-slate-800/50 opacity-80' : ''}
                     `}
                   >
                     {/* Indicador HOY */}
                     {esHoy && (
-                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#1976D2] text-[9px] font-black text-white px-2 py-0.5 rounded shadow-sm flex items-center gap-1 uppercase tracking-tighter">
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 bg-accent text-[9px] font-black text-white px-2 py-0.5 rounded shadow-sm flex items-center gap-1 uppercase tracking-tighter">
                         Hoy
                       </div>
                     )}
 
                     {/* Día Header */}
                     <div className="text-center border-b border-slate-100 dark:border-slate-700 pb-2 mb-3">
-                      <p className={`text-sm font-bold ${esHoy ? 'text-[#1976D2] dark:text-[#42A5F5]' : 'text-slate-700 dark:text-slate-300'}`}>
+                      <p className={`text-sm font-bold ${esHoy ? 'text-accent dark:text-accent-hover' : 'text-slate-700 dark:text-slate-300'}`}>
                         {dia.key}
                       </p>
                     </div>
@@ -182,8 +182,8 @@ export default function HorarioModal({ onClose, usuario }) {
                           </div>
                           {/* Horas Totales Día */}
                           <div className="mt-auto pt-2 flex items-center justify-center gap-1 border-t border-slate-50 dark:border-slate-700">
-                            <Clock className="w-3 h-3 text-[#1976D2] dark:text-[#42A5F5] opacity-70" />
-                            <span className="text-[10px] font-black text-[#1976D2] dark:text-[#42A5F5]">{diaInfo?.hours}</span>
+                            <Clock className="w-3 h-3 text-accent dark:text-accent-hover opacity-70" />
+                            <span className="text-[10px] font-black text-accent dark:text-accent-hover">{diaInfo?.hours}</span>
                           </div>
                         </>
                       ) : (

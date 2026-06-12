@@ -18,8 +18,8 @@ export default function BiometriaModal({
         <div className={`bg-bg-primary p-6 border-b border-border-subtle flex-shrink-0 ${inline ? 'sticky top-0 z-10' : ''}`}>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="bg-[#1976D2]/10 p-2 rounded-xl">
-                <Fingerprint className="w-8 h-8 text-[#1976D2]" />
+              <div className="bg-accent/10 p-2 rounded-xl">
+                <Fingerprint className="w-8 h-8 text-accent" />
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-text-primary">Gestión Biométrica</h3>
@@ -46,7 +46,7 @@ export default function BiometriaModal({
               onClick={() => readerConnected && isOnline && onShowBiometric?.()}
               disabled={!readerConnected || !isOnline}
               className={`rounded-2xl shadow-sm p-8 transition-all flex flex-col items-center justify-center border border-border-subtle min-h-[200px] ${readerConnected && isOnline
-                ? "bg-bg-primary hover:bg-bg-secondary hover:border-[#1976D2]/50 hover:shadow-md cursor-pointer text-[#1976D2]"
+                ? "bg-bg-primary hover:bg-bg-secondary hover:border-accent/50 hover:shadow-md cursor-pointer text-accent"
                 : "bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                 }`}
             >
@@ -61,7 +61,7 @@ export default function BiometriaModal({
               disabled={!isOnline || !isCameraConnected}
               onClick={() => isOnline && isCameraConnected && onShowRegisterFace?.()}
               className={`rounded-2xl shadow-sm p-8 transition-all flex flex-col items-center justify-center border border-border-subtle min-h-[200px] ${isOnline && isCameraConnected
-                ? "bg-bg-primary hover:bg-bg-secondary hover:border-[#1976D2]/50 hover:shadow-md cursor-pointer text-[#1976D2]"
+                ? "bg-bg-primary hover:bg-bg-secondary hover:border-accent/50 hover:shadow-md cursor-pointer text-accent"
                 : "bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 cursor-not-allowed"
                 }`}
             >
