@@ -10,33 +10,7 @@ import "driver.js/dist/driver.css";
  */
 export const useTour = (moduleId, steps, trigger = true) => {
     useEffect(() => {
-        if (!trigger || !steps || steps.length === 0) return;
-
-        const tourKey = `tour_completed_${moduleId}`;
-        const hasCompletedTour = localStorage.getItem(tourKey);
-
-        if (!hasCompletedTour) {
-            const driverObj = driver({
-                showProgress: true,
-                animate: true,
-                nextBtnText: 'Siguiente',
-                prevBtnText: 'Anterior',
-                doneBtnText: 'Finalizar',
-                onDeselected: () => {
-                    localStorage.setItem(tourKey, 'true');
-                },
-                onDestroyed: () => {
-                    localStorage.setItem(tourKey, 'true');
-                },
-                steps: steps
-            });
-
-            // Pequeño delay para asegurar que el DOM esté listo
-            const timer = setTimeout(() => {
-                driverObj.drive();
-            }, 1000);
-
-            return () => clearTimeout(timer);
-        }
+        // Deshabilitado temporalmente a petición del usuario
+        return;
     }, [moduleId, steps, trigger]);
 };
