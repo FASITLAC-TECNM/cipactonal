@@ -40,23 +40,23 @@ function Pagination({ pagina, totalPaginas, total, porPagina, onChange }) {
     };
 
     return (
-        <div className="fixed bottom-16 lg:bottom-4 right-4 sm:right-6 lg:right-10 z-40 pointer-events-none flex justify-end">
-            <div className="pointer-events-auto flex items-center gap-3 sm:gap-4 px-3 sm:px-5 py-2 border border-slate-200/60 dark:border-[#3a3a36]/60 bg-white/80 dark:bg-[#1e1e1c]/80 backdrop-blur-xl rounded-full shadow-lg shadow-slate-200/20 dark:shadow-black/20 w-max transition-all">
-                <p className="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-[#a0a09a] whitespace-nowrap hidden sm:block leading-none m-0">
+        <div className="right-4 sm:right-6 lg:right-10 bottom-20 lg:bottom-4 z-40 fixed flex justify-end pointer-events-none">
+            <div className="flex items-center gap-3 sm:gap-4 bg-white/80 dark:bg-[#1e1e1c]/80 shadow-lg shadow-slate-200/20 dark:shadow-black/20 backdrop-blur-xl px-3 sm:px-5 py-2 border border-slate-200/60 dark:border-[#3a3a36]/60 rounded-full w-max transition-all pointer-events-auto">
+                <p className="hidden sm:block m-0 font-semibold text-[10px] text-slate-500 dark:text-[#a0a09a] sm:text-xs leading-none whitespace-nowrap">
                     {inicio}-{fin} de {total}
                 </p>
-                <div className="flex items-center gap-1 sm:border-l border-slate-200 dark:border-[#3a3a36] sm:pl-4 h-8">
+                <div className="flex items-center gap-1 sm:pl-4 border-slate-200 dark:border-[#3a3a36] sm:border-l h-8">
                     <button
                         onClick={() => onChange(Math.max(1, pagina - 1))}
                         disabled={pagina === 1}
-                        className="h-6 sm:h-8 px-2 sm:px-3 flex items-center justify-center text-[10px] sm:text-xs font-bold rounded-full hover:bg-slate-100 dark:hover:bg-[#2a2a27] text-slate-600 dark:text-[#a0a09a] hover:text-slate-900 dark:hover:text-[#e8e8e4] disabled:opacity-30 disabled:cursor-not-allowed transition-colors leading-none"
+                        className="flex justify-center items-center hover:bg-slate-100 dark:hover:bg-[#2a2a27] disabled:opacity-30 px-2 sm:px-3 rounded-full h-6 sm:h-8 font-bold text-[10px] text-slate-600 hover:text-slate-900 dark:hover:text-[#e8e8e4] dark:text-[#a0a09a] sm:text-xs leading-none transition-colors disabled:cursor-not-allowed"
                     >
                         Anterior
                     </button>
 
                     {getPageNumbers().map((num, i) =>
                         num === '...' ? (
-                            <span key={`ellipsis-${i}`} className="px-1 sm:px-2 flex items-center justify-center text-xs text-slate-400 dark:text-[#a0a09a] h-6 sm:h-8 leading-none">...</span>
+                            <span key={`ellipsis-${i}`} className="flex justify-center items-center px-1 sm:px-2 h-6 sm:h-8 text-slate-400 dark:text-[#a0a09a] text-xs leading-none">...</span>
                         ) : (
                             <button
                                 key={num}
@@ -74,7 +74,7 @@ function Pagination({ pagina, totalPaginas, total, porPagina, onChange }) {
                     <button
                         onClick={() => onChange(Math.min(totalPaginas, pagina + 1))}
                         disabled={pagina === totalPaginas}
-                        className="h-6 sm:h-8 px-2 sm:px-3 flex items-center justify-center text-[10px] sm:text-xs font-bold rounded-full hover:bg-slate-100 dark:hover:bg-[#2a2a27] text-slate-600 dark:text-[#a0a09a] hover:text-slate-900 dark:hover:text-[#e8e8e4] disabled:opacity-30 disabled:cursor-not-allowed transition-colors leading-none"
+                        className="flex justify-center items-center hover:bg-slate-100 dark:hover:bg-[#2a2a27] disabled:opacity-30 px-2 sm:px-3 rounded-full h-6 sm:h-8 font-bold text-[10px] text-slate-600 hover:text-slate-900 dark:hover:text-[#e8e8e4] dark:text-[#a0a09a] sm:text-xs leading-none transition-colors disabled:cursor-not-allowed"
                     >
                         Siguiente
                     </button>
