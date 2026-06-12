@@ -181,8 +181,10 @@ const MainLayout = ({ children }) => {
                                 </div>
                             </div>
 
-                            {/* Portal Area for Toolbars — sin flex-wrap, controles secundarios van al SubToolbar */}
-                            <div id="header-actions-portal" className="flex flex-1 justify-end items-center gap-2 sm:gap-3 min-w-0 overflow-hidden"></div>
+                            {/* Portal Area for Toolbars — scrolling on narrow screens */}
+                            <div id="header-actions-portal" className="flex flex-1 justify-start items-center gap-2 sm:gap-3 min-w-0 overflow-x-auto overflow-y-hidden" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                                {/* Note: we expect children to use ml-auto to right-align if there's extra space */}
+                            </div>
                             
                             {/* Acciones móviles */}
                             <div className="lg:hidden flex items-center gap-1.5 flex-shrink-0 ml-2">

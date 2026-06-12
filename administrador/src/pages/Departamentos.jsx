@@ -196,10 +196,8 @@ const Departamentos = () => {
 
     return (
         <div className="space-y-6 h-full flex flex-col">
-            {/* Toolbar in Header */}
             <HeaderActions>
-                <div className="flex items-center gap-3 w-full justify-end">
-
+                <div className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0">
                     {/* Toggle Vista */}
                     <div id="deptos-view-toggle" className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60">
                         <button

@@ -272,69 +272,121 @@ const Registros = () => {
                             })}
                         </div>
                     ) : (
-                        /* VISTA DE TABLA (Nueva implementación) */
+                        /* VISTA DE TABLA (Nueva implementación responsiva) */
                         <div className="card p-0 overflow-hidden flex-1 flex flex-col">
-                            <div className="overflow-y-auto overflow-x-auto flex-1 pb-16 custom-scrollbar">
-                                <table className="min-w-full divide-y divide-slate-200 dark:divide-[#2a2a27]">
-                                    <thead className="bg-slate-50/50 dark:bg-[#1e1e1c]/50 backdrop-blur-sm sticky top-0 z-10">
-                                        <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Evento</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Categoría</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Usuario</th>
-                                            <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Prioridad</th>
-                                            <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Fecha</th>
-                                        </tr>
-                                    </thead >
-                                    <tbody className="divide-y divide-slate-200 dark:divide-[#2a2a27]">
-                                        {eventos.map((evento) => {
-                                            const catConfig = getCategoriaConfig(evento.tipo_evento);
-                                            const priConfig = PRIORIDADES[evento.prioridad] || PRIORIDADES.media;
-                                            const Icon = catConfig.icon;
+                            <div className="overflow-y-auto overflow-x-hidden md:overflow-x-auto flex-1 pb-16 custom-scrollbar">
+                                
+                                {/* Vista para Móvil (Lista Simplificada) */}
+                                <div className="md:hidden divide-y divide-slate-200 dark:divide-[#2a2a27]">
+                                    {eventos.map((evento) => {
+                                        const catConfig = getCategoriaConfig(evento.tipo_evento);
+                                        const priConfig = PRIORIDADES[evento.prioridad] || PRIORIDADES.media;
+                                        const Icon = catConfig.icon;
 
-                                            return (
-                                                <tr key={evento.id} className="hover:bg-slate-50/80 dark:hover:bg-[#2a2a27]/50 transition-colors group">
-                                                    <td className="px-6 py-4">
-                                                        <div className="flex flex-col">
-                                                            <span className="text-sm font-medium text-slate-900 dark:text-[#e8e8e4] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{evento.titulo}</span>
-                                                            <span className="text-xs text-slate-500 dark:text-[#a0a09a] truncate max-w-xs">{limpiarDescripcion(evento.descripcion)}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center gap-2">
-                                                            <Icon className={`w-4 h-4 ${catConfig.color.split(' ')[0]}`} />
-                                                            <span className="text-sm text-slate-700 dark:text-[#e8e8e4]">{catConfig.label}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <div className="flex items-center gap-2">
-                                                            {evento.empleado_nombre ? (
-                                                                <>
-                                                                    <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xs font-bold border border-blue-200 dark:border-blue-800/30">
-                                                                        {evento.empleado_nombre.charAt(0)}
-                                                                    </div>
-                                                                    <span className="text-sm text-slate-600 dark:text-[#a0a09a]">{evento.empleado_nombre}</span>
-                                                                </>
-                                                            ) : (
-                                                                <span className="text-xs text-slate-400 dark:text-[#706f69] italic">Sistema</span>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap">
-                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${priConfig.color}`}>
-                                                            {priConfig.label}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-slate-500 dark:text-[#a0a09a]">
-                                                        <div className="flex flex-col items-end">
-                                                            <span>{formatDate(evento.fecha_registro)}</span>
-                                                            <span className="text-xs text-slate-400 dark:text-[#706f69]">{formatTime(evento.fecha_registro)}</span>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-                                    </tbody>
-                                </table >
+                                        return (
+                                            <div key={evento.id} className="p-4 hover:bg-slate-50/80 dark:hover:bg-[#2a2a27]/50 transition-colors flex flex-col gap-3">
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div className="flex flex-col min-w-0">
+                                                        <span className="text-sm font-medium text-slate-900 dark:text-[#e8e8e4] break-words">{evento.titulo}</span>
+                                                        <span className="text-xs text-slate-500 dark:text-[#a0a09a] line-clamp-2 mt-0.5">{limpiarDescripcion(evento.descripcion)}</span>
+                                                    </div>
+                                                    <span className={`shrink-0 inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider border ${priConfig.color}`}>
+                                                        {priConfig.label}
+                                                    </span>
+                                                </div>
+                                                
+                                                <div className="flex items-center justify-between text-xs mt-1">
+                                                    <div className="flex items-center gap-2">
+                                                        <Icon className={`w-3.5 h-3.5 ${catConfig.color.split(' ')[0]}`} />
+                                                        <span className="text-slate-600 dark:text-[#a0a09a] truncate max-w-[100px]">{catConfig.label}</span>
+                                                    </div>
+                                                    
+                                                    <div className="flex items-center gap-1.5 justify-end">
+                                                        {evento.empleado_nombre ? (
+                                                            <>
+                                                                <div className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-700 dark:text-blue-300 text-[10px] font-bold border border-blue-200 dark:border-blue-800/30 shrink-0">
+                                                                    {evento.empleado_nombre.charAt(0)}
+                                                                </div>
+                                                                <span className="text-slate-600 dark:text-[#a0a09a] truncate max-w-[80px]">{evento.empleado_nombre.split(' ')[0]}</span>
+                                                            </>
+                                                        ) : (
+                                                            <span className="text-slate-400 dark:text-[#706f69] italic">Sistema</span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="flex justify-between items-center text-[10px] text-slate-400 dark:text-[#706f69] border-t border-slate-100 dark:border-[#3a3a36]/50 pt-2 mt-1">
+                                                    <span>{formatDate(evento.fecha_registro)}</span>
+                                                    <span>{formatTime(evento.fecha_registro)}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {/* Vista para Escritorio (Tabla original) */}
+                                <div className="hidden md:block min-w-full">
+                                    <table className="min-w-full divide-y divide-slate-200 dark:divide-[#2a2a27]">
+                                        <thead className="bg-slate-50/50 dark:bg-[#1e1e1c]/50 backdrop-blur-sm sticky top-0 z-10">
+                                            <tr>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Evento</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Categoría</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Usuario</th>
+                                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Prioridad</th>
+                                                <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-[#a0a09a] uppercase tracking-wider">Fecha</th>
+                                            </tr>
+                                        </thead >
+                                        <tbody className="divide-y divide-slate-200 dark:divide-[#2a2a27]">
+                                            {eventos.map((evento) => {
+                                                const catConfig = getCategoriaConfig(evento.tipo_evento);
+                                                const priConfig = PRIORIDADES[evento.prioridad] || PRIORIDADES.media;
+                                                const Icon = catConfig.icon;
+
+                                                return (
+                                                    <tr key={evento.id} className="hover:bg-slate-50/80 dark:hover:bg-[#2a2a27]/50 transition-colors group">
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex flex-col">
+                                                                <span className="text-sm font-medium text-slate-900 dark:text-[#e8e8e4] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{evento.titulo}</span>
+                                                                <span className="text-xs text-slate-500 dark:text-[#a0a09a] truncate max-w-xs">{limpiarDescripcion(evento.descripcion)}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="flex items-center gap-2">
+                                                                <Icon className={`w-4 h-4 ${catConfig.color.split(' ')[0]}`} />
+                                                                <span className="text-sm text-slate-700 dark:text-[#e8e8e4]">{catConfig.label}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <div className="flex items-center gap-2">
+                                                                {evento.empleado_nombre ? (
+                                                                    <>
+                                                                        <div className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-700 dark:text-blue-300 text-xs font-bold border border-blue-200 dark:border-blue-800/30">
+                                                                            {evento.empleado_nombre.charAt(0)}
+                                                                        </div>
+                                                                        <span className="text-sm text-slate-600 dark:text-[#a0a09a]">{evento.empleado_nombre}</span>
+                                                                    </>
+                                                                ) : (
+                                                                    <span className="text-xs text-slate-400 dark:text-[#706f69] italic">Sistema</span>
+                                                                )}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">
+                                                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border ${priConfig.color}`}>
+                                                                {priConfig.label}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm text-slate-500 dark:text-[#a0a09a]">
+                                                            <div className="flex flex-col items-end">
+                                                                <span>{formatDate(evento.fecha_registro)}</span>
+                                                                <span className="text-xs text-slate-400 dark:text-[#706f69]">{formatTime(evento.fecha_registro)}</span>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                        </tbody>
+                                    </table >
+                                </div>
                             </div >
                         </div >
                     )}

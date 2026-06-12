@@ -1404,7 +1404,7 @@ const Reportes = () => {
             <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 pb-4 pt-6 [-webkit-mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)] [mask-image:linear-gradient(to_bottom,transparent_0%,black_24px,black_90%,transparent_100%)]">
             {/* Toolbar in Header */}
             <HeaderActions>
-                <div className="flex items-center gap-2 sm:gap-3 w-full justify-end flex-wrap">
+                <div className="ml-auto flex items-center gap-2 sm:gap-3 shrink-0 flex-wrap">
                     <div className="flex bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm rounded-lg p-0.5 border border-slate-200/60 dark:border-slate-700/60 w-fit shrink-0">
                         <button
                             onClick={() => { setAlcance('global'); setIdSeleccionado(''); }}
