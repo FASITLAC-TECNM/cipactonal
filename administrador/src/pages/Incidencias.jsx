@@ -379,8 +379,78 @@ const Incidencias = () => {
                         <p className="text-sm mt-1">Comienza creando una nueva incidencia o ajusta los filtros</p>
                     </div>
                 ) : (
-                    <div className="overflow-x-auto min-w-full">
-                        <table className="divide-y divide-slate-200 dark:divide-[#2a2a27] min-w-full">
+                    <>
+                        {/* Vista Móvil (Tarjetas) */}
+                        <div className="md:hidden flex flex-col gap-3 pb-4">
+                            {incidencias.slice((pagina - 1) * porPagina, pagina * porPagina).map((incidencia) => (
+                                <div key={incidencia.id} className="bg-white dark:bg-[#1e1e1c] border border-slate-200 dark:border-[#2a2a27] rounded-xl p-4 flex flex-col gap-3 shadow-sm hover:shadow transition-shadow">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            {incidencia.empleado_foto ? (
+                                                <img
+                                                    src={incidencia.empleado_foto}
+                                                    alt={incidencia.empleado_nombre}
+                                                    className="rounded-full w-8 h-8 object-cover border border-slate-200 dark:border-[#3a3a36]"
+                                                />
+                                            ) : (
+                                                <div className="flex justify-center items-center bg-blue-50 dark:bg-blue-900/20 rounded-full w-8 h-8 font-semibold text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/30 text-xs">
+                                                    {getInitials(incidencia.empleado_nombre)}
+                                                </div>
+                                            )}
+                                            <span className="font-medium text-slate-900 dark:text-[#e8e8e4] text-sm truncate max-w-[150px]">
+                                                {incidencia.empleado_nombre}
+                                            </span>
+                                        </div>
+                                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium border shrink-0 ${getEstadoBadge(incidencia.estado)}`}>
+                                            {incidencia.estado}
+                                        </span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between gap-2 bg-slate-50 dark:bg-[#171715] p-2.5 rounded-lg border border-slate-100 dark:border-[#2a2a27]">
+                                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium border shrink-0 ${getTipoBadge(incidencia.tipo)}`}>
+                                            {getTipoIcon(incidencia.tipo)}
+                                            {incidencia.tipo}
+                                        </span>
+                                        <div className="flex flex-col text-[10px] text-slate-500 dark:text-[#a0a09a] text-right">
+                                            <span><span className="text-slate-400 dark:text-[#706f69]">De:</span> {formatFecha(incidencia.fecha_inicio)}</span>
+                                            <span><span className="text-slate-400 dark:text-[#706f69]">A:</span> {formatFecha(incidencia.fecha_fin)}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#2a2a27]">
+                                        <button
+                                            onClick={() => openDetailModal(incidencia)}
+                                            className="p-1.5 text-slate-500 hover:text-blue-600 dark:text-[#a0a09a] dark:hover:text-blue-400 bg-slate-50 dark:bg-[#2a2a27] hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg border border-slate-200 dark:border-[#3a3a36] transition-colors"
+                                            title="Ver detalles"
+                                        >
+                                            <FiFileText className="w-4 h-4" />
+                                        </button>
+                                        {incidencia.estado === 'pendiente' && (
+                                            <>
+                                                <button
+                                                    onClick={() => openEditModal(incidencia)}
+                                                    className="p-1.5 text-slate-500 hover:text-orange-500 dark:text-[#a0a09a] dark:hover:text-orange-400 bg-slate-50 dark:bg-[#2a2a27] hover:bg-orange-50 dark:hover:bg-orange-900/20 rounded-lg border border-slate-200 dark:border-[#3a3a36] transition-colors"
+                                                    title="Editar"
+                                                >
+                                                    <FiEdit2 className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => openDeleteConfirm(incidencia)}
+                                                    className="p-1.5 text-slate-500 hover:text-red-500 dark:text-[#a0a09a] dark:hover:text-red-400 bg-slate-50 dark:bg-[#2a2a27] hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg border border-slate-200 dark:border-[#3a3a36] transition-colors"
+                                                    title="Eliminar"
+                                                >
+                                                    <FiTrash2 className="w-4 h-4" />
+                                                </button>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Vista Escritorio (Tabla original) */}
+                        <div className="hidden md:block overflow-x-auto min-w-full">
+                            <table className="divide-y divide-slate-200 dark:divide-[#2a2a27] min-w-full">
                             <thead className="bg-slate-50/50 dark:bg-[#1e1e1c]/50 backdrop-blur-sm sticky top-0 z-10">
                                 <tr>
                                     <th className="px-6 py-3 font-medium text-slate-500 dark:text-[#a0a09a] text-xs text-left uppercase tracking-wider">
@@ -481,6 +551,7 @@ const Incidencias = () => {
                             </tbody>
                         </table>
                     </div>
+                    </>
                 )}
 
                 </div>

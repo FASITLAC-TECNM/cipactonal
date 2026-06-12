@@ -3,10 +3,11 @@ import { useLocation, Outlet, useNavigate } from 'react-router-dom';
 import SidebarWithAuth from '../Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import { useProfileHeader } from '../../context/ProfileHeaderContext';
+import { useNotifications } from '../../context/NotificationContext';
 import TypewriterTitle from '../common/TypewriterTitle';
 import NotificationBell from '../NotificationBell';
 import ConfirmBox from '../ConfirmBox';
-import { LogOut } from 'lucide-react';
+import { LogOut, User, Bell } from 'lucide-react';
 
 // Configuración de páginas
 const pageConfig = {
@@ -46,9 +47,16 @@ const MainLayout = ({ children }) => {
     const location = useLocation();
     const navigate = useNavigate();
     const { headerState, resetProfileHeader } = useProfileHeader();
+    const { unreadCount } = useNotifications();
     const headerRef = useRef(null);
     const prevPathRef = useRef(location.pathname);
     const [confirmAction, setConfirmAction] = useState(null);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+    // Close mobile menu on route change
+    useEffect(() => {
+        setMobileMenuOpen(false);
+    }, [location.pathname]);
 
     const handleLogout = () => {
         setConfirmAction({
@@ -187,27 +195,57 @@ const MainLayout = ({ children }) => {
                             </div>
                             
                             {/* Acciones móviles */}
-                            <div className="lg:hidden flex items-center gap-1.5 flex-shrink-0 ml-2">
-                                <div className="flex items-center justify-center -mr-1">
-                                    <NotificationBell isSidebar={false} />
-                                </div>
+                            <div className="lg:hidden flex items-center flex-shrink-0 ml-2 relative">
                                 <button
-                                    onClick={handleLogout}
-                                    className="p-1.5 text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors duration-200"
-                                    title="Cerrar Sesión"
-                                >
-                                    <LogOut className="w-[18px] h-[18px]" strokeWidth={2.5} />
-                                </button>
-                                <button
-                                    onClick={() => navigate(`/empleados/usuario/${user?.usuario?.usuario}`)}
-                                    className="w-8 h-8 bg-slate-100 dark:bg-[#2a2a27] rounded-full flex items-center justify-center text-slate-700 dark:text-[#e8e8e4] font-bold text-xs shadow-inner overflow-hidden border border-slate-200 dark:border-[#363632]"
+                                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                                    className="relative w-9 h-9 bg-slate-100 dark:bg-[#2a2a27] rounded-full flex items-center justify-center text-slate-700 dark:text-[#e8e8e4] font-bold text-xs shadow-sm overflow-hidden border-2 border-white dark:border-[#363632] hover:ring-2 hover:ring-primary-500/50 transition-all shrink-0"
+                                    title="Menú de Usuario"
                                 >
                                     {user?.usuario?.foto ? (
                                         <img src={user.usuario.foto} alt="Perfil" className="w-full h-full object-cover" />
                                     ) : (
                                         <span>{user?.usuario?.nombre?.substring(0, 2).toUpperCase() || '?'}</span>
                                     )}
+                                    {unreadCount > 0 && (
+                                        <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-[#2a2a27]"></span>
+                                    )}
                                 </button>
+                                
+                                {mobileMenuOpen && (
+                                    <>
+                                        <div className="fixed inset-0 z-40" onClick={() => setMobileMenuOpen(false)}></div>
+                                        <div className="absolute top-full right-0 mt-3 w-56 bg-white dark:bg-[#1e1e1c] rounded-2xl shadow-xl border border-slate-200/60 dark:border-[#2a2a27] z-50 overflow-hidden py-1 animate-fade-in-up">
+                                            <div className="px-4 py-3 border-b border-slate-100 dark:border-[#2a2a27] mb-1 bg-slate-50/50 dark:bg-[#171715]/50">
+                                                <p className="text-sm font-bold text-slate-800 dark:text-white truncate">{user?.usuario?.nombre}</p>
+                                                <p className="text-xs text-slate-500 dark:text-slate-400 truncate mt-0.5">{user?.usuario?.correo}</p>
+                                            </div>
+                                            
+                                            <button
+                                                onClick={() => { setMobileMenuOpen(false); navigate(`/empleados/usuario/${user?.usuario?.usuario}`); }}
+                                                className="w-full text-left px-4 py-3 text-sm font-medium text-slate-600 dark:text-[#e8e8e4] hover:bg-slate-50 dark:hover:bg-[#2a2a27]/80 flex items-center gap-3 transition-colors"
+                                            >
+                                                <div className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400">
+                                                    <User className="w-4 h-4" />
+                                                </div>
+                                                Mi Perfil
+                                            </button>
+                                            
+                                            <NotificationBell isSidebar={false} mobileMenuMode={true} onCloseMenu={() => setMobileMenuOpen(false)} />
+                                            
+                                            <div className="h-px bg-slate-100 dark:bg-[#2a2a27] my-1 mx-2"></div>
+                                            
+                                            <button
+                                                onClick={() => { setMobileMenuOpen(false); handleLogout(); }}
+                                                className="w-full text-left px-4 py-3 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 flex items-center gap-3 transition-colors"
+                                            >
+                                                <div className="p-1.5 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
+                                                    <LogOut className="w-4 h-4" />
+                                                </div>
+                                                Cerrar Sesión
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </>
                     )}
