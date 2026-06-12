@@ -1,9 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation, Outlet, useNavigate } from 'react-router-dom';
 import SidebarWithAuth from '../Sidebar';
 import { useAuth } from '../../context/AuthContext';
 import { useProfileHeader } from '../../context/ProfileHeaderContext';
 import TypewriterTitle from '../common/TypewriterTitle';
+import NotificationBell from '../NotificationBell';
+import ConfirmBox from '../ConfirmBox';
+import { LogOut } from 'lucide-react';
 
 // Configuración de páginas
 const pageConfig = {
@@ -39,12 +42,25 @@ const getPageConfig = (pathname) => {
  * Layout principal con autenticación y animación de header al entrar a perfiles
  */
 const MainLayout = ({ children }) => {
-    const { user } = useAuth();
+    const { user, logout } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
     const { headerState, resetProfileHeader } = useProfileHeader();
     const headerRef = useRef(null);
     const prevPathRef = useRef(location.pathname);
+    const [confirmAction, setConfirmAction] = useState(null);
+
+    const handleLogout = () => {
+        setConfirmAction({
+            message: '¿Estás seguro de que deseas cerrar sesión?',
+            onConfirm: async () => {
+                setConfirmAction(null);
+                localStorage.removeItem('saas_auth_token');
+                await logout();
+                navigate('/login');
+            }
+        });
+    };
 
     const isImpersonating = !!localStorage.getItem('saas_auth_token');
     const isProfilePage = location.pathname.startsWith('/empleados/usuario/');
@@ -168,8 +184,18 @@ const MainLayout = ({ children }) => {
                             {/* Portal Area for Toolbars — sin flex-wrap, controles secundarios van al SubToolbar */}
                             <div id="header-actions-portal" className="flex flex-1 justify-end items-center gap-2 sm:gap-3 min-w-0 overflow-hidden"></div>
                             
-                            {/* Avatar móvil */}
-                            <div className="lg:hidden flex-shrink-0 ml-2">
+                            {/* Acciones móviles */}
+                            <div className="lg:hidden flex items-center gap-1.5 flex-shrink-0 ml-2">
+                                <div className="flex items-center justify-center -mr-1">
+                                    <NotificationBell isSidebar={false} />
+                                </div>
+                                <button
+                                    onClick={handleLogout}
+                                    className="p-1.5 text-slate-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-colors duration-200"
+                                    title="Cerrar Sesión"
+                                >
+                                    <LogOut className="w-[18px] h-[18px]" strokeWidth={2.5} />
+                                </button>
                                 <button
                                     onClick={() => navigate(`/empleados/usuario/${user?.usuario?.usuario}`)}
                                     className="w-8 h-8 bg-slate-100 dark:bg-[#2a2a27] rounded-full flex items-center justify-center text-slate-700 dark:text-[#e8e8e4] font-bold text-xs shadow-inner overflow-hidden border border-slate-200 dark:border-[#363632]"
@@ -212,6 +238,7 @@ const MainLayout = ({ children }) => {
                     {children || <Outlet />}
                 </div>
             </main>
+            {confirmAction && <ConfirmBox message={confirmAction.message} onConfirm={confirmAction.onConfirm} onCancel={() => setConfirmAction(null)} />}
         </div>
     );
 };

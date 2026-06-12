@@ -619,7 +619,7 @@ const PerfilUsuario = () => {
     // ... (rest of render)
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-6 h-full overflow-y-auto lg:overflow-visible custom-scrollbar pb-24 lg:pb-0">
             {/* Modal de Asistencia Manual */}
             {showManualModal && (
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">

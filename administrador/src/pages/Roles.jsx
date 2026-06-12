@@ -508,13 +508,23 @@ const Roles = () => {
         return (
             <div className="space-y-6 pb-24 animate-fade-in-up">
                 <HeaderActions>
-                    <div className="flex items-center justify-between w-full gap-4">
-                        <button onClick={() => { setViewingRole(null); setRoleUsuarios([]); }} className="flex items-center gap-2 text-slate-600 hover:text-slate-900 dark:text-[#a0a09a] dark:hover:text-[#e8e8e4] font-bold transition-colors bg-white dark:bg-[#2a2a27] px-4 py-2 rounded-xl border border-slate-200 dark:border-[#3a3a36] shadow-sm hover:-translate-y-0.5">
-                            <FiArrowLeft className="w-5 h-5" /> Volver a Roles
+                    <div className="flex items-center justify-end w-full gap-2 sm:gap-3">
+                        <button 
+                            onClick={() => { setViewingRole(null); setRoleUsuarios([]); }} 
+                            className="flex items-center gap-2 text-slate-600 hover:text-slate-900 dark:text-[#a0a09a] dark:hover:text-white font-medium transition-all bg-white hover:bg-slate-50 dark:bg-[#2a2a27] dark:hover:bg-[#333330] px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200/60 dark:border-[#3a3a36] shadow-sm hover:shadow"
+                            title="Volver a Roles"
+                        >
+                            <FiArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" /> 
+                            <span className="hidden sm:inline">Volver</span>
                         </button>
                         {canEdit && (
-                            <button onClick={() => openEditModal(viewingRole)} className="btn-primary flex items-center gap-2">
-                                <FiEdit2 className="w-4 h-4" /> Editar Rol
+                            <button 
+                                onClick={() => openEditModal(viewingRole)} 
+                                className="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white font-medium transition-all px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-sm hover:shadow"
+                                title="Editar Rol"
+                            >
+                                <FiEdit2 className="w-4 h-4 sm:w-5 sm:h-5" /> 
+                                <span className="hidden sm:inline">Editar</span>
                             </button>
                         )}
                     </div>

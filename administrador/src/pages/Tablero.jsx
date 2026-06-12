@@ -160,96 +160,155 @@ const Dashboard = () => {
                             <p className="text-lg font-medium">No hay asistencias registradas el día de hoy</p>
                         </div>
                     ) : (
-                        <div className="w-full min-w-[800px]">
-                            <table className="w-full text-left border-collapse">
-                                <thead className="bg-slate-50/50 dark:bg-slate-800/30 backdrop-blur-sm">
-                                    <tr>
-                                        <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[30%] border-b border-slate-200/50 dark:border-slate-800/50">
-                                            Empleado
-                                        </th>
-                                        <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[15%] border-b border-slate-200/50 dark:border-slate-800/50">
-                                            Tipo
-                                        </th>
-                                        <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[15%] border-b border-slate-200/50 dark:border-slate-800/50">
-                                            Hora
-                                        </th>
-                                        <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[25%] border-b border-slate-200/50 dark:border-slate-800/50">
-                                            Estado
-                                        </th>
-                                        <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[15%] border-b border-slate-200/50 dark:border-slate-800/50">
-                                            Dispositivo
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100/50 dark:divide-slate-800/50">
-                                    {asistenciasPaginadas.map((asistencia) => (
-                                        <tr 
-                                            key={asistencia.id} 
-                                            className="hover:bg-white/80 dark:hover:bg-slate-800/50 transition-all duration-300 cursor-pointer group" 
-                                            onClick={() => navigate(`/empleados/usuario/${asistencia.empleado_usuario}`)}
-                                        >
-                                            {/* Empleado */}
-                                            <td className="px-8 py-5">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold group-hover:ring-2 ring-blue-500/30 transition-all">
-                                                        {asistencia.empleado_nombre?.substring(0, 2).toUpperCase() || '?'}
-                                                    </div>
-                                                    <div className="text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <>
+                            {/* Vista para Móvil (Lista Simplificada) */}
+                            <div className="md:hidden divide-y divide-slate-100/50 dark:divide-slate-800/50">
+                                {asistenciasPaginadas.map((asistencia) => (
+                                    <div 
+                                        key={asistencia.id} 
+                                        className="p-4 hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer flex flex-col gap-3"
+                                        onClick={() => navigate(`/empleados/usuario/${asistencia.empleado_usuario}`)}
+                                    >
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-9 h-9 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold shrink-0">
+                                                    {asistencia.empleado_nombre?.substring(0, 2).toUpperCase() || '?'}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <div className="text-sm font-semibold text-slate-900 dark:text-slate-100 truncate">
                                                         {asistencia.empleado_nombre}
                                                     </div>
+                                                    <div className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 font-mono">
+                                                        {formatTime(asistencia.fecha_registro)}
+                                                    </div>
                                                 </div>
-                                            </td>
+                                            </div>
+                                            <span className={`inline-flex items-center px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0 ${asistencia.tipo === 'entrada'
+                                                ? 'bg-blue-100/80 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
+                                                : 'bg-purple-100/80 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300'
+                                            }`}>
+                                                {asistencia.tipo === 'entrada' ? '→ Entrada' : '← Salida'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            {(() => {
+                                                const e = asistencia.estado;
+                                                const map = {
+                                                    puntual: { cls: 'bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300', icon: <FiCheckCircle className="w-3.5 h-3.5 shrink-0" />, label: 'Puntual' },
+                                                    salida_puntual: { cls: 'bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300', icon: <FiCheckCircle className="w-3.5 h-3.5 shrink-0" />, label: 'Salida Puntual' },
+                                                    salida_temprana: { cls: 'bg-amber-100/80 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300', icon: <FiClock className="w-3.5 h-3.5 shrink-0" />, label: 'Salida Temprana' },
+                                                    salida_fuera_horario: { cls: 'bg-orange-100/80 dark:bg-orange-500/20 text-orange-800 dark:text-orange-300', icon: <FiAlertCircle className="w-3.5 h-3.5 shrink-0" />, label: 'Fuera Horario' },
+                                                    entrada_temprana: { cls: 'bg-cyan-100/80 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-300', icon: <FiClock className="w-3.5 h-3.5 shrink-0" />, label: 'Entrada Temprana' },
+                                                    retardo: { cls: 'bg-red-100/80 dark:bg-red-500/20 text-red-700 dark:text-red-300', icon: <FiClock className="w-3.5 h-3.5 shrink-0" />, label: 'Retardo' },
+                                                    falta: { cls: 'bg-rose-100/80 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300', icon: <FiAlertCircle className="w-3.5 h-3.5 shrink-0" />, label: 'Falta' },
+                                                };
+                                                const info = map[e] || { cls: 'bg-slate-100/80 dark:bg-slate-800 text-slate-800 dark:text-slate-300', icon: <FiClock className="w-3.5 h-3.5 shrink-0" />, label: e };
+                                                return (
+                                                    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold ${info.cls}`}>
+                                                        {info.icon} {info.label}
+                                                    </span>
+                                                );
+                                            })()}
+                                            <div className="text-[11px] font-medium text-slate-400 capitalize">
+                                                {asistencia.dispositivo_origen}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
 
-                                            {/* Tipo */}
-                                            <td className="px-8 py-5">
-                                                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider ${asistencia.tipo === 'entrada'
-                                                    ? 'bg-blue-100/80 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
-                                                    : 'bg-purple-100/80 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300'
-                                                    }`}>
-                                                    {asistencia.tipo === 'entrada' ? '→ Entrada' : '← Salida'}
-                                                </span>
-                                            </td>
-
-                                            {/* Hora */}
-                                            <td className="px-8 py-5">
-                                                <div className="text-base font-medium text-slate-600 dark:text-slate-300 font-mono">
-                                                    {formatTime(asistencia.fecha_registro)}
-                                                </div>
-                                            </td>
-
-                                            {/* Estado */}
-                                            <td className="px-8 py-5">
-                                                {(() => {
-                                                    const e = asistencia.estado;
-                                                    const map = {
-                                                        puntual: { cls: 'bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300', icon: <FiCheckCircle className="w-4 h-4 shrink-0" />, label: 'Puntual' },
-                                                        salida_puntual: { cls: 'bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300', icon: <FiCheckCircle className="w-4 h-4 shrink-0" />, label: 'Salida Puntual' },
-                                                        salida_temprana: { cls: 'bg-amber-100/80 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: 'Salida Temprana' },
-                                                        salida_fuera_horario: { cls: 'bg-orange-100/80 dark:bg-orange-500/20 text-orange-800 dark:text-orange-300', icon: <FiAlertCircle className="w-4 h-4 shrink-0" />, label: 'Fuera Horario' },
-                                                        entrada_temprana: { cls: 'bg-cyan-100/80 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: 'Entrada Temprana' },
-                                                        retardo: { cls: 'bg-red-100/80 dark:bg-red-500/20 text-red-700 dark:text-red-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: 'Retardo' },
-                                                        falta: { cls: 'bg-rose-100/80 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300', icon: <FiAlertCircle className="w-4 h-4 shrink-0" />, label: 'Falta' },
-                                                    };
-                                                    const info = map[e] || { cls: 'bg-slate-100/80 dark:bg-slate-800 text-slate-800 dark:text-slate-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: e };
-                                                    return (
-                                                        <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-semibold max-w-full truncate ${info.cls}`} title={info.label}>
-                                                            {info.icon} {info.label}
-                                                        </span>
-                                                    );
-                                                })()}
-                                            </td>
-
-                                            {/* Dispositivo */}
-                                            <td className="px-8 py-5">
-                                                <div className="text-sm font-medium text-slate-500 dark:text-slate-400 capitalize">
-                                                    {asistencia.dispositivo_origen}
-                                                </div>
-                                            </td>
+                            {/* Vista para Escritorio (Tabla original) */}
+                            <div className="hidden md:block w-full min-w-[800px]">
+                                <table className="w-full text-left border-collapse">
+                                    <thead className="bg-slate-50/50 dark:bg-slate-800/30 backdrop-blur-sm">
+                                        <tr>
+                                            <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[30%] border-b border-slate-200/50 dark:border-slate-800/50">
+                                                Empleado
+                                            </th>
+                                            <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[15%] border-b border-slate-200/50 dark:border-slate-800/50">
+                                                Tipo
+                                            </th>
+                                            <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[15%] border-b border-slate-200/50 dark:border-slate-800/50">
+                                                Hora
+                                            </th>
+                                            <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[25%] border-b border-slate-200/50 dark:border-slate-800/50">
+                                                Estado
+                                            </th>
+                                            <th className="px-8 py-5 text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest w-[15%] border-b border-slate-200/50 dark:border-slate-800/50">
+                                                Dispositivo
+                                            </th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-100/50 dark:divide-slate-800/50">
+                                        {asistenciasPaginadas.map((asistencia) => (
+                                            <tr 
+                                                key={asistencia.id} 
+                                                className="hover:bg-white/80 dark:hover:bg-slate-800/50 transition-all duration-300 cursor-pointer group" 
+                                                onClick={() => navigate(`/empleados/usuario/${asistencia.empleado_usuario}`)}
+                                            >
+                                                {/* Empleado */}
+                                                <td className="px-8 py-5">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 font-bold group-hover:ring-2 ring-blue-500/30 transition-all">
+                                                            {asistencia.empleado_nombre?.substring(0, 2).toUpperCase() || '?'}
+                                                        </div>
+                                                        <div className="text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                            {asistencia.empleado_nombre}
+                                                        </div>
+                                                    </div>
+                                                </td>
+
+                                                {/* Tipo */}
+                                                <td className="px-8 py-5">
+                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider ${asistencia.tipo === 'entrada'
+                                                        ? 'bg-blue-100/80 dark:bg-blue-500/20 text-blue-700 dark:text-blue-300'
+                                                        : 'bg-purple-100/80 dark:bg-purple-500/20 text-purple-700 dark:text-purple-300'
+                                                        }`}>
+                                                        {asistencia.tipo === 'entrada' ? '→ Entrada' : '← Salida'}
+                                                    </span>
+                                                </td>
+
+                                                {/* Hora */}
+                                                <td className="px-8 py-5">
+                                                    <div className="text-base font-medium text-slate-600 dark:text-slate-300 font-mono">
+                                                        {formatTime(asistencia.fecha_registro)}
+                                                    </div>
+                                                </td>
+
+                                                {/* Estado */}
+                                                <td className="px-8 py-5">
+                                                    {(() => {
+                                                        const e = asistencia.estado;
+                                                        const map = {
+                                                            puntual: { cls: 'bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300', icon: <FiCheckCircle className="w-4 h-4 shrink-0" />, label: 'Puntual' },
+                                                            salida_puntual: { cls: 'bg-emerald-100/80 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300', icon: <FiCheckCircle className="w-4 h-4 shrink-0" />, label: 'Salida Puntual' },
+                                                            salida_temprana: { cls: 'bg-amber-100/80 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: 'Salida Temprana' },
+                                                            salida_fuera_horario: { cls: 'bg-orange-100/80 dark:bg-orange-500/20 text-orange-800 dark:text-orange-300', icon: <FiAlertCircle className="w-4 h-4 shrink-0" />, label: 'Fuera Horario' },
+                                                            entrada_temprana: { cls: 'bg-cyan-100/80 dark:bg-cyan-500/20 text-cyan-800 dark:text-cyan-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: 'Entrada Temprana' },
+                                                            retardo: { cls: 'bg-red-100/80 dark:bg-red-500/20 text-red-700 dark:text-red-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: 'Retardo' },
+                                                            falta: { cls: 'bg-rose-100/80 dark:bg-rose-500/20 text-rose-800 dark:text-rose-300', icon: <FiAlertCircle className="w-4 h-4 shrink-0" />, label: 'Falta' },
+                                                        };
+                                                        const info = map[e] || { cls: 'bg-slate-100/80 dark:bg-slate-800 text-slate-800 dark:text-slate-300', icon: <FiClock className="w-4 h-4 shrink-0" />, label: e };
+                                                        return (
+                                                            <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-sm font-semibold max-w-full truncate ${info.cls}`} title={info.label}>
+                                                                {info.icon} {info.label}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </td>
+
+                                                {/* Dispositivo */}
+                                                <td className="px-8 py-5">
+                                                    <div className="text-sm font-medium text-slate-500 dark:text-slate-400 capitalize">
+                                                        {asistencia.dispositivo_origen}
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </>
                     )}
                 </div>
 
