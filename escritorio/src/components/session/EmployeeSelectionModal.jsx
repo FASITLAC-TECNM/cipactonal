@@ -98,8 +98,8 @@ export default function EmployeeSelectionModal({ onClose, onSelect, biometriaTip
                 <div className="p-6 border-b border-border-subtle flex-shrink-0">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-3">
-                            <div className="bg-[#1976D2]/10 p-2 rounded-lg">
-                                <User className="w-6 h-6 text-[#1976D2]" />
+                            <div className="bg-accent/10 p-2 rounded-lg">
+                                <User className="w-6 h-6 text-accent" />
                             </div>
                             <h2 className="text-xl font-bold text-text-primary">
                                 Seleccionar Empleado
@@ -124,7 +124,7 @@ export default function EmployeeSelectionModal({ onClose, onSelect, biometriaTip
                             placeholder="Buscar por nombre, usuario o ID..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2 border border-border-subtle rounded-lg bg-bg-secondary focus:ring-2 focus:ring-[#1976D2] focus:border-transparent outline-none transition-all text-text-primary"
+                            className="w-full pl-10 pr-4 py-2 border border-border-subtle rounded-lg bg-bg-secondary focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all text-text-primary"
                         />
                     </div>
                 </div>
@@ -157,11 +157,11 @@ export default function EmployeeSelectionModal({ onClose, onSelect, biometriaTip
                                 <button
                                     key={empleado.id}
                                     onClick={() => onSelect(empleado.id, empleado)}
-                                    className="w-full flex items-center justify-between p-3 rounded-lg border border-border-subtle bg-bg-primary hover:bg-bg-secondary hover:border-[#1976D2]/50 transition-all text-left group"
+                                    className="w-full flex items-center justify-between p-3 rounded-lg border border-border-subtle bg-bg-primary hover:bg-bg-secondary hover:border-accent/50 transition-all text-left group"
                                 >
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${hasData ? 'bg-green-100 dark:bg-green-900/30' : 'bg-[#E3F2FD] dark:bg-[#1565C0]/20'}`}>
-                                            <User className={`w-5 h-5 ${hasData ? 'text-green-600' : 'text-[#1976D2]'}`} />
+                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${hasData ? 'bg-green-100 dark:bg-green-900/30' : 'bg-[#E3F2FD] dark:bg-accent-hover/20'}`}>
+                                            <User className={`w-5 h-5 ${hasData ? 'text-green-600' : 'text-accent'}`} />
                                         </div>
                                         <div className="min-w-0">
                                             <p className="font-bold text-text-primary text-sm truncate">
@@ -186,7 +186,7 @@ export default function EmployeeSelectionModal({ onClose, onSelect, biometriaTip
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-[#1976D2] text-white px-3 py-1.5 rounded text-xs font-semibold flex-shrink-0 ml-2">
+                                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-accent text-white px-3 py-1.5 rounded text-xs font-semibold flex-shrink-0 ml-2">
                                         {hasData ? "Sobrescribir" : "Seleccionar"}
                                     </div>
                                 </button>

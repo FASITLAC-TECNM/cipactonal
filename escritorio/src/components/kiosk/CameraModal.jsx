@@ -90,7 +90,7 @@ export default function CameraModal({
         }`}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-blue-500 px-6 py-4">
+        <div className="bg-gradient-to-r from-amber-600 to-amber-500 px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-bold text-white">
@@ -213,7 +213,7 @@ export default function CameraModal({
             {modelsLoaded && detectionProgress > 0 && !captureSuccess && !captureFailed && (
               <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
                 <div
-                  className="bg-blue-500 h-full transition-all duration-300 rounded-full"
+                  className="bg-amber-500 h-full transition-all duration-300 rounded-full"
                   style={{ width: `${detectionProgress}%` }}
                 />
               </div>
@@ -222,7 +222,7 @@ export default function CameraModal({
             {/* Estado de carga de modelos */}
             {!modelsLoaded && (
               <div className="flex items-center justify-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-blue-500 border-t-transparent"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-amber-500 border-t-transparent"></div>
                 <span className="text-gray-600 dark:text-gray-400 text-xs">Cargando modelos...</span>
               </div>
             )}

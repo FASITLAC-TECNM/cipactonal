@@ -213,7 +213,7 @@ export default function BiometricEnroll({
           {/* Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <div className="bg-[#1976D2] p-2 rounded-lg">
+              <div className="bg-accent p-2 rounded-lg">
                 <Fingerprint className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -260,8 +260,8 @@ export default function BiometricEnroll({
               </h2>
 
               <div className="space-y-4">
-                <div className="bg-[#E3F2FD] dark:bg-[#1565C0]/20 border border-[#BBDEFB] dark:border-[#1565C0]/40 rounded-lg p-6 text-center">
-                  <Fingerprint className="w-16 h-16 mx-auto mb-3 text-[#1976D2] dark:text-[#42A5F5]" />
+                <div className="bg-[#E3F2FD] dark:bg-accent-hover/20 border border-[#BBDEFB] dark:border-accent-hover/40 rounded-lg p-6 text-center">
+                  <Fingerprint className="w-16 h-16 mx-auto mb-3 text-accent dark:text-accent-hover" />
                   <p className="text-gray-900 dark:text-white font-medium mb-1">
                     Coloca tu dedo en el lector
                   </p>
@@ -271,7 +271,7 @@ export default function BiometricEnroll({
                 </div>
 
                 {currentOperation === "Enrollment" && (
-                  <div className="bg-[#E3F2FD] dark:bg-[#1565C0]/20 border border-[#BBDEFB] dark:border-[#1565C0]/40 rounded-lg p-4">
+                  <div className="bg-[#E3F2FD] dark:bg-accent-hover/20 border border-[#BBDEFB] dark:border-accent-hover/40 rounded-lg p-4">
                     <div className="mb-3">
                       <div className="flex justify-between text-gray-900 dark:text-white text-sm mb-2">
                         <span>
@@ -281,7 +281,7 @@ export default function BiometricEnroll({
                       </div>
                       <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-[#1976D2] h-full transition-all duration-300 rounded-full"
+                          className="bg-accent h-full transition-all duration-300 rounded-full"
                           style={{ width: `${enrollProgress.percentage}%` }}
                         />
                       </div>
@@ -293,7 +293,7 @@ export default function BiometricEnroll({
                 )}
 
                 {savingToDatabase && (
-                  <div className="bg-[#E3F2FD] dark:bg-[#1565C0]/20 border border-[#BBDEFB] dark:border-[#1565C0]/40 rounded-lg p-3">
+                  <div className="bg-[#E3F2FD] dark:bg-accent-hover/20 border border-[#BBDEFB] dark:border-accent-hover/40 rounded-lg p-3">
                     <p className="text-gray-900 dark:text-white text-center text-sm flex items-center justify-center gap-2">
                       <Database className="w-4 h-4" />
                       Guardando en base de datos...
@@ -318,7 +318,7 @@ export default function BiometricEnroll({
                       disabled={!readerConnected}
                       className={`flex-1 px-4 py-2.5 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${!readerConnected
                         ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-[#1976D2] hover:bg-[#1565C0]"
+                        : "bg-accent hover:bg-accent-hover"
                         }`}
                     >
                       <Fingerprint className="w-5 h-5" />

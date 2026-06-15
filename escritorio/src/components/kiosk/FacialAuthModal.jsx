@@ -328,51 +328,30 @@ export default function FacialAuthModal({ onClose, onAuthSuccess }) {
   };
 
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center p-4 transition-opacity duration-300"
-      style={{
-        zIndex: 9999,
-        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        backdropFilter: 'blur(4px)',
-        opacity: isClosing ? 0 : 1
-      }}
+    <div className={`fixed inset-0 bg-black/40 backdrop-blur-md flex items-center justify-center z-[9999] p-4 transition-all duration-300 animate-backdrop ${isClosing ? 'opacity-0' : 'opacity-100'}`}
       onClick={(e) => {
         if (e.target === e.currentTarget) {
           handleClose();
         }
       }}
     >
-      <div
-        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl max-w-lg 2xl:max-w-3xl max-h-[90vh] overflow-y-auto w-full transition-all duration-300"
-        style={{
-          transform: isClosing ? 'scale(0.95)' : 'scale(1)',
-          opacity: isClosing ? 0 : 1
-        }}
+      <div className={`bg-bg-primary rounded-xl shadow-2xl max-w-md sm:max-w-lg 2xl:max-w-xl w-full overflow-hidden border border-border-subtle transition-all duration-300 animate-zoom-in ${isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'}`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-[#1976D2] to-[#001A70] px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <Camera className="w-5 h-5 text-white" />
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-white">Reconocimiento Facial</h3>
-                <p className="text-xs text-white/80">Autenticacion biometrica</p>
-              </div>
-            </div>
+        <div className="p-6 sm:p-8">
+          {/* Header Minimalista (Estilo AsistenciaFacial) */}
+          <div className="text-center mb-6 relative">
             <button
               onClick={handleClose}
-              className="w-8 h-8 flex items-center justify-center text-white hover:bg-white/20 rounded-lg transition-colors"
+              className="absolute -top-2 -right-2 text-text-tertiary hover:text-text-primary hover:bg-bg-secondary rounded-md p-2 transition-all"
             >
               <X className="w-5 h-5" />
             </button>
+            <h2 className="text-2xl font-bold text-text-primary tracking-tight">Reconocimiento Facial</h2>
+            <p className="text-text-tertiary text-xs mt-1 opacity-80 uppercase tracking-widest font-medium">Autenticación Biométrica</p>
           </div>
-        </div>
 
-        {/* Contenido */}
-        <div className="p-6">
+          {/* Contenido */}
           {/* Capturando */}
           {step === "capturing" && (
             <div className="space-y-4">
@@ -413,7 +392,7 @@ export default function FacialAuthModal({ onClose, onAuthSuccess }) {
                     <ellipse
                       cx="200" cy="140" rx="80" ry="105"
                       fill="none"
-                      stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.6)"}
+                      stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.6)"}
                       strokeWidth={faceDetected ? "3" : "2"}
                       strokeDasharray={faceDetected ? "none" : "8 4"}
                       filter={faceDetected ? "url(#authGlow)" : "none"}
@@ -436,10 +415,10 @@ export default function FacialAuthModal({ onClose, onAuthSuccess }) {
                         style={{ animation: "authScanLine 2.5s ease-in-out infinite" }}
                       />
                     )}
-                    <path d="M 135 55 L 135 40 L 155 40" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
-                    <path d="M 265 55 L 265 40 L 245 40" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
-                    <path d="M 135 245 L 135 260 L 155 260" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
-                    <path d="M 265 245 L 265 260 L 245 260" fill="none" stroke={faceDetected ? "#1976D2" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
+                    <path d="M 135 55 L 135 40 L 155 40" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
+                    <path d="M 265 55 L 265 40 L 245 40" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
+                    <path d="M 135 245 L 135 260 L 155 260" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
+                    <path d="M 265 245 L 265 260 L 245 260" fill="none" stroke={faceDetected ? "rgb(var(--accent))" : "rgba(255,255,255,0.7)"} strokeWidth="3" strokeLinecap="round" style={{ transition: "stroke 0.3s ease" }} />
                     <line x1="196" y1="135" x2="204" y2="135" stroke={faceDetected ? "rgba(25,118,210,0.4)" : "rgba(255,255,255,0.2)"} strokeWidth="1" />
                     <line x1="200" y1="131" x2="200" y2="139" stroke={faceDetected ? "rgba(25,118,210,0.4)" : "rgba(255,255,255,0.2)"} strokeWidth="1" />
                   </svg>
@@ -460,15 +439,15 @@ export default function FacialAuthModal({ onClose, onAuthSuccess }) {
 
               {/* Indicadores */}
               <div className="space-y-2">
-                <p className={`text-center text-sm font-medium ${proximityMessage === "¡Posición perfecta! Autenticando..." ? "text-green-600 dark:text-green-400" : proximityMessage ? "text-[#1976D2] dark:text-[#42A5F5]" : "text-gray-700 dark:text-gray-300"}`}>
+                <p className={`text-center text-sm font-medium ${proximityMessage === "¡Posición perfecta! Autenticando..." ? "text-green-600 dark:text-green-400" : proximityMessage ? "text-accent dark:text-accent-hover" : "text-gray-700 dark:text-gray-300"}`}>
                   {!modelsLoaded && "Cargando modelos de reconocimiento..."}
                   {modelsLoaded && (proximityMessage || "Coloca tu rostro frente a la cámara")}
                 </p>
 
                 {modelsLoaded && (
                   <div className="flex items-center justify-center gap-4 text-sm">
-                    <div className={`flex items-center gap-1.5 ${faceDetected ? 'text-[#1976D2] dark:text-[#42A5F5]' : 'text-gray-500 dark:text-gray-400'}`}>
-                      <div className={`w-2.5 h-2.5 rounded-full ${faceDetected ? 'bg-[#1976D2] animate-pulse' : 'bg-gray-400'}`} />
+                    <div className={`flex items-center gap-1.5 ${faceDetected ? 'text-accent dark:text-accent-hover' : 'text-gray-500 dark:text-gray-400'}`}>
+                      <div className={`w-2.5 h-2.5 rounded-full ${faceDetected ? 'bg-accent animate-pulse' : 'bg-gray-400'}`} />
                       <span className="font-medium">Rostro detectado</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400">
@@ -479,9 +458,9 @@ export default function FacialAuthModal({ onClose, onAuthSuccess }) {
                 )}
 
                 {modelsLoaded && detectionProgress > 0 && (
-                  <div className="w-full bg-gray-300 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
+                  <div className="w-full bg-bg-tertiary rounded-full h-2.5 overflow-hidden">
                     <div
-                      className="bg-[#1976D2] h-full transition-all duration-300 rounded-full"
+                      className="bg-accent h-full transition-all duration-300 rounded-full"
                       style={{ width: `${detectionProgress}%` }}
                     />
                   </div>
@@ -489,7 +468,7 @@ export default function FacialAuthModal({ onClose, onAuthSuccess }) {
 
                 {!modelsLoaded && (
                   <div className="flex items-center justify-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#1976D2] border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-accent border-t-transparent"></div>
                     <span className="text-gray-600 dark:text-gray-400 text-xs">Cargando modelos...</span>
                   </div>
                 )}
@@ -503,37 +482,37 @@ export default function FacialAuthModal({ onClose, onAuthSuccess }) {
 
           {/* Exito */}
           {step === "success" && (
-            <div className="text-center py-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-green-500 rounded-full flex items-center justify-center">
-                <CheckCircle className="w-12 h-12 text-white" strokeWidth={2.5} />
+            <div className="text-center py-8 animate-in fade-in zoom-in duration-300">
+              <div className="w-20 h-20 mx-auto mb-6 bg-success/10 rounded-full flex items-center justify-center ring-4 ring-success/5">
+                <CheckCircle className="w-12 h-12 text-success" strokeWidth={2.5} />
               </div>
-              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
-                Autenticacion Exitosa
+              <h4 className="text-2xl font-bold text-text-primary mb-6">
+                Autenticación Exitosa
               </h4>
-              <p className="text-green-600 dark:text-green-400 font-medium">{successMessage}</p>
+              <p className="text-success font-bold">{successMessage}</p>
             </div>
           )}
 
           {/* Error */}
           {step === "error" && (
-            <div className="text-center py-8">
-              <div className="w-20 h-20 mx-auto mb-4 bg-red-500 rounded-full flex items-center justify-center">
-                <XCircle className="w-12 h-12 text-white" strokeWidth={2.5} />
+            <div className="text-center py-8 animate-in fade-in zoom-in duration-300">
+              <div className="w-20 h-20 mx-auto mb-6 bg-error/10 rounded-full flex items-center justify-center ring-4 ring-error/5">
+                <XCircle className="w-12 h-12 text-error" strokeWidth={2.5} />
               </div>
-              <h4 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Error</h4>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">{errorMessage}</p>
-              <div className="flex gap-3 justify-center">
+              <h4 className="text-2xl font-bold text-text-primary mb-2">Error de Autenticación</h4>
+              <p className="text-text-secondary text-sm mb-8 max-w-[280px] mx-auto">{errorMessage}</p>
+              <div className="flex flex-col gap-3">
                 <button
                   onClick={handleRetry}
-                  className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors"
+                  className="w-full bg-accent hover:bg-accent-hover text-white font-bold py-3 rounded-xl transition-all shadow-md active:scale-95"
                 >
                   Intentar de Nuevo
                 </button>
                 <button
                   onClick={handleClose}
-                  className="bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-semibold py-2 px-6 rounded-lg transition-colors"
+                  className="w-full text-text-tertiary font-bold text-sm hover:text-text-primary transition-colors h-10"
                 >
-                  Cancelar
+                  Cancelar y Salir
                 </button>
               </div>
             </div>
