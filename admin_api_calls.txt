@@ -1,7 +1,0 @@
-/Users/danielsoto/Documents/Proyectos/Cipactonal/administrador/src/config/Apiconfig.js:export const fetchApi = async (endpoint, options = {}) => {
-/Users/danielsoto/Documents/Proyectos/Cipactonal/administrador/src/config/Apiconfig.js:export const postApi = async (endpoint, data, options = {}) => {
-/Users/danielsoto/Documents/Proyectos/Cipactonal/administrador/src/config/Apiconfig.js:    return fetchApi(endpoint, {
-/Users/danielsoto/Documents/Proyectos/Cipactonal/administrador/src/config/Apiconfig.js:export const putApi = async (endpoint, data, options = {}) => {
-/Users/danielsoto/Documents/Proyectos/Cipactonal/administrador/src/config/Apiconfig.js:    return fetchApi(endpoint, {
-/Users/danielsoto/Documents/Proyectos/Cipactonal/administrador/src/config/Apiconfig.js:export const deleteApi = async (endpoint, options = {}) => {
-/Users/danielsoto/Documents/Proyectos/Cipactonal/administrador/src/config/Apiconfig.js:    return fetchApi(endpoint, {
