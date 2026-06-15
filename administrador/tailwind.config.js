@@ -24,7 +24,6 @@ export default {
                     900: '#161614',  // Dark sidebar / panel bg
                     950: '#0e0e0c',  // Darkest page background
                 },
-                // Reemplazamos gray por nuestro slate para eliminar el tinte azulado por defecto de tailwind
                 gray: {
                     50: '#f6f6f2',
                     100: '#eaeae1',
@@ -39,7 +38,6 @@ export default {
                     900: '#161614',
                     950: '#0e0e0c',
                 },
-                // Reemplazamos blue por nuestro slate para matar cualquier azul quemado (hardcoded)
                 blue: {
                     50: '#f6f6f2',
                     100: '#eaeae1',
